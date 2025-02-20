@@ -41,7 +41,7 @@
         let scene, camera, renderer, controls, insectModel, tornadoModel;
         let infoPopup = document.getElementById('infoPopup');
         let homeButton = document.getElementById('homeButton');
-        let previousCameraPosition = camera.position.clone();
+        let previousCameraPosition;
 
         function init() {
             // Scene
@@ -50,6 +50,7 @@
             // Camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 1, 5);
+            previousCameraPosition = camera.position.clone(); // Clone initial camera position
 
             // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -72,7 +73,7 @@
             const loader = new THREE.GLTFLoader();
 
             // Load the insect anatomy model
-            loader.load('https://github.com/Bedo77/3d-model-viewer/tree/main/models', function(gltf) {
+            loader.load('models/Insect_Anatomy.glb', function(gltf) {
                 insectModel = gltf.scene;
                 scene.add(insectModel);
                 addClickEvents(insectModel);
@@ -81,7 +82,7 @@
             });
 
             // Load the tornado model
-            loader.load('https://github.com/Bedo77/3d-model-viewer/tree/main/models', function(gltf) {
+            loader.load('models/tornado.glb', function(gltf) {
                 tornadoModel = gltf.scene;
                 scene.add(tornadoModel);
                 addClickEvents(tornadoModel);
