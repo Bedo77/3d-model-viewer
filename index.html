@@ -28,21 +28,53 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .fly-image {
+        /* Modal styles */
+        .modal {
             display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            margin: 10% auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+        .modal img {
+            max-width: 100%;
+            height: auto;
+        }
+        .close {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 80%;
-            max-height: 80%;
+            top: 10px;
+            right: 25px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <button id="homeButton">Home</button>
     <div class="info-popup" id="infoPopup"></div>
-    <img src="file:///E:/Python%20backups/interactive%20pdf/3d/image1.png" alt="Fly Anatomy" class="fly-image" id="flyImage">
+    
+    <!-- Modal for image -->
+    <div id="imageModal" class="modal">
+        <span class="close" id="modalClose">&times;</span>
+        <div class="modal-content">
+            <img src="image1.png" alt="Insect Anatomy Image">
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -51,52 +83,74 @@
         let scene, camera, renderer, controls, insectModel, tornadoModel;
         let infoPopup = document.getElementById('infoPopup');
         let homeButton = document.getElementById('homeButton');
+        let imageModal = document.getElementById('imageModal');
+        let modalClose = document.getElementById('modalClose');
         let previousCameraPosition;
         let raycaster = new THREE.Raycaster();
         let mouse = new THREE.Vector2();
         let isZoomedIn = false;
-        let flyImage = document.getElementById('flyImage');
 
         function init() {
             // Scene
             scene = new THREE.Scene();
+
             // Camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 1, 5);
             previousCameraPosition = camera.position.clone(); // Clone initial camera position
+
             // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
+
             // Orbit Controls
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.1;
+
             // Lights
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
             scene.add(ambientLight);
             const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
             directionalLight.position.set(5, 10, 7.5);
             scene.add(directionalLight);
+
             // GLTF Loader
             const loader = new THREE.GLTFLoader();
+
             // Load the insect anatomy model
             loader.load('models/Insect_Anatomy.glb', function(gltf) {
                 insectModel = gltf.scene;
                 insectModel.position.set(-2, 0, 0); // Position insect model to the left
                 scene.add(insectModel);
+                addClickEvents(insectModel);
             }, undefined, function(error) {
                 console.error(error);
             });
+
             // Load the tornado model
             loader.load('models/tornado.glb', function(gltf) {
                 tornadoModel = gltf.scene;
                 tornadoModel.position.set(2, 0, 0); // Position tornado model to the right
                 scene.add(tornadoModel);
+                addClickEvents(tornadoModel);
             }, undefined, function(error) {
                 console.error(error);
             });
+
             animate();
+        }
+
+        function addClickEvents(model) {
+            model.traverse(function(child) {
+                if (child.isMesh) {
+                    child.cursor = 'pointer'; // Change cursor to pointer
+                    child.onClick = function(event) {
+                        handleModelClick(child);
+                    };
+                }
+            });
         }
 
         function animate() {
@@ -113,40 +167,69 @@
             renderer.render(scene, camera);
         }
 
+        // Handle model click
+        function handleModelClick(mesh) {
+            const clickedPartName = mesh.name; // Assuming mesh has a name property for identification
+            const additionalInfo = `Information about ${clickedPartName}`; // Replace with actual information
+
+            if (infoPopup.style.display === 'none') {
+                infoPopup.style.display = 'block';
+                infoPopup.innerHTML = additionalInfo;
+                infoPopup.style.left = `${event.clientX}px`;
+                infoPopup.style.top = `${event.clientY}px`;
+
+                // Zoom in
+                previousCameraPosition.copy(camera.position);
+                camera.position.z -= 2; // Adjust zoom level
+            } else {
+                infoPopup.style.display = 'none';
+                camera.position.copy(previousCameraPosition); // Reset camera position
+            }
+        }
+
+        // Handle model double-click
         function onDoubleClick(event) {
             event.preventDefault();
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+
             raycaster.setFromCamera(mouse, camera);
             const intersects = raycaster.intersectObjects(scene.children, true);
+
             if (intersects.length > 0) {
                 const intersect = intersects[0];
                 const targetPosition = intersect.point;
 
+                // Check if double-clicked on the insect model
                 if (intersect.object.parent === insectModel) {
-                    // Show the fly image when double-clicking the insect model
-                    flyImage.style.display = 'block';
-                    isZoomedIn = true;
-                    previousCameraPosition.copy(camera.position);
-                    gsap.to(camera.position, {
-                        duration: 1,
-                        x: targetPosition.x,
-                        y: targetPosition.y,
-                        z: targetPosition.z + 1, // Adjust zoom level
-                        onUpdate: function() {
-                            camera.lookAt(targetPosition);
-                        },
-                        onComplete: function() {
-                            // Hide the fly image after the animation completes
-                            flyImage.style.display = 'none';
-                            isZoomedIn = false;
-                        }
-                    });
-                    controls.update();
+                    // Display the image modal
+                    imageModal.style.display = "block";
+                    return;
                 }
+
+                // Smooth zoom in on double-click
+                isZoomedIn = true;
+                previousCameraPosition.copy(camera.position);
+
+                gsap.to(camera.position, {
+                    duration: 1,
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    z: targetPosition.z + 1, // Adjust zoom level
+                    onUpdate: function() {
+                        camera.lookAt(targetPosition);
+                    }
+                });
+                controls.update();
             }
         }
 
+        // Close modal functionality
+        modalClose.addEventListener('click', function() {
+            imageModal.style.display = "none";
+        });
+
+        // Home button functionality
         homeButton.addEventListener('click', function() {
             isZoomedIn = false;
             gsap.to(camera.position, {
@@ -162,12 +245,14 @@
             infoPopup.style.display = 'none'; // Hide popup if visible
         });
 
+        // Handle window resize
         window.addEventListener('resize', function() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
 
+        // Add double-click event listener
         window.addEventListener('dblclick', onDoubleClick, false);
 
         init();
