@@ -46,8 +46,8 @@
             padding: 20px;
             background: #fff;
             border-radius: 60%;
-            width: 50%;
-            max-width: 500px;
+            width: 60%;
+            max-width: 600px;
             text-align: center;
             pointer-events: auto;
             position: relative;
@@ -60,7 +60,7 @@
             transition: transform 0.25s ease;
         }
         .modal img:hover {
-            transform: scale(1.25); /* Increased zoom effect */
+            transform: scale(1.5); /* Increased zoom effect */
         }
         .close {
             position: absolute;
@@ -84,6 +84,24 @@
         .zoomed-in img {
             transform: scale(2); /* Zoom in effect */
         }
+        /* Magnifying glass effect */
+        .magnifier {
+            position: absolute;
+            border: 3px solid #000;
+            border-radius: 50%;
+            cursor: none;
+            /* Size of magnifier */
+            width: 100px;
+            height: 100px;
+            /* Hide magnifier by default */
+            display: none;
+            overflow: hidden;
+        }
+        .magnifier img {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+        }
     </style>
 </head>
 <body>
@@ -95,6 +113,9 @@
         <span class="close" id="modalClose">&times;</span>
         <div class="modal-content zoom-container">
             <img src="models/image1.png" alt="Insect Anatomy Image" id="modalImage">
+            <div class="magnifier" id="magnifier">
+                <img src="models/image1.png" alt="Magnified Insect Anatomy Image">
+            </div>
         </div>
     </div>
 
@@ -109,6 +130,8 @@
         let imageModal = document.getElementById('imageModal');
         let modalClose = document.getElementById('modalClose');
         let modalImage = document.getElementById('modalImage');
+        let magnifier = document.getElementById('magnifier');
+        let magnifierImage = magnifier.querySelector('img');
         let previousCameraPosition;
         let raycaster = new THREE.Raycaster();
         let mouse = new THREE.Vector2();
@@ -268,6 +291,27 @@
                 zoomContainer.addEventListener('mouseup', stopDragging);
                 zoomContainer.addEventListener('mouseleave', stopDragging);
             }
+        });
+
+        // Magnifying glass effect
+        modalImage.addEventListener('mousemove', function(e) {
+            const zoomContainer = modalImage.parentElement;
+            if (!zoomContainer.classList.contains('zoomed-in')) {
+                const rect = modalImage.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                magnifier.style.display = "block";
+                magnifier.style.left = `${x - magnifier.offsetWidth / 2}px`;
+                magnifier.style.top = `${y - magnifier.offsetHeight / 2}px`;
+
+                magnifierImage.style.left = `-${x * 2 - magnifier.offsetWidth / 2}px`;
+                magnifierImage.style.top = `-${y * 2 - magnifier.offsetHeight / 2}px`;
+            }
+        });
+
+        modalImage.addEventListener('mouseleave', function() {
+            magnifier.style.display = "none";
         });
 
         // Start dragging to navigate image
