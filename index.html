@@ -97,7 +97,6 @@
                 insectModel = gltf.scene;
                 insectModel.position.set(-2, 0, 0); // Position insect model to the left
                 scene.add(insectModel);
-                addClickEvents(insectModel);
                 addZoomPoints(insectModel);
             }, undefined, function(error) {
                 console.error(error);
@@ -107,7 +106,6 @@
                 tornadoModel = gltf.scene;
                 tornadoModel.position.set(2, 0, 0); // Position tornado model to the right
                 scene.add(tornadoModel);
-                addClickEvents(tornadoModel);
             }, undefined, function(error) {
                 console.error(error);
             });
@@ -118,9 +116,9 @@
             flyPartsInfo.forEach(part => {
                 const marker = new THREE.Mesh(new THREE.SphereGeometry(0.05, 32, 32), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
                 marker.position.copy(part.position);
-                model.add(marker);
                 marker.userData.info = part.info;
                 marker.name = part.name;
+                model.add(marker);
             });
         }
 
@@ -138,23 +136,6 @@
             renderer.render(scene, camera);
         }
 
-        function handleModelClick(mesh) {
-            const clickedPartName = mesh.name; // Assuming mesh has a name property for identification
-            const additionalInfo = `Information about ${clickedPartName}: ${mesh.userData.info}`; // Replace with actual information
-            if (infoPopup.style.display === 'none') {
-                infoPopup.style.display = 'block';
-                infoPopup.innerHTML = additionalInfo;
-                infoPopup.style.left = `${event.clientX}px`;
-                infoPopup.style.top = `${event.clientY}px`;
-                // Zoom in
-                previousCameraPosition.copy(camera.position);
-                camera.position.z -= 2; // Adjust zoom level
-            } else {
-                infoPopup.style.display = 'none';
-                camera.position.copy(previousCameraPosition); // Reset camera position
-            }
-        }
-
         function onDoubleClick(event) {
             event.preventDefault();
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -164,23 +145,30 @@
             if (intersects.length > 0) {
                 const intersect = intersects[0];
                 const targetPosition = intersect.point;
-                // Smooth zoom in on double-click
-                isZoomedIn = true;
-                previousCameraPosition.copy(camera.position);
-                gsap.to(camera.position, {
-                    duration: 1,
-                    x: targetPosition.x,
-                    y: targetPosition.y,
-                    z: targetPosition.z + 1, // Adjust zoom level
-                    onUpdate: function() {
-                        camera.lookAt(targetPosition);
-                    }
-                });
-                controls.update();
-                infoPopup.style.display = 'block';
-                infoPopup.innerHTML = `Information about ${intersect.object.name}: ${intersect.object.userData.info}`;
-                infoPopup.style.left = `${event.clientX}px`;
-                infoPopup.style.top = `${event.clientY}px`;
+                console.log("Clicked Object Name:", intersect.object.name);
+                console.log("Clicked Object Info:", intersect.object.userData.info);
+
+                if (intersect.object.name && intersect.object.userData.info) {
+                    // Smooth zoom in on double-click
+                    isZoomedIn = true;
+                    previousCameraPosition.copy(camera.position);
+                    gsap.to(camera.position, {
+                        duration: 1,
+                        x: targetPosition.x,
+                        y: targetPosition.y,
+                        z: targetPosition.z + 1, // Adjust zoom level
+                        onUpdate: function() {
+                            camera.lookAt(targetPosition);
+                        }
+                    });
+                    controls.update();
+                    infoPopup.style.display = 'block';
+                    infoPopup.innerHTML = `Information about ${intersect.object.name}: ${intersect.object.userData.info}`;
+                    infoPopup.style.left = `${event.clientX}px`;
+                    infoPopup.style.top = `${event.clientY}px`;
+                } else {
+                    console.error("Invalid object properties");
+                }
             }
         }
 
