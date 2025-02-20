@@ -28,96 +28,26 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        /* Modal styles */
-        .modal {
+        .marker-popup {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+            border-radius: 3px;
             display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
-            pointer-events: none;
-        }
-        .modal-content {
-            margin: 5% auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 50%;
-            width: 50%;
-            max-width: 400px;
-            text-align: center;
             pointer-events: auto;
-            position: relative;
-            overflow: hidden;
         }
-        .modal img {
-            width: 100%;
-            height: auto;
+        .marker {
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            transition: transform 0.25s ease;
-        }
-        .modal img:hover {
-            transform: scale(1.25); /* Increased zoom effect */
-        }
-        .close {
             position: absolute;
-            top: 10px;
-            right: 25px;
-            color: #aaa;
-            font-size: 28px;
-            font-weight: bold;
             cursor: pointer;
-        }
-        .zoom-container {
-            overflow: hidden;
-            position: relative;
-        }
-        .zoom-container img {
-            transition: transform 0.25s ease;
-        }
-        .zoomed-in {
-            cursor: grab;
-        }
-        .zoomed-in img {
-            transform: scale(2); /* Zoom in effect */
-        }
-        /* Magnifying glass effect */
-        .magnifier {
-            position: absolute;
-            border: 3px solid #000;
-            border-radius: 50%;
-            cursor: none;
-            /* Size of magnifier */
-            width: 100px;
-            height: 100px;
-            /* Hide magnifier by default */
-            display: none;
-            overflow: hidden;
-        }
-        .magnifier img {
-            position: absolute;
-            width: 200%;
-            height: 200%;
         }
     </style>
 </head>
 <body>
     <button id="homeButton">Home</button>
     <div class="info-popup" id="infoPopup"></div>
-    
-    <!-- Modal for image -->
-    <div id="imageModal" class="modal">
-        <span class="close" id="modalClose">&times;</span>
-        <div class="modal-content zoom-container">
-            <img src="models/image1.png" alt="Insect Anatomy Image" id="modalImage">
-            <div class="magnifier" id="magnifier">
-                <img src="models/image1.png" alt="Magnified Insect Anatomy Image">
-            </div>
-        </div>
-    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -127,18 +57,10 @@
         let scene, camera, renderer, controls, insectModel, tornadoModel;
         let infoPopup = document.getElementById('infoPopup');
         let homeButton = document.getElementById('homeButton');
-        let imageModal = document.getElementById('imageModal');
-        let modalClose = document.getElementById('modalClose');
-        let modalImage = document.getElementById('modalImage');
-        let magnifier = document.getElementById('magnifier');
-        let magnifierImage = magnifier.querySelector('img');
-        let previousCameraPosition;
         let raycaster = new THREE.Raycaster();
         let mouse = new THREE.Vector2();
-        let clickCount = 0;
-        let isZoomedIn = false;
-        let isDragging = false;
-        let startX, startY, scrollLeft, scrollTop;
+        let markers = [];
+        let markerIdCounter = 0;
 
         function init() {
             // Scene
@@ -147,7 +69,6 @@
             // Camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 1, 5);
-            previousCameraPosition = camera.position.clone(); // Clone initial camera position
 
             // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -174,7 +95,6 @@
                 insectModel = gltf.scene;
                 insectModel.position.set(-2, 0, 0); // Position insect model to the left
                 scene.add(insectModel);
-                addClickEvents(insectModel);
             }, undefined, function(error) {
                 console.error(error);
             });
@@ -184,7 +104,6 @@
                 tornadoModel = gltf.scene;
                 tornadoModel.position.set(2, 0, 0); // Position tornado model to the right
                 scene.add(tornadoModel);
-                addClickEvents(tornadoModel);
             }, undefined, function(error) {
                 console.error(error);
             });
@@ -192,53 +111,48 @@
             animate();
         }
 
-        function addClickEvents(model) {
-            model.traverse(function(child) {
-                if (child.isMesh) {
-                    child.cursor = 'pointer'; // Change cursor to pointer
-                    child.onClick = function(event) {
-                        handleModelClick(child);
-                    };
-                }
-            });
-        }
-
         function animate() {
             requestAnimationFrame(animate);
-            if (!isZoomedIn) {
-                if (insectModel) {
-                    insectModel.rotation.y += 0.01; // Rotate insect model for a dynamic effect
-                }
-                if (tornadoModel) {
-                    tornadoModel.rotation.y += 0.01; // Rotate tornado model for a dynamic effect
-                }
+            if (insectModel) {
+                insectModel.rotation.y += 0.01; // Rotate insect model for a dynamic effect
+            }
+            if (tornadoModel) {
+                tornadoModel.rotation.y += 0.01; // Rotate tornado model for a dynamic effect
             }
             controls.update();
             renderer.render(scene, camera);
         }
 
-        // Handle model click
-        function handleModelClick(mesh) {
-            const clickedPartName = mesh.name; // Assuming mesh has a name property for identification
-            const additionalInfo = `Information about ${clickedPartName}`; // Replace with actual information
+        function addMarker(position) {
+            const markerId = `marker-${markerIdCounter++}`;
+            const marker = document.createElement('div');
+            marker.className = 'marker';
+            marker.style.backgroundColor = '#fff'; // Assuming model color is white
+            marker.style.left = `${position.x}px`;
+            marker.style.top = `${position.y}px`;
+            marker.dataset.id = markerId;
+            document.body.appendChild(marker);
 
-            if (infoPopup.style.display === 'none') {
-                infoPopup.style.display = 'block';
-                infoPopup.innerHTML = additionalInfo;
-                infoPopup.style.left = `${event.clientX}px`;
-                infoPopup.style.top = `${event.clientY}px`;
+            // Create the popup for the marker
+            const popup = document.createElement('div');
+            popup.className = 'marker-popup';
+            popup.innerText = `Marker ${markerId}`;
+            popup.style.left = `${position.x + 15}px`;
+            popup.style.top = `${position.y + 15}px`;
+            popup.dataset.id = markerId;
+            document.body.appendChild(popup);
 
-                // Zoom in
-                previousCameraPosition.copy(camera.position);
-                camera.position.z -= 2; // Adjust zoom level
-            } else {
-                infoPopup.style.display = 'none';
-                camera.position.copy(previousCameraPosition); // Reset camera position
-            }
+            // Add event listener to marker to show/hide popup
+            marker.addEventListener('click', function() {
+                const popup = document.querySelector(`.marker-popup[data-id="${markerId}"]`);
+                popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+            });
+
+            // Add to markers array
+            markers.push({ id: markerId, element: marker, popup: popup });
         }
 
-        // Handle modal display for insect model and zoom-in
-        function onDoubleClick(event) {
+        function onRightClick(event) {
             event.preventDefault();
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
@@ -248,107 +162,28 @@
 
             if (intersects.length > 0) {
                 const intersect = intersects[0];
-                const targetPosition = intersect.point;
-
-                // Check if double-clicked on the insect model
-                if (intersect.object.parent === insectModel) {
-                    // Display the image modal
-                    imageModal.style.display = "block";
-                }
-
-                // Smooth zoom in on double-click
-                isZoomedIn = true;
-                previousCameraPosition.copy(camera.position);
-
-                gsap.to(camera.position, {
-                    duration: 1,
-                    x: targetPosition.x,
-                    y: targetPosition.y,
-                    z: targetPosition.z + 1, // Adjust zoom level
-                    onUpdate: function() {
-                        camera.lookAt(targetPosition);
-                    }
-                });
-                controls.update();
-            } else {
-                // Close the modal if double-clicked on empty space
-                imageModal.style.display = "none";
+                const markerPosition = {
+                    x: event.clientX,
+                    y: event.clientY
+                };
+                addMarker(markerPosition);
             }
         }
 
-        // Toggle zoom-in and zoom-out for the image
-        modalImage.addEventListener('click', function() {
-            const zoomContainer = modalImage.parentElement;
-            if (zoomContainer.classList.contains('zoomed-in')) {
-                zoomContainer.classList.remove('zoomed-in');
-                zoomContainer.removeEventListener('mousedown', startDragging);
-                zoomContainer.removeEventListener('mousemove', duringDragging);
-                zoomContainer.removeEventListener('mouseup', stopDragging);
-                zoomContainer.removeEventListener('mouseleave', stopDragging);
-            } else {
-                zoomContainer.classList.add('zoomed-in');
-                zoomContainer.addEventListener('mousedown', startDragging);
-                zoomContainer.addEventListener('mousemove', duringDragging);
-                zoomContainer.addEventListener('mouseup', stopDragging);
-                zoomContainer.addEventListener('mouseleave', stopDragging);
-            }
-        });
-
-        // Magnifying glass effect
-        modalImage.addEventListener('mousemove', function(e) {
-            const zoomContainer = modalImage.parentElement;
-            if (!zoomContainer.classList.contains('zoomed-in')) {
-                const rect = modalImage.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                magnifier.style.display = "block";
-                magnifier.style.left = `${x - magnifier.offsetWidth / 2}px`;
-                magnifier.style.top = `${y - magnifier.offsetHeight / 2}px`;
-
-                magnifierImage.style.left = `-${x * 2 - magnifier.offsetWidth / 2}px`;
-                magnifierImage.style.top = `-${y * 2 - magnifier.offsetHeight / 2}px`;
-            }
-        });
-
-        modalImage.addEventListener('mouseleave', function() {
-            magnifier.style.display = "none";
-        });
-
-        // Start dragging to navigate image
-        function startDragging(e) {
-            isDragging = true;
-            startX = e.pageX - this.offsetLeft;
-            startY = e.pageY - this.offsetTop;
-            scrollLeft = this.scrollLeft;
-            scrollTop = this.scrollTop;
+        // Remove marker functionality
+        function removeMarker(markerId) {
+            const marker = document.querySelector(`.marker[data-id="${markerId}"]`);
+            const popup = document.querySelector(`.marker-popup[data-id="${markerId}"]`);
+            if (marker) marker.remove();
+            if (popup) popup.remove();
+            markers = markers.filter(marker => marker.id !== markerId);
         }
 
-        // During dragging to navigate image
-        function duringDragging(e) {
-            if (!isDragging) return;
-            e.preventDefault();
-            const x = e.pageX - this.offsetLeft;
-            const y = e.pageY - this.offsetTop;
-            const walkX = (x - startX) * 2; // Adjust the scroll speed
-            const walkY = (y - startY) * 2; // Adjust the scroll speed
-            this.scrollLeft = scrollLeft - walkX;
-            this.scrollTop = scrollTop - walkY;
-        }
-
-        // Stop dragging to navigate image
-        function stopDragging() {
-            isDragging = false;
-        }
-
-        // Close modal functionality
-        modalClose.addEventListener('click', function() {
-            imageModal.style.display = "none";
-        });
+        // Event listeners
+        window.addEventListener('contextmenu', onRightClick, false);
 
         // Home button functionality
         homeButton.addEventListener('click', function() {
-            isZoomedIn = false;
             gsap.to(camera.position, {
                 duration: 1,
                 x: 0,
@@ -367,25 +202,6 @@
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // Add double-click event listener
-        window.addEventListener('dblclick', onDoubleClick, false);
-
-        // Add three-click event listener to add marks
-        window.addEventListener('click', function(event) {
-            if (clickCount < 3) {
-                clickCount++;
-                const mark = document.createElement('div');
-                mark.style.position = 'absolute';
-                mark.style.width = '10px';
-                mark.style.height = '10px';
-                mark.style.backgroundColor = 'red';
-                mark.style.borderRadius = '50%';
-                mark.style.left = `${event.clientX - 5}px`;
-                mark.style.top = `${event.clientY - 5}px`;
-                document.body.appendChild(mark);
-            }
         });
 
         init();
