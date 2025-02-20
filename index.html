@@ -45,9 +45,9 @@
             margin: 5% auto;
             padding: 20px;
             background: #fff;
-            border-radius: 50%;
-            width: 30%;
-            max-width: 300px;
+            border-radius: 52.5%;
+            width: 35%;
+            max-width: 350px;
             text-align: center;
             pointer-events: auto;
             position: relative;
@@ -226,6 +226,9 @@
                     }
                 });
                 controls.update();
+            } else {
+                // Close the modal if double-clicked on empty space
+                imageModal.style.display = "none";
             }
         }
 
