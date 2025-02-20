@@ -3,21 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tornado Model</title>
+    <title>Insect Anatomy Model</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
             background-color: #000;
         }
+        .info-popup {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            pointer-events: none;
+        }
+        #homeButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+    <button id="homeButton">Home</button>
+    <div class="info-popup" id="infoPopup"></div>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
         let scene, camera, renderer, controls, model;
+        let infoPopup = document.getElementById('infoPopup');
+        let homeButton = document.getElementById('homeButton');
+        let previousCameraPosition = camera.position.clone();
 
         function init() {
             // Scene
@@ -37,20 +61,29 @@
             controls.enableDamping = true;
             controls.dampingFactor = 0.1;
 
-            // Ambient Light
+            // Lights
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
             scene.add(ambientLight);
-
-            // Directional Light
             const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
             directionalLight.position.set(5, 10, 7.5);
             scene.add(directionalLight);
 
             // GLTF Loader
             const loader = new THREE.GLTFLoader();
-            loader.load('models/tornado.glb', function(gltf) {
+            loader.load('E:/Python backups/interactive pdf/3d/Insect_Anatomy.glb', function(gltf) {
                 model = gltf.scene;
                 scene.add(model);
+
+                // Add event listener for clicks
+                model.traverse(function(child) {
+                    if (child.isMesh) {
+                        child.cursor = 'pointer'; // Change cursor to pointer
+                        child.onClick = function(event) {
+                            handleModelClick(child);
+                        };
+                    }
+                });
+
                 animate();
             }, undefined, function(error) {
                 console.error(error);
@@ -66,6 +99,33 @@
             renderer.render(scene, camera);
         }
 
+        // Handle model click
+        function handleModelClick(mesh) {
+            const clickedPartName = mesh.name; // Assuming mesh has a name property for identification
+            const additionalInfo = `Information about ${clickedPartName}`; // Replace with actual information
+
+            if (infoPopup.style.display === 'none') {
+                infoPopup.style.display = 'block';
+                infoPopup.innerHTML = additionalInfo;
+                infoPopup.style.left = `${event.clientX}px`;
+                infoPopup.style.top = `${event.clientY}px`;
+
+                // Zoom in
+                previousCameraPosition.copy(camera.position);
+                camera.position.z -= 2; // Adjust zoom level
+            } else {
+                infoPopup.style.display = 'none';
+                camera.position.copy(previousCameraPosition); // Reset camera position
+            }
+        }
+
+        // Home button functionality
+        homeButton.addEventListener('click', function() {
+            camera.position.set(0, 1, 5);
+            controls.update();
+            infoPopup.style.display = 'none'; // Hide popup if visible
+        });
+
         // Handle window resize
         window.addEventListener('resize', function() {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -77,4 +137,3 @@
     </script>
 </body>
 </html>
-``` ▋
