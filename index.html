@@ -28,12 +28,22 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        .fly-image {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 80%;
+            max-height: 80%;
+        }
     </style>
 </head>
 <body>
     <button id="homeButton">Home</button>
     <div class="info-popup" id="infoPopup"></div>
-    
+    <img src="path/to/your/image.png" alt="Fly Anatomy" class="fly-image" id="flyImage">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -45,29 +55,7 @@
         let raycaster = new THREE.Raycaster();
         let mouse = new THREE.Vector2();
         let isZoomedIn = false;
-
-        const flyPartsInfo = [
-            { name: "Flags eyes", position: new THREE.Vector3(-0.5, 0.5, 0), info: "Compound eyes of the fly." },
-            { name: "Ange litters pocalanter", position: new THREE.Vector3(-0.4, 0.4, 0), info: "Antennae of the fly." },
-            { name: "Gooprel hyefts", position: new THREE.Vector3(-0.3, 0.3, 0), info: "Head of the fly." },
-            { name: "Soly here, ly to rallag aring.", position: new THREE.Vector3(-0.2, 0.2, 0), info: "Mouthparts or proboscis." },
-            { name: "Targenclovers loathing ence.", position: new THREE.Vector3(-0.1, 0.1, 0), info: "Thorax of the fly." },
-            { name: "Orgase of tchh for your barter dyag cnc Idees.", position: new THREE.Vector3(0, 0, 0), info: "Wings of the fly." },
-            { name: "Pucps of flever.", position: new THREE.Vector3(0.1, -0.1, 0), info: "Legs of the fly." },
-            { name: "Tea biblets Cormul Syster.", position: new THREE.Vector3(0.2, -0.2, 0), info: "Abdomen of the fly." },
-            { name: "Thoraye", position: new THREE.Vector3(0.3, -0.3, 0), info: "Thorax of the fly." },
-            { name: "Antennass", position: new THREE.Vector3(0.4, -0.4, 0), info: "Antennae of the fly." },
-            { name: "Phorial Thorarge", position: new THREE.Vector3(0.5, -0.5, 0), info: "Thorax of the fly." },
-            { name: "Scikely blouper", position: new THREE.Vector3(0.6, -0.6, 0), info: "Legs of the fly." },
-            { name: "Flags feanse, thatesy those gecced of loager", position: new THREE.Vector3(0.7, -0.7, 0), info: "Wings of the fly." },
-            { name: "Slay whos, buring icles", position: new THREE.Vector3(0.8, -0.8, 0), info: "Wings of the fly." },
-            { name: "Beat panqyer", position: new THREE.Vector3(0.9, -0.9, 0), info: "Wings of the fly." },
-            { name: "Anammas", position: new THREE.Vector3(1, -1, 0), info: "Anatomy of the fly." },
-            { name: "Lredings Econgiration", position: new THREE.Vector3(-0.5, -0.5, 0), info: "Wings configuration." },
-            { name: "Trag kalice", position: new THREE.Vector3(-0.6, -0.6, 0), info: "Wings configuration." },
-            { name: "Fnow ings Lconguration", position: new THREE.Vector3(-0.7, -0.7, 0), info: "Wings configuration." },
-            { name: "Additional Part", position: new THREE.Vector3(-0.8, -0.8, 0), info: "Additional information about the fly." }
-        ];
+        let flyImage = document.getElementById('flyImage');
 
         function init() {
             // Scene
@@ -97,7 +85,6 @@
                 insectModel = gltf.scene;
                 insectModel.position.set(-2, 0, 0); // Position insect model to the left
                 scene.add(insectModel);
-                addZoomPoints(insectModel);
             }, undefined, function(error) {
                 console.error(error);
             });
@@ -110,16 +97,6 @@
                 console.error(error);
             });
             animate();
-        }
-
-        function addZoomPoints(model) {
-            flyPartsInfo.forEach(part => {
-                const marker = new THREE.Mesh(new THREE.SphereGeometry(0.05, 32, 32), new THREE.MeshBasicMaterial({ color: 0xff0000 }));
-                marker.position.copy(part.position);
-                marker.userData.info = part.info;
-                marker.name = part.name;
-                model.add(marker);
-            });
         }
 
         function animate() {
@@ -145,11 +122,10 @@
             if (intersects.length > 0) {
                 const intersect = intersects[0];
                 const targetPosition = intersect.point;
-                console.log("Clicked Object Name:", intersect.object.name);
-                console.log("Clicked Object Info:", intersect.object.userData.info);
 
-                if (intersect.object.name && intersect.object.userData.info) {
-                    // Smooth zoom in on double-click
+                if (intersect.object.parent === insectModel) {
+                    // Show the fly image when double-clicking the insect model
+                    flyImage.style.display = 'block';
                     isZoomedIn = true;
                     previousCameraPosition.copy(camera.position);
                     gsap.to(camera.position, {
@@ -159,15 +135,14 @@
                         z: targetPosition.z + 1, // Adjust zoom level
                         onUpdate: function() {
                             camera.lookAt(targetPosition);
+                        },
+                        onComplete: function() {
+                            // Hide the fly image after the animation completes
+                            flyImage.style.display = 'none';
+                            isZoomedIn = false;
                         }
                     });
                     controls.update();
-                    infoPopup.style.display = 'block';
-                    infoPopup.innerHTML = `Information about ${intersect.object.name}: ${intersect.object.userData.info}`;
-                    infoPopup.style.left = `${event.clientX}px`;
-                    infoPopup.style.top = `${event.clientY}px`;
-                } else {
-                    console.error("Invalid object properties");
                 }
             }
         }
