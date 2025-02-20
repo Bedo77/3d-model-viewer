@@ -51,6 +51,7 @@
             text-align: center;
             pointer-events: auto;
             position: relative;
+            overflow: hidden;
         }
         .modal img {
             width: 100%;
@@ -72,13 +73,13 @@
         }
         .zoom-container {
             overflow: hidden;
-            cursor: zoom-in;
+            position: relative;
         }
         .zoom-container img {
             transition: transform 0.25s ease;
         }
         .zoomed-in {
-            cursor: zoom-out;
+            cursor: grab;
         }
         .zoomed-in img {
             transform: scale(2); /* Zoom in effect */
@@ -112,6 +113,8 @@
         let raycaster = new THREE.Raycaster();
         let mouse = new THREE.Vector2();
         let isZoomedIn = false;
+        let isDragging = false;
+        let startX, startY, scrollLeft, scrollTop;
 
         function init() {
             // Scene
@@ -254,10 +257,44 @@
             const zoomContainer = modalImage.parentElement;
             if (zoomContainer.classList.contains('zoomed-in')) {
                 zoomContainer.classList.remove('zoomed-in');
+                zoomContainer.removeEventListener('mousedown', startDragging);
+                zoomContainer.removeEventListener('mousemove', duringDragging);
+                zoomContainer.removeEventListener('mouseup', stopDragging);
+                zoomContainer.removeEventListener('mouseleave', stopDragging);
             } else {
                 zoomContainer.classList.add('zoomed-in');
+                zoomContainer.addEventListener('mousedown', startDragging);
+                zoomContainer.addEventListener('mousemove', duringDragging);
+                zoomContainer.addEventListener('mouseup', stopDragging);
+                zoomContainer.addEventListener('mouseleave', stopDragging);
             }
         });
+
+        // Start dragging to navigate image
+        function startDragging(e) {
+            isDragging = true;
+            startX = e.pageX - this.offsetLeft;
+            startY = e.pageY - this.offsetTop;
+            scrollLeft = this.scrollLeft;
+            scrollTop = this.scrollTop;
+        }
+
+        // During dragging to navigate image
+        function duringDragging(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+            const x = e.pageX - this.offsetLeft;
+            const y = e.pageY - this.offsetTop;
+            const walkX = (x - startX) * 2; // Adjust the scroll speed
+            const walkY = (y - startY) * 2; // Adjust the scroll speed
+            this.scrollLeft = scrollLeft - walkX;
+            this.scrollTop = scrollTop - walkY;
+        }
+
+        // Stop dragging to navigate image
+        function stopDragging() {
+            isDragging = false;
+        }
 
         // Close modal functionality
         modalClose.addEventListener('click', function() {
