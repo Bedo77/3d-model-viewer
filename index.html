@@ -41,7 +41,7 @@
         let scene, camera, renderer, controls, model;
         let infoPopup = document.getElementById('infoPopup');
         let homeButton = document.getElementById('homeButton');
-        let previousCameraPosition;
+        let previousCameraPosition = camera.position.clone();
 
         function init() {
             // Scene
@@ -50,7 +50,6 @@
             // Camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.set(0, 1, 5);
-            previousCameraPosition = camera.position.clone(); // Clone initial camera position
 
             // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -71,7 +70,7 @@
 
             // GLTF Loader
             const loader = new THREE.GLTFLoader();
-            loader.load('models/Insect_Anatomy.glb', function(gltf) {
+            loader.load('E:/Python backups/interactive pdf/3d/Insect_Anatomy.glb', function(gltf) {
                 model = gltf.scene;
                 scene.add(model);
 
