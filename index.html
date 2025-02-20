@@ -39,19 +39,21 @@
             height: 100%;
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.5);
+            pointer-events: none;
         }
         .modal-content {
             margin: 5% auto;
             padding: 20px;
             background: #fff;
-            border-radius: 10px;
-            width: 56%;
-            max-width: 420px;
-            text-align: center;
             border-radius: 50%;
+            width: 30%;
+            max-width: 300px;
+            text-align: center;
+            pointer-events: auto;
+            position: relative;
         }
         .modal img {
-            max-width: 70%;
+            width: 100%;
             height: auto;
             border-radius: 50%;
         }
@@ -74,7 +76,7 @@
     <div id="imageModal" class="modal">
         <span class="close" id="modalClose">&times;</span>
         <div class="modal-content">
-            <img src="models/image1.png" alt="Insect Anatomy Image">
+            <img src="models/image1.png" alt="Insect Anatomy Image" id="modalImage">
         </div>
     </div>
 
@@ -88,6 +90,7 @@
         let homeButton = document.getElementById('homeButton');
         let imageModal = document.getElementById('imageModal');
         let modalClose = document.getElementById('modalClose');
+        let modalImage = document.getElementById('modalImage');
         let previousCameraPosition;
         let raycaster = new THREE.Raycaster();
         let mouse = new THREE.Vector2();
