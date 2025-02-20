@@ -28,21 +28,6 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .marker-popup {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 5px;
-            border-radius: 3px;
-            display: none;
-            pointer-events: auto;
-        }
-        .marker {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            position: absolute;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -59,8 +44,7 @@
         let homeButton = document.getElementById('homeButton');
         let raycaster = new THREE.Raycaster();
         let mouse = new THREE.Vector2();
-        let markers = [];
-        let markerIdCounter = 0;
+        let isZoomedIn = false;
 
         function init() {
             // Scene
@@ -113,46 +97,20 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            if (insectModel) {
-                insectModel.rotation.y += 0.01; // Rotate insect model for a dynamic effect
-            }
-            if (tornadoModel) {
-                tornadoModel.rotation.y += 0.01; // Rotate tornado model for a dynamic effect
+            if (!isZoomedIn) {
+                if (insectModel) {
+                    insectModel.rotation.y += 0.01; // Rotate insect model for a dynamic effect
+                }
+                if (tornadoModel) {
+                    tornadoModel.rotation.y += 0.01; // Rotate tornado model for a dynamic effect
+                }
             }
             controls.update();
             renderer.render(scene, camera);
         }
 
-        function addMarker(position) {
-            const markerId = `marker-${markerIdCounter++}`;
-            const marker = document.createElement('div');
-            marker.className = 'marker';
-            marker.style.backgroundColor = '#fff'; // Assuming model color is white
-            marker.style.left = `${position.x}px`;
-            marker.style.top = `${position.y}px`;
-            marker.dataset.id = markerId;
-            document.body.appendChild(marker);
-
-            // Create the popup for the marker
-            const popup = document.createElement('div');
-            popup.className = 'marker-popup';
-            popup.innerText = `Marker ${markerId}`;
-            popup.style.left = `${position.x + 15}px`;
-            popup.style.top = `${position.y + 15}px`;
-            popup.dataset.id = markerId;
-            document.body.appendChild(popup);
-
-            // Add event listener to marker to show/hide popup
-            marker.addEventListener('click', function() {
-                const popup = document.querySelector(`.marker-popup[data-id="${markerId}"]`);
-                popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
-            });
-
-            // Add to markers array
-            markers.push({ id: markerId, element: marker, popup: popup });
-        }
-
-        function onRightClick(event) {
+        // Handle double-click to zoom in on the model
+        function onDoubleClick(event) {
             event.preventDefault();
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
@@ -162,28 +120,27 @@
 
             if (intersects.length > 0) {
                 const intersect = intersects[0];
-                const markerPosition = {
-                    x: event.clientX,
-                    y: event.clientY
-                };
-                addMarker(markerPosition);
+                const targetPosition = intersect.point;
+
+                // Smooth zoom in on double-click
+                isZoomedIn = true;
+
+                gsap.to(camera.position, {
+                    duration: 1,
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    z: targetPosition.z + 1, // Adjust zoom level
+                    onUpdate: function() {
+                        camera.lookAt(targetPosition);
+                    }
+                });
+                controls.update();
             }
         }
 
-        // Remove marker functionality
-        function removeMarker(markerId) {
-            const marker = document.querySelector(`.marker[data-id="${markerId}"]`);
-            const popup = document.querySelector(`.marker-popup[data-id="${markerId}"]`);
-            if (marker) marker.remove();
-            if (popup) popup.remove();
-            markers = markers.filter(marker => marker.id !== markerId);
-        }
-
-        // Event listeners
-        window.addEventListener('contextmenu', onRightClick, false);
-
         // Home button functionality
         homeButton.addEventListener('click', function() {
+            isZoomedIn = false;
             gsap.to(camera.position, {
                 duration: 1,
                 x: 0,
@@ -203,6 +160,9 @@
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
+
+        // Add double-click event listener
+        window.addEventListener('dblclick', onDoubleClick, false);
 
         init();
     </script>
