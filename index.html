@@ -41,7 +41,7 @@
             background-color: rgba(0, 0, 0, 0.5);
         }
         .modal-content {
-            margin: 10% auto;
+            margin: 5% auto;
             padding: 20px;
             background: #fff;
             border-radius: 10px;
@@ -72,13 +72,14 @@
     <div id="imageModal" class="modal">
         <span class="close" id="modalClose">&times;</span>
         <div class="modal-content">
-            <img src="image1.png" alt="Insect Anatomy Image">
+            <img src="models/image1.png" alt="Insect Anatomy Image">
         </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script>
         let scene, camera, renderer, controls, insectModel, tornadoModel;
         let infoPopup = document.getElementById('infoPopup');
@@ -187,7 +188,7 @@
             }
         }
 
-        // Handle model double-click
+        // Handle modal display for insect model and zoom-in
         function onDoubleClick(event) {
             event.preventDefault();
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -204,7 +205,6 @@
                 if (intersect.object.parent === insectModel) {
                     // Display the image modal
                     imageModal.style.display = "block";
-                    return;
                 }
 
                 // Smooth zoom in on double-click
@@ -257,6 +257,5 @@
 
         init();
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
 </body>
 </html>
