@@ -44,6 +44,7 @@
         let previousCameraPosition;
         let raycaster = new THREE.Raycaster();
         let mouse = new THREE.Vector2();
+        let isZoomedIn = false;
 
         function init() {
             // Scene
@@ -110,11 +111,13 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            if (insectModel) {
-                insectModel.rotation.y += 0.01; // Rotate insect model for a dynamic effect
-            }
-            if (tornadoModel) {
-                tornadoModel.rotation.y += 0.01; // Rotate tornado model for a dynamic effect
+            if (!isZoomedIn) {
+                if (insectModel) {
+                    insectModel.rotation.y += 0.01; // Rotate insect model for a dynamic effect
+                }
+                if (tornadoModel) {
+                    tornadoModel.rotation.y += 0.01; // Rotate tornado model for a dynamic effect
+                }
             }
             controls.update();
             renderer.render(scene, camera);
@@ -153,16 +156,35 @@
                 const intersect = intersects[0];
                 const targetPosition = intersect.point;
 
-                // Zoom in on double-click
+                // Smooth zoom in on double-click
+                isZoomedIn = true;
                 previousCameraPosition.copy(camera.position);
-                camera.position.set(targetPosition.x, targetPosition.y, targetPosition.z + 1); // Adjust zoom level
+
+                gsap.to(camera.position, {
+                    duration: 1,
+                    x: targetPosition.x,
+                    y: targetPosition.y,
+                    z: targetPosition.z + 1, // Adjust zoom level
+                    onUpdate: function() {
+                        camera.lookAt(targetPosition);
+                    }
+                });
                 controls.update();
             }
         }
 
         // Home button functionality
         homeButton.addEventListener('click', function() {
-            camera.position.set(0, 1, 5);
+            isZoomedIn = false;
+            gsap.to(camera.position, {
+                duration: 1,
+                x: 0,
+                y: 1,
+                z: 5,
+                onUpdate: function() {
+                    camera.lookAt(scene.position);
+                }
+            });
             controls.update();
             infoPopup.style.display = 'none'; // Hide popup if visible
         });
@@ -179,5 +201,6 @@
 
         init();
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
 </body>
 </html>
