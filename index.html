@@ -38,7 +38,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
-        let scene, camera, renderer, controls, model;
+        let scene, camera, renderer, controls, insectModel, tornadoModel;
         let infoPopup = document.getElementById('infoPopup');
         let homeButton = document.getElementById('homeButton');
         let previousCameraPosition = camera.position.clone();
@@ -70,30 +70,46 @@
 
             // GLTF Loader
             const loader = new THREE.GLTFLoader();
-            loader.load('E:/Python backups/interactive pdf/3d/Insect_Anatomy.glb', function(gltf) {
-                model = gltf.scene;
-                scene.add(model);
 
-                // Add event listener for clicks
-                model.traverse(function(child) {
-                    if (child.isMesh) {
-                        child.cursor = 'pointer'; // Change cursor to pointer
-                        child.onClick = function(event) {
-                            handleModelClick(child);
-                        };
-                    }
-                });
-
-                animate();
+            // Load the insect anatomy model
+            loader.load('https://github.com/Bedo77/3d-model-viewer/tree/main/models', function(gltf) {
+                insectModel = gltf.scene;
+                scene.add(insectModel);
+                addClickEvents(insectModel);
             }, undefined, function(error) {
                 console.error(error);
+            });
+
+            // Load the tornado model
+            loader.load('https://github.com/Bedo77/3d-model-viewer/tree/main/models', function(gltf) {
+                tornadoModel = gltf.scene;
+                scene.add(tornadoModel);
+                addClickEvents(tornadoModel);
+            }, undefined, function(error) {
+                console.error(error);
+            });
+
+            animate();
+        }
+
+        function addClickEvents(model) {
+            model.traverse(function(child) {
+                if (child.isMesh) {
+                    child.cursor = 'pointer'; // Change cursor to pointer
+                    child.onClick = function(event) {
+                        handleModelClick(child);
+                    };
+                }
             });
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            if (model) {
-                model.rotation.y += 0.01; // Rotate model for a dynamic effect
+            if (insectModel) {
+                insectModel.rotation.y += 0.01; // Rotate insect model for a dynamic effect
+            }
+            if (tornadoModel) {
+                tornadoModel.rotation.y += 0.01; // Rotate tornado model for a dynamic effect
             }
             controls.update();
             renderer.render(scene, camera);
