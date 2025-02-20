@@ -45,9 +45,9 @@
             margin: 5% auto;
             padding: 20px;
             background: #fff;
-            border-radius: 60%;
-            width: 60%;
-            max-width: 600px;
+            border-radius: 50%;
+            width: 50%;
+            max-width: 400px;
             text-align: center;
             pointer-events: auto;
             position: relative;
@@ -60,7 +60,7 @@
             transition: transform 0.25s ease;
         }
         .modal img:hover {
-            transform: scale(1.5); /* Increased zoom effect */
+            transform: scale(1.25); /* Increased zoom effect */
         }
         .close {
             position: absolute;
@@ -135,6 +135,7 @@
         let previousCameraPosition;
         let raycaster = new THREE.Raycaster();
         let mouse = new THREE.Vector2();
+        let clickCount = 0;
         let isZoomedIn = false;
         let isDragging = false;
         let startX, startY, scrollLeft, scrollTop;
@@ -370,6 +371,22 @@
 
         // Add double-click event listener
         window.addEventListener('dblclick', onDoubleClick, false);
+
+        // Add three-click event listener to add marks
+        window.addEventListener('click', function(event) {
+            if (clickCount < 3) {
+                clickCount++;
+                const mark = document.createElement('div');
+                mark.style.position = 'absolute';
+                mark.style.width = '10px';
+                mark.style.height = '10px';
+                mark.style.backgroundColor = 'red';
+                mark.style.borderRadius = '50%';
+                mark.style.left = `${event.clientX - 5}px`;
+                mark.style.top = `${event.clientY - 5}px`;
+                document.body.appendChild(mark);
+            }
+        });
 
         init();
     </script>
