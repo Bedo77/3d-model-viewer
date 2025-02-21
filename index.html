@@ -8,28 +8,19 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            display: flex;
             height: 100vh;
             overflow: hidden;
             background-color: #34495e;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
         }
         .viewport {
-            width: 45%;
-            height: 45%;
-            background-color: #ecf0f1;
-            margin: 2%;
+            width: 100%;
+            height: 100%;
             position: relative;
         }
     </style>
 </head>
 <body>
-    <div class="viewport" id="geometryViewport"></div>
-    <div class="viewport" id="physicsViewport"></div>
-    <div class="viewport" id="biologyViewport"></div>
-    <div class="viewport" id="chemistryViewport"></div>
+    <div class="viewport" id="mainViewport"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -37,7 +28,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script>
-        function createScene(viewportId, modelPath, loaderType) {
+        function createScene(viewportId) {
             const viewport = document.getElementById(viewportId);
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
@@ -56,26 +47,32 @@
             directionalLight.position.set(5, 10, 7.5);
             scene.add(directionalLight);
 
-            camera.position.set(0, 1, 5);
+            camera.position.set(0, 1, 10);
 
-            let loader;
-            if (loaderType === 'gltf') {
-                loader = new THREE.GLTFLoader();
-            } else if (loaderType === 'fbx') {
-                loader = new THREE.FBXLoader();
-            } else if (loaderType === 'obj') {
-                loader = new THREE.OBJLoader();
+            const loaderGLTF = new THREE.GLTFLoader();
+            const loaderFBX = new THREE.FBXLoader();
+            const loaderOBJ = new THREE.OBJLoader();
+
+            // Function to load and position models
+            function loadModel(loader, modelPath, position) {
+                loader.load(modelPath, function(object) {
+                    if (object.scene) {
+                        object.scene.position.set(position.x, position.y, position.z);
+                        scene.add(object.scene);
+                    } else {
+                        object.position.set(position.x, position.y, position.z);
+                        scene.add(object);
+                    }
+                }, undefined, function(error) {
+                    console.error('Error loading model:', error);
+                });
             }
 
-            loader.load(modelPath, function(object) {
-                if (loaderType === 'gltf') {
-                    scene.add(object.scene);
-                } else {
-                    scene.add(object);
-                }
-            }, undefined, function(error) {
-                console.error('Error loading model:', error);
-            });
+            // Load models and position them
+            loadModel(loaderGLTF, 'models/Tornado.glb', { x: -5, y: 0, z: 0 });
+            loadModel(loaderGLTF, 'models/Insect_Anatomy.glb', { x: 5, y: 0, z: 0 });
+            loadModel(loaderFBX, 'models/beetles.fbx', { x: 0, y: 0, z: -5 });
+            loadModel(loaderOBJ, 'models/microscope.obj', { x: 0, y: 0, z: 5 });
 
             function animate() {
                 requestAnimationFrame(animate);
@@ -91,11 +88,8 @@
             animate();
         }
 
-        // Load models into viewports
-        createScene('geometryViewport', 'models/Tornado.glb', 'gltf');
-        createScene('biologyViewport', 'models/Insect_Anatomy.glb', 'gltf');
-        createScene('physicsViewport', 'models/beetles.fbx', 'fbx');
-        createScene('chemistryViewport', 'models/microscope.obj', 'obj');
+        // Create main scene
+        createScene('mainViewport');
     </script>
 </body>
 </html>
