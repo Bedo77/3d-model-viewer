@@ -51,16 +51,18 @@
         .viewport-container {
             flex-grow: 1;
             display: flex;
-            align-items: center;
-            justify-content: center;
             flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-around;
             background-color: #34495e;
+            position: relative;
         }
         .viewport {
             width: 45%;
             height: 45%;
             background-color: #ecf0f1;
             margin: 2%;
+            position: relative;
         }
         .navigation-buttons {
             position: absolute;
@@ -94,6 +96,12 @@
         <div class="viewport" id="physicsViewport"></div>
         <div class="viewport" id="biologyViewport"></div>
         <div class="viewport" id="chemistryViewport"></div>
+        <div class="navigation-buttons">
+            <button class="nav-button" id="prevButton">Previous</button>
+            <button class="nav-button" id="nextButton">Next</button>
+            <button class="nav-button" id="categoryHomeButton">All Categories</button>
+            <button class="nav-button" id="mainHomeButton">Main Home</button>
+        </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
