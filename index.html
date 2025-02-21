@@ -51,16 +51,16 @@
         .viewport-container {
             flex-grow: 1;
             display: flex;
-            flex-wrap: wrap;
             align-items: center;
-            justify-content: space-around;
+            justify-content: center;
+            flex-wrap: wrap;
             background-color: #34495e;
         }
         .viewport {
             width: 45%;
             height: 45%;
             background-color: #ecf0f1;
-            position: relative;
+            margin: 2%;
         }
         .navigation-buttons {
             position: absolute;
@@ -134,7 +134,6 @@
             loader.load(modelPath, function(object) {
                 if (loaderType === 'gltf') {
                     scene.add(object.scene);
-                    object.scene.rotation.y = Math.PI; // Rotate for better view
                 } else {
                     scene.add(object);
                 }
@@ -144,17 +143,9 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-                if (loaderType === 'gltf') {
-                    scene.children.forEach(child => {
-                        if (child.isGroup) {
-                            child.rotation.y += 0.01; // Rotate GLTF model groups
-                        }
-                    });
-                } else {
-                    scene.children.forEach(child => {
-                        child.rotation.y += 0.01; // Rotate non-GLTF models
-                    });
-                }
+                scene.children.forEach(child => {
+                    child.rotation.y += 0.01; // Rotate all models
+                });
                 controls.update();
                 renderer.render(scene, camera);
             }
@@ -162,6 +153,7 @@
             animate();
         }
 
+        // Load models into viewports
         createScene('geometryViewport', 'models/Tornado.glb', 'gltf');
         createScene('biologyViewport', 'models/Insect_Anatomy.glb', 'gltf');
         createScene('physicsViewport', 'models/beetles.fbx', 'fbx');
