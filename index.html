@@ -58,8 +58,8 @@
             position: relative;
         }
         .viewport {
-            width: 40%;
-            height: 40%;
+            width: 45%;
+            height: 45%;
             background-color: #ecf0f1;
             margin: 2%;
             position: relative;
@@ -146,13 +146,15 @@
                     scene.add(object);
                 }
             }, undefined, function(error) {
-                console.error(error);
+                console.error('Error loading model:', error);
             });
 
             function animate() {
                 requestAnimationFrame(animate);
                 scene.children.forEach(child => {
-                    child.rotation.y += 0.01; // Rotate all models
+                    if (child.isGroup || child.isObject3D) {
+                        child.rotation.y += 0.01; // Rotate models
+                    }
                 });
                 controls.update();
                 renderer.render(scene, camera);
