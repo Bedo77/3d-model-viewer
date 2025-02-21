@@ -11,21 +11,30 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
+            background-color: #34495e;
         }
         .categories-panel {
-            width: 60px;
+            width: 100px;
             background-color: #2c3e50;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 10px;
+            border-right: 1px solid #ecf0f1;
         }
         .category-icon {
-            width: 40px;
-            height: 40px;
+            width: 60px;
+            height: 60px;
             margin: 10px 0;
             border-radius: 50%;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+            text-align: center;
+            padding: 5px;
         }
         #geometryIcon {
             background-color: #3498db; /* Blue */
@@ -42,19 +51,16 @@
         .viewport-container {
             flex-grow: 1;
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
             align-items: center;
-            justify-content: center;
+            justify-content: space-around;
             background-color: #34495e;
         }
         .viewport {
-            width: 80%;
-            height: 80%;
+            width: 45%;
+            height: 45%;
             background-color: #ecf0f1;
-            display: none;
-        }
-        .viewport.active {
-            display: block;
+            position: relative;
         }
         .navigation-buttons {
             position: absolute;
@@ -78,80 +84,24 @@
 </head>
 <body>
     <div class="categories-panel">
-        <div class="category-icon" id="geometryIcon" data-category="geometry"></div>
-        <div class="category-icon" id="physicsIcon" data-category="physics"></div>
-        <div class="category-icon" id="biologyIcon" data-category="biology"></div>
-        <div class="category-icon" id="chemistryIcon" data-category="chemistry"></div>
+        <div class="category-icon" id="geometryIcon" data-category="geometry">Geometry</div>
+        <div class="category-icon" id="physicsIcon" data-category="physics">Physics</div>
+        <div class="category-icon" id="biologyIcon" data-category="biology">Biology</div>
+        <div class="category-icon" id="chemistryIcon" data-category="chemistry">Chemistry</div>
     </div>
     <div class="viewport-container">
         <div class="viewport" id="geometryViewport"></div>
         <div class="viewport" id="physicsViewport"></div>
         <div class="viewport" id="biologyViewport"></div>
         <div class="viewport" id="chemistryViewport"></div>
-        <div class="navigation-buttons">
-            <button class="nav-button" id="prevButton">Previous</button>
-            <button class="nav-button" id="nextButton">Next</button>
-            <button class="nav-button" id="categoryHomeButton">All Categories</button>
-            <button class="nav-button" id="mainHomeButton">Main Home</button>
-        </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script>
-        const categories = ['geometry', 'biology', 'physics', 'chemistry'];
-        let currentCategory = null;
-        let currentViewportIndex = 0;
-
-        document.querySelectorAll('.category-icon').forEach(icon => {
-            icon.addEventListener('click', () => {
-                currentCategory = icon.getAttribute('data-category');
-                currentViewportIndex = 0;
-                updateViewports();
-            });
-        });
-
-        document.getElementById('prevButton').addEventListener('click', () => {
-            if (currentViewportIndex > 0) {
-                currentViewportIndex--;
-                updateViewports();
-            }
-        });
-
-        document.getElementById('nextButton').addEventListener('click', () => {
-            if (currentViewportIndex < document.querySelectorAll(`#${currentCategory}Viewport .viewport`).length - 1) {
-                currentViewportIndex++;
-                updateViewports();
-            }
-        });
-
-        document.getElementById('categoryHomeButton').addEventListener('click', () => {
-            currentViewportIndex = 0;
-            updateViewports();
-        });
-
-        document.getElementById('mainHomeButton').addEventListener('click', () => {
-            currentCategory = null;
-            currentViewportIndex = 0;
-            updateViewports();
-        });
-
-        function updateViewports() {
-            document.querySelectorAll('.viewport').forEach(viewport => {
-                viewport.classList.remove('active');
-            });
-
-            if (currentCategory) {
-                document.getElementById(`${currentCategory}Viewport`).classList.add('active');
-            }
-        }
-
-        updateViewports();
-
-        function loadModel(viewportId, modelPath, loaderType) {
+        function createScene(viewportId, modelPath, loaderType) {
             const viewport = document.getElementById(viewportId);
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
@@ -184,6 +134,7 @@
             loader.load(modelPath, function(object) {
                 if (loaderType === 'gltf') {
                     scene.add(object.scene);
+                    object.scene.rotation.y = Math.PI; // Rotate for better view
                 } else {
                     scene.add(object);
                 }
@@ -193,6 +144,17 @@
 
             function animate() {
                 requestAnimationFrame(animate);
+                if (loaderType === 'gltf') {
+                    scene.children.forEach(child => {
+                        if (child.isGroup) {
+                            child.rotation.y += 0.01; // Rotate GLTF model groups
+                        }
+                    });
+                } else {
+                    scene.children.forEach(child => {
+                        child.rotation.y += 0.01; // Rotate non-GLTF models
+                    });
+                }
                 controls.update();
                 renderer.render(scene, camera);
             }
@@ -200,10 +162,10 @@
             animate();
         }
 
-        loadModel('geometryViewport', 'models/Tornado.glb', 'gltf');
-        loadModel('biologyViewport', 'models/Insect_Anatomy.glb', 'gltf');
-        loadModel('physicsViewport', 'models/beetles.fbx', 'fbx');
-        loadModel('chemistryViewport', 'models/microscope.obj', 'obj');
+        createScene('geometryViewport', 'models/Tornado.glb', 'gltf');
+        createScene('biologyViewport', 'models/Insect_Anatomy.glb', 'gltf');
+        createScene('physicsViewport', 'models/beetles.fbx', 'fbx');
+        createScene('chemistryViewport', 'models/microscope.obj', 'obj');
     </script>
 </body>
 </html>
