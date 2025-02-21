@@ -83,6 +83,15 @@
                 console.error(error);
             });
 
+            // Load the Beetles model
+            loader.load('models/Beetles.fbx', function(gltf) {
+                insectModel = gltf.scene;
+                insectModel.position.set(-4, 0, 0); // Position insect model to the left
+                scene.add(insectModel);
+            }, undefined, function(error) {
+                console.error(error);
+            });
+
             // Load the tornado model
             loader.load('models/tornado.glb', function(gltf) {
                 tornadoModel = gltf.scene;
