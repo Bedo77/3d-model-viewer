@@ -49,7 +49,10 @@
             z-index: 10;
         }
         .text-popup {
-            animation: fadeIn 0.3s ease-in-out, bounceEffect 0.6s 0.3s ease-in-out forwards;
+            animation: slideInFromRight 0.5s ease-in-out forwards, bounceEffect 0.6s 0.5s ease-in-out forwards;
+            width: 300px;
+            max-height: 200px;
+            overflow: auto;
         }
         .message-popup {
             font-size: 12px;
@@ -58,9 +61,9 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+        @keyframes slideInFromRight {
+            0% { transform: translateX(100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
         }
         @keyframes bounceEffect {
             0%, 20%, 50%, 80%, 100% {
@@ -72,6 +75,10 @@
             60% {
                 transform: translateY(-10px);
             }
+        }
+        .text-popup ul {
+            list-style-type: disc;
+            padding-left: 20px;
         }
     </style>
 </head>
@@ -186,7 +193,8 @@
             fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/info/insect%20info.txt')
                 .then(response => response.text())
                 .then(text => {
-                    textPopup.innerHTML = text;
+                    const listItems = text.split('\n').map(item => `<li>${item}</li>`).join('');
+                    textPopup.innerHTML = `<ul>${listItems}</ul>`;
                     textPopup.style.display = 'block';
                     isPopupVisible = true;
                     if (model) {
