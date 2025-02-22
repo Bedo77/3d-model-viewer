@@ -49,7 +49,7 @@
             z-index: 10;
         }
         .text-popup, .image-popup {
-            animation: bounceEffect 1s ease-in-out forwards;
+            animation: fadeIn 0.5s, bounceEffect 1s ease-in-out forwards;
         }
         .message-popup {
             font-size: 12px;
@@ -57,6 +57,10 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
         @keyframes bounceEffect {
             0%, 20%, 50%, 80%, 100% {
@@ -72,6 +76,8 @@
         .image-popup img {
             width: 40%;
             height: auto;
+            object-fit: cover;
+            object-position: left;
         }
     </style>
 </head>
@@ -187,7 +193,7 @@
             const popupImage = document.getElementById('popupImage');
 
             popupImage.src = 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/image1.png';
-            fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Info/insect%20info.txt')
+            fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/info/insect_info.txt')
                 .then(response => response.text())
                 .then(text => {
                     textPopup.innerHTML = text;
