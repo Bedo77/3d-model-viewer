@@ -166,21 +166,27 @@
 
         function showInfoPopup(event, info) {
             const popup = document.getElementById('infoPopup');
-            popup.innerHTML = info;
+            popup.innerHTML = info || "No information available.";
             popup.style.left = `${event.clientX}px`;
             popup.style.top = `${event.clientY}px`;
             popup.style.display = 'block';
         }
 
         async function extractTextFromImage(imagePath) {
-            const { data: { text } } = await Tesseract.recognize(
-                imagePath,
-                'eng',
-                {
-                    logger: m => console.log(m)
-                }
-            );
-            return text;
+            try {
+                const { data: { text } } = await Tesseract.recognize(
+                    imagePath,
+                    'eng',
+                    {
+                        logger: m => console.log(m)
+                    }
+                );
+                console.log(`Extracted text: ${text}`);
+                return text;
+            } catch (error) {
+                console.error(`Error extracting text from image: ${error}`);
+                return '';
+            }
         }
 
         document.getElementById('btnBiology').addEventListener('click', async () => {
@@ -188,13 +194,16 @@
             viewport.innerHTML = '';
             const partsInfoText = await extractTextFromImage('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/image1.png');
             const partsInfo = {};
-            const lines = partsInfoText.split('\n');
-            lines.forEach(line => {
-                const [part, info] = line.split(': ');
-                if (part && info) {
-                    partsInfo[part.trim()] = info.trim();
-                }
-            });
+            if (partsInfoText) {
+                const lines = partsInfoText.split('\n');
+                lines.forEach(line => {
+                    const [part, info] = line.split(': ');
+                    if (part && info) {
+                        partsInfo[part.trim()] = info.trim();
+                    }
+                });
+            }
+            console.log(`Parts info: ${JSON.stringify(partsInfo)}`);
             const biologyModel = {
                 loader: new THREE.GLTFLoader(),
                 path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb',
