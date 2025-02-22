@@ -178,7 +178,7 @@
                         const maxDim = Math.max(size.x, size.y, size.z);
                         const fov = camera.fov * (Math.PI / 180);
                         let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2));
-                        cameraZ *= 1.5; // Apply zoom out factor (1.5)
+                        cameraZ *= 2.0; // Apply zoom out factor (2.0)
 
                         const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
                         const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
