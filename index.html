@@ -51,8 +51,9 @@
             const loaderGLTF = new THREE.GLTFLoader();
             const loaderOBJ = new THREE.OBJLoader();
 
-            // Function to load and position models
+            // Function to load and position models with logging
             function loadModel(loader, modelPath, position, scale = 1) {
+                console.log(`Loading model: ${modelPath}`);
                 loader.load(modelPath, function(object) {
                     if (object.scene) {
                         object.scene.position.set(position.x, position.y, position.z);
@@ -63,8 +64,9 @@
                         object.scale.set(scale, scale, scale);
                         scene.add(object);
                     }
+                    console.log(`Successfully loaded model: ${modelPath}`);
                 }, undefined, function(error) {
-                    console.error('Error loading model:', modelPath, error);
+                    console.error(`Error loading model: ${modelPath}`, error);
                 });
             }
 
