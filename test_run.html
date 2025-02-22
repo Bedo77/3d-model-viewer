@@ -39,7 +39,7 @@
             height: 100%;
             position: relative;
         }
-        .info-popup, .image-popup, .text-popup, .message-popup {
+        .info-popup, .text-popup, .message-popup {
             position: absolute;
             background-color: white;
             padding: 10px;
@@ -48,7 +48,7 @@
             display: none;
             z-index: 10;
         }
-        .text-popup, .image-popup {
+        .text-popup {
             animation: fadeIn 0.3s ease-in-out, bounceEffect 0.6s 0.3s ease-in-out forwards;
         }
         .message-popup {
@@ -73,13 +73,6 @@
                 transform: translateY(-10px);
             }
         }
-        .image-popup img {
-            width: 40%;
-            height: auto;
-            object-fit: cover;
-            object-position: left top;
-            clip-path: inset(0 60% 0 0); /* Crop from right to left by 60% */
-        }
     </style>
 </head>
 <body>
@@ -88,7 +81,6 @@
     </div>
     <div class="viewport" id="mainViewport"></div>
     <div class="info-popup" id="infoPopup"></div>
-    <div class="image-popup" id="imagePopup"><img id="popupImage" src="" alt="Insect Image"></div>
     <div class="text-popup" id="textPopup"></div>
     <div class="message-popup" id="messagePopup">Double-click the model for more information</div>
 
@@ -189,16 +181,12 @@
         }
 
         function showPopup() {
-            const imagePopup = document.getElementById('imagePopup');
             const textPopup = document.getElementById('textPopup');
-            const popupImage = document.getElementById('popupImage');
 
-            popupImage.src = 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/image1.png';
-            fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/info/insect_info.txt')
+            fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/info/insect%20info.txt')
                 .then(response => response.text())
                 .then(text => {
                     textPopup.innerHTML = text;
-                    imagePopup.style.display = 'block';
                     textPopup.style.display = 'block';
                     isPopupVisible = true;
                     if (model) {
@@ -209,10 +197,8 @@
         }
 
         function hidePopup() {
-            const imagePopup = document.getElementById('imagePopup');
             const textPopup = document.getElementById('textPopup');
 
-            imagePopup.style.display = 'none';
             textPopup.style.display = 'none';
             isPopupVisible = false;
             isZoomedIn = false;
