@@ -48,8 +48,8 @@
             display: none;
             z-index: 10;
         }
-        .text-popup {
-            animation: futuristicEffect 1s ease-in-out forwards;
+        .text-popup, .image-popup {
+            animation: bounceEffect 1s ease-in-out forwards;
         }
         .message-popup {
             font-size: 12px;
@@ -58,9 +58,16 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        @keyframes futuristicEffect {
-            0% { opacity: 0; transform: scale(0.5); }
-            100% { opacity: 1; transform: scale(1); }
+        @keyframes bounceEffect {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-30px);
+            }
+            60% {
+                transform: translateY(-15px);
+            }
         }
         .image-popup img {
             width: 60%;
@@ -178,7 +185,6 @@
             const imagePopup = document.getElementById('imagePopup');
             const textPopup = document.getElementById('textPopup');
             const popupImage = document.getElementById('popupImage');
-            const infoPopup = document.getElementById('infoPopup');
 
             popupImage.src = 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/image1.png';
             fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Info/insect%20info.txt')
@@ -187,8 +193,10 @@
                     textPopup.innerHTML = text;
                     imagePopup.style.display = 'block';
                     textPopup.style.display = 'block';
-                    infoPopup.style.display = 'none';
                     isPopupVisible = true;
+                    if (model) {
+                        model.rotation.y += 0.01;
+                    }
                 })
                 .catch(error => console.error('Error fetching text info:', error));
         }
