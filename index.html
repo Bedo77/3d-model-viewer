@@ -46,6 +46,26 @@
             top: 0;
             left: 0;
             display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #34495e;
+        }
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            cursor: pointer;
+        }
+        .title {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: white;
         }
     </style>
 </head>
@@ -57,10 +77,22 @@
         <div class="button" id="btnBiology">Biology</div>
     </div>
     <div class="viewport" id="mainViewport"></div>
-    <div class="category-viewport" id="geometryViewport"></div>
-    <div class="category-viewport" id="physicsViewport"></div>
-    <div class="category-viewport" id="chemistryViewport"></div>
-    <div class="category-viewport" id="biologyViewport"></div>
+    <div class="category-viewport" id="geometryViewport">
+        <div class="back-button" id="backGeometry">Back</div>
+        <div class="title">Geometry</div>
+    </div>
+    <div class="category-viewport" id="physicsViewport">
+        <div class="back-button" id="backPhysics">Back</div>
+        <div class="title">Physics</div>
+    </div>
+    <div class="category-viewport" id="chemistryViewport">
+        <div class="back-button" id="backChemistry">Back</div>
+        <div class="title">Chemistry</div>
+    </div>
+    <div class="category-viewport" id="biologyViewport">
+        <div class="back-button" id="backBiology">Back</div>
+        <div class="title">Biology</div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -135,34 +167,54 @@
         createScene('mainViewport', mainModels);
 
         const categoryModels = {
-            geometry: [{ loader: new THREE.GLTFLoader(), path: 'models/geometryModel.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
-            physics: [{ loader: new THREE.GLTFLoader(), path: 'models/physicsModel.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
-            chemistry: [{ loader: new THREE.GLTFLoader(), path: 'models/chemistryModel.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
-            biology: [{ loader: new THREE.GLTFLoader(), path: 'models/biologyModel.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }]
+            geometry: [{ loader: new THREE.GLTFLoader(), path: 'models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
+            physics: [{ loader: new THREE.GLTFLoader(), path: 'models/model1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
+            chemistry: [{ loader: new THREE.OBJLoader(), path: 'models/model3.obj', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
+            biology: [{ loader: new THREE.GLTFLoader(), path: 'models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }]
         };
 
         document.getElementById('btnGeometry').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('geometryViewport').style.display = 'block';
+            document.getElementById('geometryViewport').style.display = 'flex';
             createScene('geometryViewport', categoryModels.geometry);
         });
 
         document.getElementById('btnPhysics').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('physicsViewport').style.display = 'block';
+            document.getElementById('physicsViewport').style.display = 'flex';
             createScene('physicsViewport', categoryModels.physics);
         });
 
         document.getElementById('btnChemistry').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('chemistryViewport').style.display = 'block';
+            document.getElementById('chemistryViewport').style.display = 'flex';
             createScene('chemistryViewport', categoryModels.chemistry);
         });
 
         document.getElementById('btnBiology').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('biologyViewport').style.display = 'block';
+            document.getElementById('biologyViewport').style.display = 'flex';
             createScene('biologyViewport', categoryModels.biology);
+        });
+
+        document.getElementById('backGeometry').addEventListener('click', () => {
+            document.getElementById('geometryViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backPhysics').addEventListener('click', () => {
+            document.getElementById('physicsViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backChemistry').addEventListener('click', () => {
+            document.getElementById('chemistryViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backBiology').addEventListener('click', () => {
+            document.getElementById('biologyViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
         });
     </script>
 </body>
