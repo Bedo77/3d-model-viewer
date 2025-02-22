@@ -39,7 +39,7 @@
             height: 100%;
             position: relative;
         }
-        .info-popup {
+        .info-popup, .image-popup, .text-popup, .message-popup {
             position: absolute;
             background-color: white;
             padding: 10px;
@@ -47,6 +47,17 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
             display: none;
             z-index: 10;
+        }
+        .text-popup {
+            animation: futuristicEffect 1s ease-in-out forwards;
+        }
+        .message-popup {
+            font-size: 12px;
+            text-align: center;
+        }
+        @keyframes futuristicEffect {
+            0% { opacity: 0; transform: scale(0.5); }
+            100% { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
@@ -56,12 +67,18 @@
     </div>
     <div class="viewport" id="mainViewport"></div>
     <div class="info-popup" id="infoPopup"></div>
+    <div class="image-popup" id="imagePopup"><img id="popupImage" src="" alt="Insect Image" style="width: 100%; height: auto;"></div>
+    <div class="text-popup" id="textPopup"></div>
+    <div class="message-popup" id="messagePopup">Double-click the model for more information</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
     <script>
+        let isZoomedIn = false;
+        let isPopupVisible = false;
+        let model;
+
         function createScene(viewportId, models, enableDoubleClickZoom = false) {
             const viewport = document.getElementById(viewportId);
             const scene = new THREE.Scene();
@@ -88,27 +105,10 @@
             function loadModel(loader, modelPath, position, scale = 1, partsInfo = {}) {
                 console.log(`Loading model: ${modelPath}`);
                 loader.load(modelPath, function(object) {
-                    let model;
-                    if (object.scene) {
-                        model = object.scene;
-                    } else {
-                        model = object;
-                    }
+                    model = object.scene || object;
                     model.position.set(position.x, position.y, position.z);
                     model.scale.set(scale, scale, scale);
                     scene.add(model);
-
-                    // Add event listeners for parts
-                    if (partsInfo) {
-                        model.traverse((child) => {
-                            if (child.isMesh && partsInfo[child.name]) {
-                                child.userData = partsInfo[child.name];
-                                child.addEventListener('click', (event) => {
-                                    showInfoPopup(event, child.userData);
-                                });
-                            }
-                        });
-                    }
                     console.log(`Successfully loaded model: ${modelPath}`);
                 }, undefined, function(error) {
                     console.error(`Error loading model: ${modelPath}`, error);
@@ -119,11 +119,9 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-                scene.children.forEach(child => {
-                    if (child.isGroup || child.isObject3D) {
-                        child.rotation.y += 0.01;
-                    }
-                });
+                if (model && !isZoomedIn) {
+                    model.rotation.y += 0.01;
+                }
                 controls.update();
                 renderer.render(scene, camera);
             }
@@ -132,84 +130,81 @@
 
             if (enableDoubleClickZoom) {
                 viewport.addEventListener('dblclick', (event) => {
-                    const rect = renderer.domElement.getBoundingClientRect();
-                    const mouse = new THREE.Vector2(
-                        ((event.clientX - rect.left) / rect.width) * 2 - 1,
-                        -((event.clientY - rect.top) / rect.height) * 2 + 1
-                    );
-
-                    const raycaster = new THREE.Raycaster();
-                    raycaster.setFromCamera(mouse, camera);
-
-                    const intersects = raycaster.intersectObjects(scene.children, true);
-
-                    if (intersects.length > 0) {
-                        const target = intersects[0].object;
-                        const box = new THREE.Box3().setFromObject(target);
-                        const center = box.getCenter(new THREE.Vector3());
-                        const size = box.getSize(new THREE.Vector3());
-
-                        const maxDim = Math.max(size.x, size.y, size.z);
-                        const fov = camera.fov * (Math.PI / 180);
-                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2));
-                        cameraZ *= 2.2; // Apply zoom out factor (2.2) for better visibility
-
-                        const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
-                        const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
-
-                        camera.position.copy(newCameraPosition);
-                        camera.lookAt(center);
+                    if (!isZoomedIn) {
+                        zoomIn(camera, model);
+                    } else if (!isPopupVisible) {
+                        showPopup();
+                    } else {
+                        hidePopup();
                     }
                 });
             }
         }
 
-        function showInfoPopup(event, info) {
-            const popup = document.getElementById('infoPopup');
-            popup.innerHTML = info || "No information available.";
-            popup.style.left = `${event.clientX}px`;
-            popup.style.top = `${event.clientY}px`;
-            popup.style.display = 'block';
+        function zoomIn(camera, target) {
+            const box = new THREE.Box3().setFromObject(target);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const fov = camera.fov * (Math.PI / 180);
+            let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2));
+            cameraZ *= 2.2; // Apply zoom out factor (2.2) for better visibility
+
+            const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
+            const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
+
+            camera.position.copy(newCameraPosition);
+            camera.lookAt(center);
+
+            isZoomedIn = true;
+
+            // Display the message to the user
+            const messagePopup = document.getElementById('messagePopup');
+            messagePopup.style.display = 'block';
+            setTimeout(() => {
+                messagePopup.style.display = 'none';
+            }, 3000); // Hide message after 3 seconds
         }
 
-        async function extractTextFromImage(imagePath) {
-            try {
-                const { data: { text } } = await Tesseract.recognize(
-                    imagePath,
-                    'eng',
-                    {
-                        logger: m => console.log(m)
-                    }
-                );
-                console.log(`Extracted text: ${text}`);
-                return text;
-            } catch (error) {
-                console.error(`Error extracting text from image: ${error}`);
-                return '';
-            }
+        function showPopup() {
+            const imagePopup = document.getElementById('imagePopup');
+            const textPopup = document.getElementById('textPopup');
+            const popupImage = document.getElementById('popupImage');
+            const infoPopup = document.getElementById('infoPopup');
+
+            popupImage.src = 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/image1.png';
+            fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Info/insect%20info.txt')
+                .then(response => response.text())
+                .then(text => {
+                    textPopup.innerHTML = text;
+                    imagePopup.style.display = 'block';
+                    textPopup.style.display = 'block';
+                    infoPopup.style.display = 'none';
+                    isPopupVisible = true;
+                })
+                .catch(error => console.error('Error fetching text info:', error));
+        }
+
+        function hidePopup() {
+            const imagePopup = document.getElementById('imagePopup');
+            const textPopup = document.getElementById('textPopup');
+
+            imagePopup.style.display = 'none';
+            textPopup.style.display = 'none';
+            isPopupVisible = false;
+            isZoomedIn = false;
         }
 
         document.getElementById('btnBiology').addEventListener('click', async () => {
             const viewport = document.getElementById('mainViewport');
             viewport.innerHTML = '';
-            const partsInfoText = await extractTextFromImage('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/image1.png');
-            const partsInfo = {};
-            if (partsInfoText) {
-                const lines = partsInfoText.split('\n');
-                lines.forEach(line => {
-                    const [part, info] = line.split(': ');
-                    if (part && info) {
-                        partsInfo[part.trim()] = info.trim();
-                    }
-                });
-            }
-            console.log(`Parts info: ${JSON.stringify(partsInfo)}`);
             const biologyModel = {
                 loader: new THREE.GLTFLoader(),
                 path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb',
                 position: { x: 0, y: 0, z: 0 },
                 scale: 1,
-                partsInfo: partsInfo
+                partsInfo: {}
             };
             createScene('mainViewport', [biologyModel], true);
         });
