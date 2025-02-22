@@ -1,0 +1,7 @@
+Fly Eyes: Compound eyes that provide a wide field of vision.
+Antennae: Used for sensing the environment.
+Wings: Enable flight and maneuverability.
+Legs: Provide support and movement.
+Thorax: The middle part of the insect, where wings and legs are attached.
+Abdomen: The rear part of the insect, containing vital organs.
+Halters: Stabilizers for flight.
