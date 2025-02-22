@@ -186,7 +186,7 @@
         document.getElementById('btnBiology').addEventListener('click', async () => {
             const viewport = document.getElementById('mainViewport');
             viewport.innerHTML = '';
-            const partsInfoText = await extractTextFromImage('https://bedo77.github.io/3d-model-viewer/images/image1.png');
+            const partsInfoText = await extractTextFromImage('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/image1.png');
             const partsInfo = {};
             const lines = partsInfoText.split('\n');
             lines.forEach(line => {
@@ -197,7 +197,7 @@
             });
             const biologyModel = {
                 loader: new THREE.GLTFLoader(),
-                path: 'https://bedo77.github.io/3d-model-viewer/models/Insect_Anatomy.glb',
+                path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb',
                 position: { x: 0, y: 0, z: 0 },
                 scale: 1,
                 partsInfo: partsInfo
