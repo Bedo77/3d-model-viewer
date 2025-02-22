@@ -51,7 +51,7 @@
             const loaderGLTF = new THREE.GLTFLoader();
             const loaderOBJ = new THREE.OBJLoader();
 
-            // Function to load and position models with logging
+            // Function to load and position models with error handling
             function loadModel(loader, modelPath, position, scale = 1) {
                 console.log(`Loading model: ${modelPath}`);
                 loader.load(modelPath, function(object) {
