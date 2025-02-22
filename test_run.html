@@ -50,7 +50,8 @@
         }
         .text-popup {
             animation: slideInFromRight 0.5s ease-in-out forwards, bounceEffect 0.6s 0.5s ease-in-out forwards;
-            width: 300px;
+            width: 330px; /* Updated width */
+            height: 230px; /* Updated height */
             max-height: 200px;
             overflow: auto;
         }
@@ -197,9 +198,12 @@
                     textPopup.innerHTML = `<ul>${listItems}</ul>`;
                     textPopup.style.display = 'block';
                     isPopupVisible = true;
-                    if (model) {
-                        model.rotation.y += 0.01;
-                    }
+
+                    // Apply bounce effect once
+                    textPopup.style.animation = 'none'; // Reset animation
+                    setTimeout(() => {
+                        textPopup.style.animation = 'slideInFromRight 0.5s ease-in-out forwards, bounceEffect 0.6s 0.5s ease-in-out forwards';
+                    }, 10); // Trigger reflow
                 })
                 .catch(error => console.error('Error fetching text info:', error));
         }
