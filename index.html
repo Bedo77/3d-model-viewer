@@ -99,7 +99,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script>
-        function createScene(viewportId, models) {
+        function createScene(viewportId, models, enableDoubleClickZoom = false) {
             const viewport = document.getElementById(viewportId);
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
@@ -155,6 +155,30 @@
             }
 
             animate();
+
+            if (enableDoubleClickZoom) {
+                viewport.addEventListener('dblclick', (event) => {
+                    const rect = renderer.domElement.getBoundingClientRect();
+                    const mouse = new THREE.Vector2(
+                        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+                        -((event.clientY - rect.top) / rect.height) * 2 + 1
+                    );
+
+                    const raycaster = new THREE.Raycaster();
+                    raycaster.setFromCamera(mouse, camera);
+
+                    const intersects = raycaster.intersectObjects(scene.children, true);
+
+                    if (intersects.length > 0) {
+                        const target = intersects[0].object;
+                        const box = new THREE.Box3().setFromObject(target);
+                        const center = box.getCenter(new THREE.Vector3());
+
+                        camera.position.set(center.x, center.y, center.z + 5);
+                        camera.lookAt(center);
+                    }
+                });
+            }
         }
 
         const mainModels = [
@@ -176,25 +200,25 @@
         document.getElementById('btnGeometry').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
             document.getElementById('geometryViewport').style.display = 'flex';
-            createScene('geometryViewport', categoryModels.geometry);
+            createScene('geometryViewport', categoryModels.geometry, true);
         });
 
         document.getElementById('btnPhysics').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
             document.getElementById('physicsViewport').style.display = 'flex';
-            createScene('physicsViewport', categoryModels.physics);
+            createScene('physicsViewport', categoryModels.physics, true);
         });
 
         document.getElementById('btnChemistry').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
             document.getElementById('chemistryViewport').style.display = 'flex';
-            createScene('chemistryViewport', categoryModels.chemistry);
+            createScene('chemistryViewport', categoryModels.chemistry, true);
         });
 
         document.getElementById('btnBiology').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
             document.getElementById('biologyViewport').style.display = 'flex';
-            createScene('biologyViewport', categoryModels.biology);
+            createScene('biologyViewport', categoryModels.biology, true);
         });
 
         document.getElementById('backGeometry').addEventListener('click', () => {
