@@ -50,17 +50,18 @@
             camera.position.set(0, 1, 10);
 
             const loaderGLTF = new THREE.GLTFLoader();
-            const loaderFBX = new THREE.FBXLoader();
             const loaderOBJ = new THREE.OBJLoader();
 
             // Function to load and position models
-            function loadModel(loader, modelPath, position) {
+            function loadModel(loader, modelPath, position, scale = 1) {
                 loader.load(modelPath, function(object) {
                     if (object.scene) {
                         object.scene.position.set(position.x, position.y, position.z);
+                        object.scene.scale.set(scale, scale, scale);
                         scene.add(object.scene);
                     } else {
                         object.position.set(position.x, position.y, position.z);
+                        object.scale.set(scale, scale, scale);
                         scene.add(object);
                     }
                 }, undefined, function(error) {
@@ -69,10 +70,11 @@
             }
 
             // Load models and position them
-            loadModel(loaderGLTF, 'models/Tornado.glb', { x: -5, y: 0, z: 0 });
-            loadModel(loaderGLTF, 'models/Insect_Anatomy.glb', { x: 5, y: 0, z: 0 });
-            loadModel(loaderFBX, 'models/beetles.fbx', { x: 0, y: 0, z: -5 });
-            loadModel(loaderOBJ, 'models/microscope.obj', { x: 0, y: 0, z: 5 });
+            loadModel(loaderGLTF, 'models/Insect_Anatomy.glb', { x: -10, y: 0, z: 0 }, 0.01);
+            loadModel(loaderGLTF, 'models/model1.glb', { x: -5, y: 0, z: 0 }, 0.01);
+            loadModel(loaderGLTF, 'models/model2.glb', { x: 0, y: 0, z: 0 }, 0.01);
+            loadModel(loaderOBJ, 'models/model3.obj', { x: 5, y: 0, z: 0 }, 0.01);
+            loadModel(loaderGLTF, 'models/tornado.glb', { x: 10, y: 0, z: 0 }, 0.01);
 
             function animate() {
                 requestAnimationFrame(animate);
