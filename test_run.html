@@ -54,10 +54,17 @@
         .message-popup {
             font-size: 12px;
             text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         @keyframes futuristicEffect {
             0% { opacity: 0; transform: scale(0.5); }
             100% { opacity: 1; transform: scale(1); }
+        }
+        .image-popup img {
+            width: 60%;
+            height: auto;
         }
     </style>
 </head>
@@ -67,7 +74,7 @@
     </div>
     <div class="viewport" id="mainViewport"></div>
     <div class="info-popup" id="infoPopup"></div>
-    <div class="image-popup" id="imagePopup"><img id="popupImage" src="" alt="Insect Image" style="width: 100%; height: auto;"></div>
+    <div class="image-popup" id="imagePopup"><img id="popupImage" src="" alt="Insect Image"></div>
     <div class="text-popup" id="textPopup"></div>
     <div class="message-popup" id="messagePopup">Double-click the model for more information</div>
 
