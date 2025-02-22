@@ -173,8 +173,17 @@
                         const target = intersects[0].object;
                         const box = new THREE.Box3().setFromObject(target);
                         const center = box.getCenter(new THREE.Vector3());
+                        const size = box.getSize(new THREE.Vector3());
 
-                        camera.position.set(center.x, center.y, center.z + 5);
+                        const maxDim = Math.max(size.x, size.y, size.z);
+                        const fov = camera.fov * (Math.PI / 180);
+                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2));
+                        cameraZ *= 1.5; // Apply zoom out factor (1.5)
+
+                        const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
+                        const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
+
+                        camera.position.copy(newCameraPosition);
                         camera.lookAt(center);
                     }
                 });
