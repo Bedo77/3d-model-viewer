@@ -7,7 +7,7 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Times New Roman', serif; /* Changed font */
             height: 100vh;
             overflow: hidden;
             background-color: #34495e;
@@ -48,17 +48,35 @@
         }
         .text-popup {
             position: absolute;
-            background-color: darkorange; /* Dark orange background */
+            background-color: rgba(255, 165, 0, 0.9); /* Dark orange background */
             border: 2px solid #ff8c00; /* Slight thickness */
-            border-radius: 5px; /* Rounded corners */
-            padding: 10px;
+            border-radius: 85%; /* Increased radius to 85% */
+            padding: 15px; /* Added padding for text */
             display: none;
             z-index: 10;
-            min-width: 150px; /* Minimum width */
-            max-width: 300px; /* Maximum width */
+            min-width: 180px; /* Minimum width */
+            max-width: 360px; /* Maximum width */
             overflow: hidden;
             text-align: center;
             animation: popUpEffect 0.5s ease-in-out forwards; /* Pop-up effect */
+            font-size: 14px; /* Text size */
+            right: 20px; /* Position pop-up to the right of the viewport */
+            top: 50%; /* Center vertically */
+            transform: translateY(-50%); /* Adjust vertical positioning */
+        }
+        .popup-content {
+            margin-top: 3mm; /* Move text down by 3mm */
+        }
+        .close-button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 10px; /* Smaller size for visibility */
+            cursor: pointer;
+            padding: 5px; /* Added padding for easier clicking */
+            border-radius: 3px; /* Rounded corners for the button */
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+            margin-top: 10px; /* Space above the button */
         }
         @keyframes popUpEffect {
             0% { transform: scale(0); opacity: 0; }
@@ -72,7 +90,10 @@
     </div>
     <div class="viewport" id="mainViewport"></div>
     <div class="message-popup" id="messagePopup">Double-click the model for more information</div>
-    <div class="text-popup" id="textPopup"></div>
+    <div class="text-popup" id="textPopup">
+        <div class="popup-content" id="popupContent"></div> <!-- Updated text container -->
+        <button class="close-button" id="closePopup">Close Window</button>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -172,6 +193,7 @@
 
         function showPopup(event) {
             const textPopup = document.getElementById('textPopup');
+            const popupContent = document.getElementById('popupContent');
             textPopup.style.display = 'block';
 
             // Set position 10cm to the right of the model
@@ -185,7 +207,12 @@
                 .then(response => response.text())
                 .then(text => {
                     const listItems = text.split('\n').map(item => `<li>${item}</li>`).join('');
-                    textPopup.innerHTML = `<ul>${listItems}</ul>`;
+                    popupContent.innerHTML = listItems;
+
+                    // Adjust popup size based on content
+                    const contentHeight = popupContent.scrollHeight + 30; // Additional space
+                    textPopup.style.height = `${contentHeight}px`;
+
                     isPopupVisible = true;
                 })
                 .catch(error => console.error('Error fetching text info:', error));
@@ -197,6 +224,8 @@
             isPopupVisible = false;
             isZoomedIn = false;
         }
+
+        document.getElementById('closePopup').addEventListener('click', hidePopup);
 
         document.getElementById('btnBiology').addEventListener('click', async () => {
             const viewport = document.getElementById('mainViewport');
