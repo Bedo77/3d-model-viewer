@@ -39,22 +39,6 @@
             height: 100%;
             position: relative;
         }
-        .info-popup, .text-popup, .message-popup {
-            position: absolute;
-            background-color: white;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 10;
-        }
-        .text-popup {
-            animation: slideInFromRight 0.5s ease-in-out forwards, bounceEffect 0.6s 0.5s ease-in-out forwards;
-            width: 330px; /* Updated width */
-            height: 230px; /* Updated height */
-            max-height: 200px;
-            overflow: auto;
-        }
         .message-popup {
             font-size: 12px;
             text-align: center;
@@ -62,24 +46,23 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-        @keyframes slideInFromRight {
-            0% { transform: translateX(100%); opacity: 0; }
-            100% { transform: translateX(0); opacity: 1; }
+        .text-popup {
+            position: absolute;
+            background-color: darkorange; /* Dark orange background */
+            border: 2px solid #ff8c00; /* Slight thickness */
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px;
+            display: none;
+            z-index: 10;
+            min-width: 150px; /* Minimum width */
+            max-width: 300px; /* Maximum width */
+            overflow: hidden;
+            text-align: center;
+            animation: popUpEffect 0.5s ease-in-out forwards; /* Pop-up effect */
         }
-        @keyframes bounceEffect {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-20px);
-            }
-            60% {
-                transform: translateY(-10px);
-            }
-        }
-        .text-popup ul {
-            list-style-type: disc;
-            padding-left: 20px;
+        @keyframes popUpEffect {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
     </style>
 </head>
@@ -88,9 +71,8 @@
         <div class="button" id="btnBiology">Biology</div>
     </div>
     <div class="viewport" id="mainViewport"></div>
-    <div class="info-popup" id="infoPopup"></div>
-    <div class="text-popup" id="textPopup"></div>
     <div class="message-popup" id="messagePopup">Double-click the model for more information</div>
+    <div class="text-popup" id="textPopup"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -123,7 +105,7 @@
 
             const loaderGLTF = new THREE.GLTFLoader();
 
-            function loadModel(loader, modelPath, position, scale = 1, partsInfo = {}) {
+            function loadModel(loader, modelPath, position, scale = 1) {
                 console.log(`Loading model: ${modelPath}`);
                 loader.load(modelPath, function(object) {
                     model = object.scene || object;
@@ -136,7 +118,7 @@
                 });
             }
 
-            models.forEach(model => loadModel(model.loader, model.path, model.position, model.scale, model.partsInfo));
+            models.forEach(model => loadModel(model.loader, model.path, model.position, model.scale));
 
             function animate() {
                 requestAnimationFrame(animate);
@@ -154,7 +136,7 @@
                     if (!isZoomedIn) {
                         zoomIn(camera, model);
                     } else if (!isPopupVisible) {
-                        showPopup();
+                        showPopup(event);
                     } else {
                         hidePopup();
                     }
@@ -188,29 +170,29 @@
             }, 3000); // Hide message after 3 seconds
         }
 
-        function showPopup() {
+        function showPopup(event) {
             const textPopup = document.getElementById('textPopup');
+            textPopup.style.display = 'block';
+
+            // Set position 10cm to the right of the model
+            const box = new THREE.Box3().setFromObject(model);
+            const center = box.getCenter(new THREE.Vector3());
+            const positionOffset = 10 / 100; // Convert cm to meters (assuming your model is in meters)
+            textPopup.style.left = `${(center.x + positionOffset) * 10}px`; // Adjust to pixel scale
+            textPopup.style.top = `${center.y * 10}px`; // Adjust to pixel scale
 
             fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/info/insect%20info.txt')
                 .then(response => response.text())
                 .then(text => {
                     const listItems = text.split('\n').map(item => `<li>${item}</li>`).join('');
                     textPopup.innerHTML = `<ul>${listItems}</ul>`;
-                    textPopup.style.display = 'block';
                     isPopupVisible = true;
-
-                    // Apply bounce effect once
-                    textPopup.style.animation = 'none'; // Reset animation
-                    setTimeout(() => {
-                        textPopup.style.animation = 'slideInFromRight 0.5s ease-in-out forwards, bounceEffect 0.6s 0.5s ease-in-out forwards';
-                    }, 10); // Trigger reflow
                 })
                 .catch(error => console.error('Error fetching text info:', error));
         }
 
         function hidePopup() {
             const textPopup = document.getElementById('textPopup');
-
             textPopup.style.display = 'none';
             isPopupVisible = false;
             isZoomedIn = false;
@@ -223,8 +205,7 @@
                 loader: new THREE.GLTFLoader(),
                 path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb',
                 position: { x: 0, y: 0, z: 0 },
-                scale: 1,
-                partsInfo: {}
+                scale: 1
             };
             createScene('mainViewport', [biologyModel], true);
         });
