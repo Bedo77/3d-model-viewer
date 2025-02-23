@@ -1,4 +1,4 @@
-Fly Eyes: Compound eyes that provide a wide field of vision.
+Eyes: Compound eyes that provide a wide field of vision.
 Antennae: Used for sensing the environment.
 Wings: Enable flight and maneuverability.
 Legs: Provide support and movement.
