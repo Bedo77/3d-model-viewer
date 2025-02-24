@@ -27,17 +27,52 @@
             height: 100px;
             margin: 10px;
             border-radius: 15px; /* Rounded corners */
-            background-color: #f47e42; /* Jaffa */
+            background: linear-gradient(135deg, #f47e42, #f46c27); /* Gradient from Jaffa to Flamingo */
             color: #FFFFFF; /* White text */
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth effect */
-            transition: transform 0.2s; /* Smooth transition */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5); /* Deeper shadow for 3D effect */
+            border: 2px solid #f46c27; /* Outline in Flamingo color */
+            position: relative; /* For positioning bevel effect */
+            overflow: hidden; /* To clip the bevel effect */
+            transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effects */
+        }
+        .button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit; /* Use the same gradient */
+            border-radius: 15px; /* Match button corners */
+            filter: blur(5px); /* Bevel effect */
+            z-index: -1; /* Behind the button */
+            transform: translate(15px, 3px); /* Offset for bevel effect */
         }
         .button:hover {
-            transform: translateY(-3px); /* Lift effect on hover */
+            transform: translateY(-5px) scale(1.05); /* Lift and scale effect on hover */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6); /* Enhanced shadow on hover */
+        }
+        .tooltip {
+            display: none; /* Initially hidden */
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            z-index: 100; /* Ensure it appears above other elements */
+            transition: opacity 0.2s ease-in-out;
+            opacity: 0; /* Start invisible */
+            top: 110%; /* Position below the button */
+            left: 50%;
+            transform: translateX(-50%); /* Center the tooltip */
+        }
+        .button:hover .tooltip {
+            display: block; /* Show on hover */
+            opacity: 1; /* Fade in */
         }
         .viewport {
             width: 80%;
@@ -98,14 +133,27 @@
             0% { transform: scale(0); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
+        /* Animation for button rotation */
+        @keyframes rotateY {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(360deg); }
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <div class="button" id="btnGeometry">Geometry</div>
-        <div class="button" id="btnPhysics">Physics</div>
-        <div class="button" id="btnChemistry">Chemistry</div>
-        <div class="button" id="btnBiology">Biology</div>
+        <div class="button" id="btnGeometry">Geometry
+            <div class="tooltip">Learn about Geometry</div>
+        </div>
+        <div class="button" id="btnPhysics">Physics
+            <div class="tooltip">Learn about Physics</div>
+        </div>
+        <div class="button" id="btnChemistry">Chemistry
+            <div class="tooltip">Learn about Chemistry</div>
+        </div>
+        <div class="button" id="btnBiology">Biology
+            <div class="tooltip">Learn about Biology</div>
+        </div>
     </div>
     <div class="viewport" id="mainViewport"></div>
     <div class="category-viewport" id="geometryViewport">
@@ -236,7 +284,10 @@
             geometry: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
             physics: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
             chemistry: [{ loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
-            biology: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }]
+            biology: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: -5, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/microcells.glb', position: { x: 5, y: 0, z: 0 }, scale: 1 }
+            ]
         };
 
         document.getElementById('btnGeometry').addEventListener('click', () => {
@@ -304,6 +355,14 @@
         document.getElementById('closePopup').addEventListener('click', () => {
             document.getElementById('textPopup').style.display = 'none';
         });
+
+        // Add staggered rotation animation to buttons on page load
+        window.onload = () => {
+            const buttons = document.querySelectorAll('.button');
+            buttons.forEach((button, index) => {
+                button.style.animation = `rotateY 0.5s linear ${index * 0.1}s forwards`; // Fast Y-axis rotation with stagger
+            });
+        };
     </script>
 </body>
 </html>
