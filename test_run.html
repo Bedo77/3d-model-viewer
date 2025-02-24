@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insect Anatomy Test Run</title>
+    <title>Educational 3D Models</title>
     <style>
         body {
             margin: 0;
-            font-family: 'Times New Roman', serif; /* Changed font */
+            font-family: Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
-            background-color: #34495e;
+            background-color: #dadad8; /* Quill Gray */
             display: flex;
         }
         .sidebar {
             width: 20%;
-            background-color: #2c3e50;
+            background-color: #2c7481; /* Paradiso */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -26,57 +26,73 @@
             width: 100px;
             height: 100px;
             margin: 10px;
-            border-radius: 50%;
-            background-color: #3498db;
-            color: white;
+            border-radius: 15px; /* Rounded corners */
+            background-color: #f47e42; /* Jaffa */
+            color: #FFFFFF; /* White text */
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth effect */
+            transition: transform 0.2s; /* Smooth transition */
+        }
+        .button:hover {
+            transform: translateY(-3px); /* Lift effect on hover */
         }
         .viewport {
             width: 80%;
             height: 100%;
             position: relative;
         }
-        .message-popup {
-            font-size: 12px;
-            text-align: center;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .category-viewport {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #34495e;
+        }
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            background-color: #f46c27; /* Flamingo */
+            color: #FFFFFF; /* White text */
+            cursor: pointer;
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth effect */
+        }
+        .title {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: #2c7481; /* Paradiso */
         }
         .text-popup {
             position: absolute;
-            background-color: rgba(255, 165, 0, 0.9); /* Dark orange background */
-            border: 2px solid #ff8c00; /* Slight thickness */
-            border-radius: 85%; /* Increased radius to 85% */
-            padding: 15px; /* Added padding for text */
+            background-color: rgba(255, 165, 0, 0.9);
+            border: 2px solid #ff8c00;
+            border-radius: 85%;
+            padding: 15px;
             display: none;
             z-index: 10;
-            min-width: 180px; /* Minimum width */
-            max-width: 360px; /* Maximum width */
+            min-width: 180px;
+            max-width: 360px;
             overflow: hidden;
             text-align: center;
-            animation: popUpEffect 0.5s ease-in-out forwards; /* Pop-up effect */
-            font-size: 12px; /* Text size */
-            right: 20px; /* Position pop-up to the right of the viewport */
-            top: 50%; /* Center vertically */
-            transform: translateY(-50%); /* Adjust vertical positioning */
+            animation: popUpEffect 0.5s ease-in-out forwards;
+            font-size: 14px;
+            top: 50%;
+            transform: translateY(-50%);
         }
         .popup-content {
-            margin-top: 3mm; /* Move text down by 3mm */
-        }
-        .close-button {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 10px; /* Smaller size for visibility */
-            cursor: pointer;
-            padding: 5px; /* Added padding for easier clicking */
-            border-radius: 3px; /* Rounded corners for the button */
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-            margin-top: 10px; /* Space above the button */
+            margin-top: 3mm;
         }
         @keyframes popUpEffect {
             0% { transform: scale(0); opacity: 0; }
@@ -86,23 +102,38 @@
 </head>
 <body>
     <div class="sidebar">
+        <div class="button" id="btnGeometry">Geometry</div>
+        <div class="button" id="btnPhysics">Physics</div>
+        <div class="button" id="btnChemistry">Chemistry</div>
         <div class="button" id="btnBiology">Biology</div>
     </div>
     <div class="viewport" id="mainViewport"></div>
-    <div class="message-popup" id="messagePopup">Double-click the model for more information</div>
-    <div class="text-popup" id="textPopup">
-        <div class="popup-content" id="popupContent"></div> <!-- Updated text container -->
-        <button class="close-button" id="closePopup">Close Window</button>
+    <div class="category-viewport" id="geometryViewport">
+        <div class="back-button" id="backGeometry">Back</div>
+        <div class="title">Geometry</div>
+    </div>
+    <div class="category-viewport" id="physicsViewport">
+        <div class="back-button" id="backPhysics">Back</div>
+        <div class="title">Physics</div>
+    </div>
+    <div class="category-viewport" id="chemistryViewport">
+        <div class="back-button" id="backChemistry">Back</div>
+        <div class="title">Chemistry</div>
+    </div>
+    <div class="category-viewport" id="biologyViewport">
+        <div class="back-button" id="backBiology">Back</div>
+        <div class="title">Biology</div>
+        <div class="text-popup" id="textPopup">
+            <div class="popup-content" id="popupContent"></div>
+            <button class="close-button" id="closePopup">Close Window</button>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script>
-        let isZoomedIn = false;
-        let isPopupVisible = false;
-        let model;
-
         function createScene(viewportId, models, enableDoubleClickZoom = false) {
             const viewport = document.getElementById(viewportId);
             const scene = new THREE.Scene();
@@ -125,15 +156,19 @@
             camera.position.set(0, 1, 20);
 
             const loaderGLTF = new THREE.GLTFLoader();
+            const loaderOBJ = new THREE.OBJLoader();
 
             function loadModel(loader, modelPath, position, scale = 1) {
-                console.log(`Loading model: ${modelPath}`);
                 loader.load(modelPath, function(object) {
-                    model = object.scene || object;
-                    model.position.set(position.x, position.y, position.z);
-                    model.scale.set(scale, scale, scale);
-                    scene.add(model);
-                    console.log(`Successfully loaded model: ${modelPath}`);
+                    if (object.scene) {
+                        object.scene.position.set(position.x, position.y, position.z);
+                        object.scene.scale.set(scale, scale, scale);
+                        scene.add(object.scene);
+                    } else {
+                        object.position.set(position.x, position.y, position.z);
+                        object.scale.set(scale, scale, scale);
+                        scene.add(object);
+                    }
                 }, undefined, function(error) {
                     console.error(`Error loading model: ${modelPath}`, error);
                 });
@@ -143,9 +178,11 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-                if (model && !isZoomedIn) {
-                    model.rotation.y += 0.01;
-                }
+                scene.children.forEach(child => {
+                    if (child.isGroup || child.isObject3D) {
+                        child.rotation.y += 0.01;
+                    }
+                });
                 controls.update();
                 renderer.render(scene, camera);
             }
@@ -154,54 +191,102 @@
 
             if (enableDoubleClickZoom) {
                 viewport.addEventListener('dblclick', (event) => {
-                    if (!isZoomedIn) {
-                        zoomIn(camera, model);
-                    } else if (!isPopupVisible) {
-                        showPopup(event);
-                    } else {
-                        hidePopup();
+                    const rect = renderer.domElement.getBoundingClientRect();
+                    const mouse = new THREE.Vector2(
+                        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+                        -((event.clientY - rect.top) / rect.height) * 2 + 1
+                    );
+
+                    const raycaster = new THREE.Raycaster();
+                    raycaster.setFromCamera(mouse, camera);
+
+                    const intersects = raycaster.intersectObjects(scene.children, true);
+
+                    if (intersects.length > 0) {
+                        const target = intersects[0].object;
+                        const box = new THREE.Box3().setFromObject(target);
+                        const center = box.getCenter(new THREE.Vector3());
+                        const size = box.getSize(new THREE.Vector3());
+
+                        const maxDim = Math.max(size.x, size.y, size.z);
+                        const fov = camera.fov * (Math.PI / 180);
+                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2));
+                        cameraZ *= 2.0;
+
+                        const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
+                        const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
+
+                        camera.position.copy(newCameraPosition);
+                        camera.lookAt(center);
                     }
                 });
             }
         }
 
-        function zoomIn(camera, target) {
-            const box = new THREE.Box3().setFromObject(target);
-            const center = box.getCenter(new THREE.Vector3());
-            const size = box.getSize(new THREE.Vector3());
+        const mainModels = [
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: -10, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: -5, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: 5, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 10, y: 0, z: 0 }, scale: 1 }
+        ];
 
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const fov = camera.fov * (Math.PI / 180);
-            let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2));
-            cameraZ *= 2.2; // Apply zoom out factor (2.2) for better visibility
+        createScene('mainViewport', mainModels);
 
-            const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
-            const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
+        const categoryModels = {
+            geometry: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
+            physics: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
+            chemistry: [{ loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
+            biology: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }]
+        };
 
-            camera.position.copy(newCameraPosition);
-            camera.lookAt(center);
+        document.getElementById('btnGeometry').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('geometryViewport').style.display = 'flex';
+            createScene('geometryViewport', categoryModels.geometry, true);
+        });
 
-            isZoomedIn = true;
+        document.getElementById('btnPhysics').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('physicsViewport').style.display = 'flex';
+            createScene('physicsViewport', categoryModels.physics, true);
+        });
 
-            // Display the message to the user
-            const messagePopup = document.getElementById('messagePopup');
-            messagePopup.style.display = 'block';
-            setTimeout(() => {
-                messagePopup.style.display = 'none';
-            }, 3000); // Hide message after 3 seconds
-        }
+        document.getElementById('btnChemistry').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('chemistryViewport').style.display = 'flex';
+            createScene('chemistryViewport', categoryModels.chemistry, true);
+        });
 
-        function showPopup(event) {
+        document.getElementById('btnBiology').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('biologyViewport').style.display = 'flex';
+            createScene('biologyViewport', categoryModels.biology, true);
+        });
+
+        document.getElementById('backGeometry').addEventListener('click', () => {
+            document.getElementById('geometryViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backPhysics').addEventListener('click', () => {
+            document.getElementById('physicsViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backChemistry').addEventListener('click', () => {
+            document.getElementById('chemistryViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backBiology').addEventListener('click', () => {
+            document.getElementById('biologyViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('biologyViewport').addEventListener('dblclick', (event) => {
             const textPopup = document.getElementById('textPopup');
             const popupContent = document.getElementById('popupContent');
             textPopup.style.display = 'block';
-
-            // Set position 10cm to the right of the model
-            const box = new THREE.Box3().setFromObject(model);
-            const center = box.getCenter(new THREE.Vector3());
-            const positionOffset = 10 / 100; // Convert cm to meters (assuming your model is in meters)
-            textPopup.style.left = `${(center.x + positionOffset) * 10}px`; // Adjust to pixel scale
-            textPopup.style.top = `${center.y * 10}px`; // Adjust to pixel scale
 
             fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/info/insect%20info.txt')
                 .then(response => response.text())
@@ -209,34 +294,15 @@
                     const listItems = text.split('\n').map(item => `<li>${item}</li>`).join('');
                     popupContent.innerHTML = listItems;
 
-                    // Adjust popup size based on content
-                    const contentHeight = popupContent.scrollHeight + 30; // Additional space
-                    textPopup.style.height = `${contentHeight}px`;
-
-                    isPopupVisible = true;
+                    textPopup.style.left = '50%';
+                    textPopup.style.top = '50%';
+                    textPopup.style.transform = 'translate(-50%, -50%)';
                 })
                 .catch(error => console.error('Error fetching text info:', error));
-        }
+        });
 
-        function hidePopup() {
-            const textPopup = document.getElementById('textPopup');
-            textPopup.style.display = 'none';
-            isPopupVisible = false;
-            isZoomedIn = false;
-        }
-
-        document.getElementById('closePopup').addEventListener('click', hidePopup);
-
-        document.getElementById('btnBiology').addEventListener('click', async () => {
-            const viewport = document.getElementById('mainViewport');
-            viewport.innerHTML = '';
-            const biologyModel = {
-                loader: new THREE.GLTFLoader(),
-                path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb',
-                position: { x: 0, y: 0, z: 0 },
-                scale: 1
-            };
-            createScene('mainViewport', [biologyModel], true);
+        document.getElementById('closePopup').addEventListener('click', () => {
+            document.getElementById('textPopup').style.display = 'none';
         });
     </script>
 </body>
