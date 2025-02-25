@@ -227,7 +227,7 @@
                             scene.add(whiteSpotlight);
                             scene.add(whiteSpotlight.target);
 
-                            const yellowSpotlight1 = new THREE.Spotlight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // First yellow spotlight
+                            const yellowSpotlight1 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // First yellow spotlight
                             yellowSpotlight1.position.set(position.x, 20, position.z); // Same position as white spotlight
                             yellowSpotlight1.target = modelObject;
                             yellowSpotlight1.castShadow = true; // Enable shadows
@@ -238,7 +238,7 @@
                             scene.add(yellowSpotlight1);
                             scene.add(yellowSpotlight1.target);
 
-                            const yellowSpotlight2 = new THREE.Spotlight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // Additional yellow spotlight
+                            const yellowSpotlight2 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // Additional yellow spotlight
                             yellowSpotlight2.position.set(position.x, 25, position.z + 5); // Slightly offset for coverage
                             yellowSpotlight2.target = modelObject;
                             yellowSpotlight2.castShadow = true; // Enable shadows
@@ -282,49 +282,121 @@
                     loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
                 });
 
-                // Camera animation for a quick tour in main viewport
+                // Camera animation for a slow, focused tour in main viewport
                 let tourComplete = false;
+                let currentModelIndex = 0;
                 function startCameraTour() {
                     if (tourComplete) return;
-                    const tourDuration = 4000; // 4 seconds for the tour
-                    const numModels = models.length;
-                    const tourAngleStep = (2 * Math.PI) / numModels;
+                    const tourDurationPerModel = 1000; // 1 second per model (9 seconds total for 9 models)
+                    const settleDuration = 2000; // 2 seconds to settle back slowly
                     const tourRadius = radius + 10; // Slightly larger radius for the tour path
-                    let tourAngle = 0;
-                    const startTime = performance.now();
+                    const modelPositions = models.map((_, index) => {
+                        const angle = index * angleStep + Math.PI / 2;
+                        return {
+                            x: tourRadius * Math.cos(angle),
+                            z: tourRadius * Math.sin(angle)
+                        };
+                    });
 
-                    function animateTour(currentTime) {
+                    function animateTour(timestamp) {
                         if (tourComplete) {
-                            camera.position.set(0, 5, 30); // Return to original position
-                            controls.target.set(0, 0, 0); // Reset orbit target
-                            controls.update();
+                            // Slow settlement back to original position
+                            const startTime = performance.now();
+                            function settleBack(currentTime) {
+                                const elapsed = currentTime - startTime;
+                                if (elapsed < settleDuration) {
+                                    const progress = elapsed / settleDuration;
+                                    const easedProgress = 1 - Math.pow(1 - progress, 4); // Ease out (slows down at the end)
+                                    camera.position.lerpVectors(
+                                        new THREE.Vector3(modelPositions[currentModelIndex - 1].x, 10, modelPositions[currentModelIndex - 1].z),
+                                        new THREE.Vector3(0, 5, 30),
+                                        easedProgress
+                                    );
+                                    camera.lookAt(0, 0, 0);
+                                    controls.target.lerpVectors(
+                                        new THREE.Vector3(0, 0, 0),
+                                        new THREE.Vector3(0, 0, 0),
+                                        easedProgress
+                                    );
+                                    controls.update();
+                                    requestAnimationFrame(settleBack);
+                                } else {
+                                    camera.position.set(0, 5, 30); // Final position
+                                    controls.target.set(0, 0, 0); // Reset orbit target
+                                    controls.update();
+                                    console.log("Camera tour completed, settled back slowly to original position");
+                                }
+                            }
+                            requestAnimationFrame(settleBack);
                             return;
                         }
 
-                        const elapsed = currentTime - startTime;
-                        if (elapsed < tourDuration) {
-                            tourAngle = (elapsed / tourDuration) * 2 * Math.PI * 2; // Two full rotations
-                            const x = tourRadius * Math.cos(tourAngle);
-                            const z = tourRadius * Math.sin(tourAngle);
-                            camera.position.set(x, 10, z); // Higher y for better view
-                            camera.lookAt(0, 0, 0); // Look at scene center
-                            controls.target.set(0, 0, 0); // Keep orbit centered
-                            controls.update();
-                            requestAnimationFrame(animateTour);
-                        } else {
-                            tourComplete = true;
-                            camera.position.set(0, 5, 30); // Settle back to original position
-                            controls.target.set(0, 0, 0); // Reset orbit target
-                            controls.update();
-                            console.log("Camera tour completed, returned to original position");
+                        if (currentModelIndex < models.length) {
+                            const startTime = performance.now();
+                            const targetPosition = modelPositions[currentModelIndex];
+                            const focusDuration = tourDurationPerModel / 2; // Half second to move, half to focus
+
+                            function focusModel(currentTime) {
+                                const elapsed = currentTime - startTime;
+                                if (elapsed < focusDuration) {
+                                    // Move to the model's position
+                                    const progress = elapsed / focusDuration;
+                                    const easedProgress = progress * progress; // Ease in (accelerates)
+                                    camera.position.lerpVectors(
+                                        camera.position.clone(),
+                                        new THREE.Vector3(targetPosition.x, 10, targetPosition.z),
+                                        easedProgress
+                                    );
+                                    camera.lookAt(
+                                        models[currentModelIndex].position.x || 0,
+                                        0,
+                                        models[currentModelIndex].position.z || 0
+                                    );
+                                    controls.target.lerpVectors(
+                                        controls.target.clone(),
+                                        new THREE.Vector3(
+                                            models[currentModelIndex].position.x || 0,
+                                            0,
+                                            models[currentModelIndex].position.z || 0
+                                        ),
+                                        easedProgress
+                                    );
+                                    controls.update();
+                                    requestAnimationFrame(focusModel);
+                                } else if (elapsed < tourDurationPerModel) {
+                                    // Focus on the model (hold position)
+                                    camera.position.set(targetPosition.x, 10, targetPosition.z);
+                                    camera.lookAt(
+                                        models[currentModelIndex].position.x || 0,
+                                        0,
+                                        models[currentModelIndex].position.z || 0
+                                    );
+                                    controls.target.set(
+                                        models[currentModelIndex].position.x || 0,
+                                        0,
+                                        models[currentModelIndex].position.z || 0
+                                    );
+                                    controls.update();
+                                    requestAnimationFrame(focusModel);
+                                } else {
+                                    currentModelIndex++;
+                                    if (currentModelIndex < models.length) {
+                                        requestAnimationFrame(animateTour);
+                                    } else {
+                                        tourComplete = true;
+                                        requestAnimationFrame(animateTour);
+                                    }
+                                }
+                            }
+
+                            requestAnimationFrame(focusModel);
                         }
                     }
 
-                    requestAnimationFrame(animateTour);
+                    setTimeout(() => requestAnimationFrame(animateTour), 1000); // Delay to ensure models load
                 }
 
-                // Trigger the tour when the scene is fully loaded
-                setTimeout(startCameraTour, 1000); // Delay to ensure models load
+                startCameraTour();
             } else {
                 // Circular layout for all categories with models
                 const currentRadius = (viewportId === 'humanViewport') ? humanRadius : 
