@@ -14,19 +14,19 @@
             display: flex;
         }
         .sidebar {
-            width: 40%; /* Doubled from 20% for solidity and size */
+            width: 20%; /* Reverted from 40% for original size */
             background-color: #2c7481; /* Paradiso, solid */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px; /* Increased padding for larger size */
+            padding: 10px; /* Reverted from 20px for original size */
             border: none; /* Remove any borders or gradients for solidity */
         }
         .button {
-            width: 200px; /* Doubled from 100px for solidity and size */
-            height: 200px; /* Doubled from 100px for solidity and size */
-            margin: 20px; /* Increased margin for larger size */
+            width: 100px; /* Reverted from 200px for original size */
+            height: 100px; /* Reverted from 200px for original size */
+            margin: 10px; /* Reverted from 20px for original size */
             border-radius: 50%;
             background-color: #dadad8; /* Quill Gray, solid */
             color: #000000; /* Bold black text */
@@ -38,7 +38,7 @@
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
             border: none; /* Remove any borders for solidity */
             font-weight: bold; /* Ensure bold text */
-            font-size: 24px; /* Increased font size for readability on larger buttons */
+            font-size: 16px; /* Reverted from 24px for original readability */
         }
         .button:hover {
             transform: scale(1.1); /* Pop-up effect: scale up 10% */
@@ -53,7 +53,7 @@
             color: #000000; /* Bold black text on active */
         }
         .viewport {
-            width: 60%; /* Adjusted from 80% to accommodate larger sidebar */
+            width: 80%; /* Reverted from 60% to accommodate original sidebar size */
             height: 100%;
             position: relative;
         }
@@ -214,8 +214,8 @@
 
                         // Add white and yellow spotlights for each model (store-like effect), with uniform intensity
                         if (addSpotlight) {
-                            const whiteIntensity = 23.4; // Match intensity of specific models
-                            const yellowIntensity = 24.8832; // Match intensity of specific models
+                            const whiteIntensity = 23.4; // Match intensity of all models
+                            const yellowIntensity = 24.8832; // Match intensity of all models
 
                             const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1); // Adjusted intensity
                             whiteSpotlight.position.set(position.x, 20, position.z); // Higher position for dramatic effect
@@ -282,6 +282,69 @@
                     }
                     loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
                 });
+
+                // Load logo.glb at the center of the main viewport
+                loaderGLTF.load(
+                    'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.glb',
+                    function(gltf) {
+                        console.log(`Logo loaded successfully: logo.glb`);
+                        const logoObject = gltf.scene;
+                        logoObject.position.set(0, 0, 0); // Center of the main viewport
+                        logoObject.scale.set(1, 1, 1); // Default scale, adjust if needed
+                        logoObject.userData.isZoomed = false; // Track zoom state
+                        logoObject.userData.isStatic = true; // Mark as static (non-rotating)
+                        scene.add(logoObject);
+
+                        // Add white and yellow spotlights for the logo, matching other models
+                        const whiteIntensity = 23.4;
+                        const yellowIntensity = 24.8832;
+
+                        const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1);
+                        whiteSpotlight.position.set(0, 20, 0); // Centered, higher position
+                        whiteSpotlight.target = logoObject;
+                        whiteSpotlight.castShadow = true;
+                        whiteSpotlight.shadow.mapSize.width = 1024;
+                        whiteSpotlight.shadow.mapSize.height = 1024;
+                        whiteSpotlight.shadow.camera.near = 0.5;
+                        whiteSpotlight.shadow.camera.far = 50;
+                        scene.add(whiteSpotlight);
+                        scene.add(whiteSpotlight.target);
+
+                        const yellowSpotlight1 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1);
+                        yellowSpotlight1.position.set(0, 20, 0); // Centered, same height as white
+                        yellowSpotlight1.target = logoObject;
+                        yellowSpotlight1.castShadow = true;
+                        yellowSpotlight1.shadow.mapSize.width = 1024;
+                        yellowSpotlight1.shadow.mapSize.height = 1024;
+                        yellowSpotlight1.shadow.camera.near = 0.5;
+                        yellowSpotlight1.shadow.camera.far = 50;
+                        scene.add(yellowSpotlight1);
+                        scene.add(yellowSpotlight1.target);
+
+                        const yellowSpotlight2 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1);
+                        yellowSpotlight2.position.set(0, 25, 5); // Slightly offset for coverage
+                        yellowSpotlight2.target = logoObject;
+                        yellowSpotlight2.castShadow = true;
+                        yellowSpotlight2.shadow.mapSize.width = 1024;
+                        yellowSpotlight2.shadow.mapSize.height = 1024;
+                        yellowSpotlight2.shadow.camera.near = 0.5;
+                        yellowSpotlight2.shadow.camera.far = 50;
+                        scene.add(yellowSpotlight2);
+                        scene.add(yellowSpotlight2.target);
+
+                        console.log(`Added white and yellow spotlights to logo at 0, 0, 0 with uniform intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow) for each yellow light`);
+                    },
+                    function(xhr) {
+                        console.log(`Progress for logo.glb: ${xhr.loaded / xhr.total * 100}% loaded`);
+                    },
+                    function(error) {
+                        console.error(`Error loading logo.glb:`, error);
+                        console.log("Checking logo path validity...");
+                        console.log("URL used: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.glb");
+                        console.log("Possible issues: File not found (404), network error, or incorrect path.");
+                        console.log("Try verifying the file exists at the GitHub repository or use a local path, e.g., 'file:///E:/Python backups/3d converter/models/logo.glb'");
+                    }
+                );
             } else {
                 // Circular layout for all categories with models
                 const currentRadius = (viewportId === 'humanViewport') ? humanRadius : 
