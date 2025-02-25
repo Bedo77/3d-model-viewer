@@ -159,40 +159,45 @@
             const loaderOBJ = new THREE.OBJLoader();
             const textureLoader = new THREE.TextureLoader();
 
-            // Add showroom meshes
+            // Add showroom meshes (fixed, non-rotating)
             function addShowroomMeshes() {
-                // Ground mesh
+                // Ground mesh (fixed)
                 const groundGeometry = new THREE.PlaneGeometry(200, 200);
                 const groundMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.DoubleSide }); // Flamingo for ground
                 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
                 ground.rotation.x = -Math.PI / 2; // Horizontal plane
                 ground.position.set(0, 0, 0);
                 ground.receiveShadow = true;
+                ground.userData.isStatic = true; // Mark as static (non-rotating)
                 scene.add(ground);
 
-                // Left side wall
+                // Left side wall (fixed)
                 const leftWallGeometry = new THREE.PlaneGeometry(200, 50);
                 const leftWallMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.DoubleSide }); // Flamingo for walls
                 const leftWall = new THREE.Mesh(leftWallGeometry, leftWallMaterial);
                 leftWall.position.set(-100, 25, 0); // Left side, centered vertically
                 leftWall.receiveShadow = true;
+                leftWall.userData.isStatic = true; // Mark as static (non-rotating)
                 scene.add(leftWall);
 
-                // Right side wall
+                // Right side wall (fixed)
                 const rightWallGeometry = new THREE.PlaneGeometry(200, 50);
                 const rightWallMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.DoubleSide }); // Flamingo for walls
                 const rightWall = new THREE.Mesh(rightWallGeometry, rightWallMaterial);
                 rightWall.position.set(100, 25, 0); // Right side, centered vertically
                 rightWall.receiveShadow = true;
+                rightWall.userData.isStatic = true; // Mark as static (non-rotating)
                 scene.add(rightWall);
 
-                // Background wall
+                // Background wall (fixed)
                 const backWallGeometry = new THREE.PlaneGeometry(200, 50);
                 const backWallMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.DoubleSide }); // Flamingo for walls
                 const backWall = new THREE.Mesh(backWallGeometry, backWallMaterial);
                 backWall.position.set(0, 25, -100); // Behind models, centered vertically
                 backWall.receiveShadow = true;
+                backWall.userData.isStatic = true; // Mark as static (non-rotating)
                 scene.add(backWall);
+                console.log("Showroom meshes (ground, left wall, right wall, background wall) added as fixed, non-rotating elements");
             }
 
             addShowroomMeshes();
@@ -240,7 +245,7 @@
                             scene.add(whiteSpotlight);
                             scene.add(whiteSpotlight.target);
 
-                            const yellowSpotlight = new THREE.SpotLight(0xffff00, 4.1472, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (3.456 to 4.1472)
+                            const yellowSpotlight = new THREE.SpotLight(0xffff00, 4.97664, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (4.1472 to 4.97664)
                             yellowSpotlight.position.set(position.x, 20, position.z); // Same position as white spotlight
                             yellowSpotlight.target = modelObject;
                             yellowSpotlight.castShadow = true; // Enable shadows
@@ -277,7 +282,7 @@
                         scene.add(logo);
 
                         // Add yellow spotlight above the logo
-                        const logoSpotlight = new THREE.SpotLight(0xffff00, 4.1472, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (3.456 to 4.1472)
+                        const logoSpotlight = new THREE.SpotLight(0xffff00, 4.97664, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (4.1472 to 4.97664)
                         logoSpotlight.position.set(0, 25, 0); // Above the logo
                         logoSpotlight.target = logo;
                         logoSpotlight.castShadow = true;
@@ -349,7 +354,7 @@
                 requestAnimationFrame(animate);
                 scene.children.forEach(child => {
                     if (child.isGroup || child.isObject3D) {
-                        if (isRotating && !child.userData.isZoomed) { // Only rotate unzoomed models
+                        if (isRotating && !child.userData.isZoomed && !child.userData.isStatic) { // Only rotate non-static, unzoomed models
                             child.rotation.y += 0.01; // Slow rotation for visibility
                         }
                     }
@@ -473,7 +478,7 @@
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 1.5 }, // Scaled up by 50%
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 0, y: 0, z: 0 }, scale: 1.5 }, // Scaled up by 50%
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 },
