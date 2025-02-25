@@ -121,7 +121,6 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FontLoader.js"></script>
     <script>
         console.log("Starting script initialization...");
 
@@ -144,7 +143,7 @@
             const controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.1;
-            controls.minDistance = 2; // Reduced for closer zoom
+            controls.minDistance = 2; // Reduced for closer view
             controls.maxDistance = 200;
 
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Bright background
@@ -159,7 +158,6 @@
             const loaderGLTF = new THREE.GLTFLoader();
             const loaderOBJ = new THREE.OBJLoader();
             const textureLoader = new THREE.TextureLoader();
-            const fontLoader = new THREE.FontLoader();
 
             // Add showroom meshes (fixed, non-rotating) - only background wall
             function addShowroomMeshes() {
@@ -284,20 +282,17 @@
             }
 
             // Position models in a circular layout for main viewport, or circularly for categories
-            const radius = 40; // Radius for main viewport
+            const radius = 35; // Narrowed circle slightly for main viewport
             const categoryRadius = 3; // Reduced for Human and default for other categories
             const humanRadius = 2; // Further reduced for Human to bring models closer
             const agricultureRadius = 6; // Slightly increased for Agriculture
             if (viewportId === 'mainViewport') {
-                const angleStep = (2 * Math.PI) / 10; // Angle between 10 models, ensuring equal and even distance
+                const angleStep = (2 * Math.PI) / 7; // Angle between 7 models, ensuring equal and even distance
                 models.forEach((model, index) => {
                     const angle = index * angleStep + Math.PI / 2; // Offset for visibility around logo
                     const x = radius * Math.cos(angle);
                     const z = radius * Math.sin(angle);
                     let scale = model.scale;
-                    if (model.path.includes('skull_keychain.glb') || model.path.includes('bullet_physics_animation_8_reconstruction.glb')) {
-                        scale *= 2.25; // Increased scale to 2.25 (50% more than 1.5)
-                    }
                     if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
                         scale *= 0.6; // Scale down by 40%
                     }
@@ -313,9 +308,6 @@
                     const x = currentRadius * Math.cos(angle);
                     const z = currentRadius * Math.sin(angle);
                     let scale = model.scale;
-                    if (model.path.includes('skull_keychain.glb') || model.path.includes('bullet_physics_animation_8_reconstruction.glb')) {
-                        scale *= 2.25; // Increased scale to 2.25 (50% more than 1.5)
-                    }
                     if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
                         scale *= 0.6; // Scale down by 40%
                     }
@@ -344,105 +336,6 @@
 
             animate();
 
-            if (enableDoubleClickZoom) {
-                // Remove and re-add zoom-in function for dynamic, responsive behavior
-                viewport.addEventListener('dblclick', (event) => {
-                    console.log(`Double-click detected on ${viewportId}`);
-                    const rect = renderer.domElement.getBoundingClientRect();
-                    const mouse = new THREE.Vector2(
-                        ((event.clientX - rect.left) / rect.width) * 2 - 1,
-                        -((event.clientY - rect.top) / rect.height) * 2 + 1
-                    );
-
-                    const raycaster = new THREE.Raycaster();
-                    raycaster.setFromCamera(mouse, camera);
-
-                    // Filter out static meshes (background wall, logo) to ensure only models are targeted
-                    const modelObjects = scene.children.filter(child => 
-                        (child.isGroup || child.isObject3D) && !child.userData.isStatic
-                    );
-                    const intersects = raycaster.intersectObjects(modelObjects, true);
-
-                    if (intersects.length > 0) {
-                        console.log(`Intersection detected with object: ${intersects[0].object.name || 'Unnamed object'}`);
-                        const target = intersects[0].object;
-                        let rootTarget = target;
-                        while (rootTarget.parent && !rootTarget.userData.isRoot) {
-                            rootTarget = rootTarget.parent;
-                        }
-                        if (!rootTarget.userData.isRoot) {
-                            rootTarget.userData.isRoot = true; // Mark as root for rotation control
-                        }
-                        rootTarget.userData.isZoomed = true; // Mark as zoomed to stop rotation
-
-                        const box = new THREE.Box3().setFromObject(rootTarget);
-                        const center = box.getCenter(new THREE.Vector3());
-                        const size = box.getSize(new THREE.Vector3());
-
-                        const maxDim = Math.max(size.x, size.y, size.z) * 1.5; // Increased for larger models
-                        const fov = camera.fov * (Math.PI / 180);
-                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 12; // Increased for even closer, dynamic zoom
-
-                        const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
-                        const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
-
-                        camera.position.copy(newCameraPosition);
-                        camera.lookAt(center);
-                        controls.target.copy(center); // Center the controls on the clicked model
-                        controls.update(); // Ensure controls reflect new target
-                        selectedModel = rootTarget; // Restrict orbit to this model
-                        isRotating = false; // Stop all rotations temporarily
-                    } else if (models.length > 1 && viewportId !== 'mainViewport') {
-                        // Zoom to include all models in category when clicking empty space
-                        console.log(`Zooming to all models in ${viewportId}`);
-                        const allBoxes = models.map(model => {
-                            const dummy = new THREE.Object3D();
-                            dummy.position.copy(model.position);
-                            return new THREE.Box3().setFromObject(dummy);
-                        });
-                        const overallBox = allBoxes.reduce((acc, box) => acc.union(box), new THREE.Box3());
-                        const center = overallBox.getCenter(new THREE.Vector3());
-                        const size = overallBox.getSize(new THREE.Vector3());
-                        const maxDim = Math.max(size.x, size.y, size.z) * 1.5;
-                        const fov = camera.fov * (Math.PI / 180);
-                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 12; // Increased for even closer, dynamic zoom
-
-                        const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
-                        const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
-
-                        camera.position.copy(newCameraPosition);
-                        camera.lookAt(center);
-                        controls.target.copy(center); // Center on all models
-                        controls.update(); // Ensure controls reflect new target
-                        selectedModel = null; // No specific model selected
-                        isRotating = false; // Stop all rotations temporarily
-                        scene.children.forEach(child => {
-                            if (child.userData.isZoomed) {
-                                child.userData.isZoomed = false; // Reset zoom state for all models
-                            }
-                        });
-                    } else {
-                        console.log("No intersection detected on double-click");
-                    }
-                });
-
-                // Restore full orbit when returning to main or another category
-                document.querySelectorAll('.back-button').forEach(backButton => {
-                    backButton.addEventListener('click', () => {
-                        console.log(`Restoring full orbit from ${viewportId}`);
-                        selectedModel = null; // Reset selected model
-                        isRotating = true; // Resume rotation for all models
-                        scene.children.forEach(child => {
-                            if (child.userData.isZoomed) {
-                                child.userData.isZoomed = false; // Reset zoom state
-                            }
-                        });
-                        controls.target.set(0, 0, 0); // Reset orbit target to origin
-                        controls.update();
-                    });
-                });
-            }
-
             // Handle window resize correctly
             window.addEventListener('resize', () => {
                 console.log(`Resizing viewport ${viewportId}...`);
@@ -459,12 +352,9 @@
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 2.25 }, // Increased scale to 2.25 (50% more than 1.5)
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 0, y: 0, z: 0 }, scale: 2.25 }, // Increased scale to 2.25 (50% more than 1.5)
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
         ];
 
@@ -474,7 +364,6 @@
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             physics: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 0, y: 0, z: 0 }, scale: 2.25 }, // Increased scale to 2.25 (50% more than 1.5)
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 }
             ],
             chemistry: [
@@ -485,8 +374,7 @@
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             human: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 2.25 } // Increased scale to 2.25 (50% more than 1.5)
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             agriculture: [
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
@@ -511,7 +399,7 @@
             const geometryViewport = document.getElementById('geometryViewport');
             geometryViewport.style.display = 'flex';
             try {
-                createScene('geometryViewport', categoryModels.geometry, true);
+                createScene('geometryViewport', categoryModels.geometry, false); // Removed zoom-in
                 console.log("Geometry viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Geometry viewport:", error);
@@ -524,7 +412,7 @@
             const physicsViewport = document.getElementById('physicsViewport');
             physicsViewport.style.display = 'flex';
             try {
-                createScene('physicsViewport', categoryModels.physics, true);
+                createScene('physicsViewport', categoryModels.physics, false); // Removed zoom-in
                 console.log("Physics viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Physics viewport:", error);
@@ -537,7 +425,7 @@
             const chemistryViewport = document.getElementById('chemistryViewport');
             chemistryViewport.style.display = 'flex';
             try {
-                createScene('chemistryViewport', categoryModels.chemistry, true);
+                createScene('chemistryViewport', categoryModels.chemistry, false); // Removed zoom-in
                 console.log("Chemistry viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Chemistry viewport:", error);
@@ -550,7 +438,7 @@
             const biologyViewport = document.getElementById('biologyViewport');
             biologyViewport.style.display = 'flex';
             try {
-                createScene('biologyViewport', categoryModels.biology, true);
+                createScene('biologyViewport', categoryModels.biology, false); // Removed zoom-in
                 console.log("Biology viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Biology viewport:", error);
@@ -563,7 +451,7 @@
             const humanViewport = document.getElementById('humanViewport');
             humanViewport.style.display = 'flex';
             try {
-                createScene('humanViewport', categoryModels.human, true);
+                createScene('humanViewport', categoryModels.human, false); // Removed zoom-in
                 console.log("Human viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Human viewport:", error);
@@ -576,7 +464,7 @@
             const agricultureViewport = document.getElementById('agricultureViewport');
             agricultureViewport.style.display = 'flex';
             try {
-                createScene('agricultureViewport', categoryModels.agriculture, true);
+                createScene('agricultureViewport', categoryModels.agriculture, false); // Removed zoom-in
                 console.log("Agriculture viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Agriculture viewport:", error);
@@ -589,7 +477,7 @@
             const animalViewport = document.getElementById('animalViewport');
             animalViewport.style.display = 'flex';
             try {
-                createScene('animalViewport', categoryModels.animal, true);
+                createScene('animalViewport', categoryModels.animal, false); // Removed zoom-in
                 console.log("Animal viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Animal viewport:", error);
