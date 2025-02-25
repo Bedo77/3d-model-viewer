@@ -139,10 +139,10 @@
             controls.minDistance = 5;
             controls.maxDistance = 200;
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Increased ambient for brighter background
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Bright background
             scene.add(ambientLight);
 
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7); // Increased directional for brighter background
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7); // Bright background
             directionalLight.position.set(5, 10, 7.5);
             scene.add(directionalLight);
 
@@ -179,12 +179,12 @@
                         }
                         modelObject.position.set(position.x, position.y, position.z);
                         modelObject.scale.set(scale, scale, scale);
-                        modelObject.userData.originalControls = controls.clone(); // Store original controls for individual orbit
+                        modelObject.userData.isZoomed = false; // Track zoom state
                         scene.add(modelObject);
 
                         // Add white spotlight for each model (store-like effect)
                         if (addSpotlight) {
-                            const spotlight = new THREE.SpotLight(0xffffff, 3.9, 30, Math.PI / 6, 0.2, 1); // Increased intensity by 30% (3 to 3.9)
+                            const spotlight = new THREE.SpotLight(0xffffff, 3.9, 30, Math.PI / 6, 0.2, 1); // Bright spotlight
                             spotlight.position.set(position.x, 20, position.z); // Higher position for dramatic effect
                             spotlight.target = modelObject;
                             spotlight.castShadow = true; // Enable shadows
@@ -209,10 +209,10 @@
             // Load logo in the main viewport center
             if (viewportId === 'mainViewport') {
                 textureLoader.load(
-                    'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png', // Replace with actual logo path
+                    'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png', // Replace with actual logo path or local path
                     function(texture) {
                         const logoGeometry = new THREE.PlaneGeometry(5, 5); // Adjust size as needed
-                        const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+                        const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide });
                         const logo = new THREE.Mesh(logoGeometry, logoMaterial);
                         logo.position.set(0, 5, 0); // Center in main viewport
                         logo.rotation.y = Math.PI; // Face the camera
@@ -277,7 +277,7 @@
                 requestAnimationFrame(animate);
                 scene.children.forEach(child => {
                     if (child.isGroup || child.isObject3D) {
-                        if (isRotating && (child.userData.isZoomed !== true)) { // Only rotate unzoomed models
+                        if (isRotating && !child.userData.isZoomed) { // Only rotate unzoomed models
                             child.rotation.y += 0.01; // Slow rotation for visibility
                         }
                     }
@@ -312,7 +312,9 @@
                         while (rootTarget.parent && !rootTarget.userData.isRoot) {
                             rootTarget = rootTarget.parent;
                         }
-                        rootTarget.userData.isRoot = true; // Mark as root for rotation control
+                        if (!rootTarget.userData.isRoot) {
+                            rootTarget.userData.isRoot = true; // Mark as root for rotation control
+                        }
                         rootTarget.userData.isZoomed = true; // Mark as zoomed to stop rotation
 
                         const box = new THREE.Box3().setFromObject(rootTarget);
@@ -354,13 +356,13 @@
                 });
             }
 
-            // Handle window resize
+            // Handle window resize correctly
             window.addEventListener('resize', () => {
                 console.log(`Resizing viewport ${viewportId}...`);
                 camera.aspect = viewport.clientWidth / viewport.clientHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(viewport.clientWidth, viewport.clientHeight);
-                controls.handleResize(); // Update controls on resize
+                controls.update(); // Use update() instead of handleResize
             });
 
             console.log(`Scene for ${viewportId} initialized successfully`);
