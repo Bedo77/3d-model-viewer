@@ -167,7 +167,7 @@
             if (viewportId !== 'mainViewport') {
                 camera.position.set(0, 5, 24); // 20% closer (30 * 0.8 = 24)
             } else {
-                camera.position.set(0, 5, 30); // Main viewport stays as is
+                camera.position.set(0, 5, 30); // Main viewport starts here, animated later
             }
 
             const loaderGLTF = new THREE.GLTFLoader();
@@ -227,17 +227,29 @@
                             scene.add(whiteSpotlight);
                             scene.add(whiteSpotlight.target);
 
-                            const yellowSpotlight = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // Adjusted intensity
-                            yellowSpotlight.position.set(position.x, 20, position.z); // Same position as white spotlight
-                            yellowSpotlight.target = modelObject;
-                            yellowSpotlight.castShadow = true; // Enable shadows
-                            yellowSpotlight.shadow.mapSize.width = 1024;
-                            yellowSpotlight.shadow.mapSize.height = 1024;
-                            yellowSpotlight.shadow.camera.near = 0.5;
-                            yellowSpotlight.shadow.camera.far = 50;
-                            scene.add(yellowSpotlight);
-                            scene.add(yellowSpotlight.target);
-                            console.log(`Added white and yellow spotlights to model at ${position.x}, ${position.z} with intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow)`);
+                            const yellowSpotlight1 = new THREE.Spotlight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // First yellow spotlight
+                            yellowSpotlight1.position.set(position.x, 20, position.z); // Same position as white spotlight
+                            yellowSpotlight1.target = modelObject;
+                            yellowSpotlight1.castShadow = true; // Enable shadows
+                            yellowSpotlight1.shadow.mapSize.width = 1024;
+                            yellowSpotlight1.shadow.mapSize.height = 1024;
+                            yellowSpotlight1.shadow.camera.near = 0.5;
+                            yellowSpotlight1.shadow.camera.far = 50;
+                            scene.add(yellowSpotlight1);
+                            scene.add(yellowSpotlight1.target);
+
+                            const yellowSpotlight2 = new THREE.Spotlight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // Additional yellow spotlight
+                            yellowSpotlight2.position.set(position.x, 25, position.z + 5); // Slightly offset for coverage
+                            yellowSpotlight2.target = modelObject;
+                            yellowSpotlight2.castShadow = true; // Enable shadows
+                            yellowSpotlight2.shadow.mapSize.width = 1024;
+                            yellowSpotlight2.shadow.mapSize.height = 1024;
+                            yellowSpotlight2.shadow.camera.near = 0.5;
+                            yellowSpotlight2.shadow.camera.far = 50;
+                            scene.add(yellowSpotlight2);
+                            scene.add(yellowSpotlight2.target);
+
+                            console.log(`Added white and yellow spotlights to model at ${position.x}, ${position.z} with intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow) for each yellow light`);
                         }
                     },
                     function(xhr) {
@@ -269,6 +281,50 @@
                     }
                     loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
                 });
+
+                // Camera animation for a quick tour in main viewport
+                let tourComplete = false;
+                function startCameraTour() {
+                    if (tourComplete) return;
+                    const tourDuration = 4000; // 4 seconds for the tour
+                    const numModels = models.length;
+                    const tourAngleStep = (2 * Math.PI) / numModels;
+                    const tourRadius = radius + 10; // Slightly larger radius for the tour path
+                    let tourAngle = 0;
+                    const startTime = performance.now();
+
+                    function animateTour(currentTime) {
+                        if (tourComplete) {
+                            camera.position.set(0, 5, 30); // Return to original position
+                            controls.target.set(0, 0, 0); // Reset orbit target
+                            controls.update();
+                            return;
+                        }
+
+                        const elapsed = currentTime - startTime;
+                        if (elapsed < tourDuration) {
+                            tourAngle = (elapsed / tourDuration) * 2 * Math.PI * 2; // Two full rotations
+                            const x = tourRadius * Math.cos(tourAngle);
+                            const z = tourRadius * Math.sin(tourAngle);
+                            camera.position.set(x, 10, z); // Higher y for better view
+                            camera.lookAt(0, 0, 0); // Look at scene center
+                            controls.target.set(0, 0, 0); // Keep orbit centered
+                            controls.update();
+                            requestAnimationFrame(animateTour);
+                        } else {
+                            tourComplete = true;
+                            camera.position.set(0, 5, 30); // Settle back to original position
+                            controls.target.set(0, 0, 0); // Reset orbit target
+                            controls.update();
+                            console.log("Camera tour completed, returned to original position");
+                        }
+                    }
+
+                    requestAnimationFrame(animateTour);
+                }
+
+                // Trigger the tour when the scene is fully loaded
+                setTimeout(startCameraTour, 1000); // Delay to ensure models load
             } else {
                 // Circular layout for all categories with models
                 const currentRadius = (viewportId === 'humanViewport') ? humanRadius : 
@@ -343,7 +399,6 @@
 
         const categoryModels = {
             geometry: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             physics: [
