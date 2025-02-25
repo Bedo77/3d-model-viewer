@@ -14,19 +14,19 @@
             display: flex;
         }
         .sidebar {
-            width: 20%; /* Reverted for original size */
+            width: 18%; /* Narrowed from 20% for a slight reduction */
             background-color: #2c7481; /* Paradiso, solid */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 10px; /* Reverted for original size */
+            padding: 10px; /* Maintain original padding */
             border: none; /* Remove any borders or gradients for solidity */
         }
         .button {
-            width: 100px; /* Reverted for original size */
-            height: 100px; /* Reverted for original size */
-            margin: 10px; /* Reverted for original size */
+            width: 100px; /* Maintain original size */
+            height: 100px; /* Maintain original size */
+            margin: 10px; /* Maintain original margin */
             border-radius: 50%;
             background-color: #dadad8; /* Quill Gray, solid */
             color: #000000; /* Bold black text */
@@ -38,7 +38,7 @@
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
             border: none; /* Remove any borders for solidity */
             font-weight: bold; /* Ensure bold text */
-            font-size: 16px; /* Reverted for original readability */
+            font-size: 16px; /* Maintain original readability */
         }
         .button:hover {
             transform: scale(1.1); /* Pop-up effect: scale up 10% */
@@ -53,7 +53,7 @@
             color: #000000; /* Bold black text on active */
         }
         .viewport {
-            width: 80%; /* Reverted to accommodate original sidebar size */
+            width: 82%; /* Adjusted from 80% to accommodate narrowed sidebar */
             height: 100%;
             position: relative;
         }
@@ -285,25 +285,29 @@
                     loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
                 });
 
-                // Load logo.glb at the center of the main viewport, triple size, rotating, with high-intensity lights
+                // Load logo.glb at the center of the main viewport, triple size, doubled thickness, rotating, with shiny effect and high-intensity lights
                 loaderGLTF.load(
                     'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.glb',
                     function(gltf) {
                         console.log(`Logo loaded successfully: logo.glb`);
                         const logoObject = gltf.scene;
                         logoObject.position.set(0, 0, 0); // Center of the main viewport
-                        logoObject.scale.set(3, 3, 3); // Triple size
+                        logoObject.scale.set(3, 3, 6); // Triple size, doubled thickness (Z-axis)
                         logoObject.userData.isZoomed = false; // Track zoom state
                         logoObject.userData.isStatic = false; // Allow rotation like other models
                         scene.add(logoObject);
 
-                        // Solidify logo by ensuring materials are non-transparent
+                        // Solidify and make shiny by ensuring materials are non-transparent and reflective
                         logoObject.traverse((child) => {
                             if (child.isMesh) {
-                                child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
+                                child.material = new THREE.MeshStandardMaterial({
+                                    color: 0xffffff, // Default white, adjust if logo has specific color
+                                    metalness: 0.9, // High metalness for shiny effect
+                                    roughness: 0.1, // Low roughness for glossy reflection
+                                    transparent: false // Ensure no transparency for solidity
+                                });
                                 child.castShadow = true;
                                 child.receiveShadow = true;
-                                child.material.transparent = false; // Ensure no transparency for solidity
                             }
                         });
 
@@ -333,7 +337,7 @@
                         scene.add(yellowSpotlight);
                         scene.add(yellowSpotlight.target);
 
-                        console.log(`Added white and yellow spotlights to logo at 0, 0, 0 with high intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow)`);
+                        console.log(`Added white and yellow spotlights to logo at 0, 0, 0 with high intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow), shiny effect applied`);
                     },
                     function(xhr) {
                         console.log(`Progress for logo.glb: ${xhr.loaded / xhr.total * 100}% loaded`);
