@@ -161,9 +161,9 @@
 
             // Add showroom meshes (fixed, non-rotating)
             function addShowroomMeshes() {
-                // Ground mesh (fixed)
+                // Ground mesh (fixed, black)
                 const groundGeometry = new THREE.PlaneGeometry(200, 200);
-                const groundMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.DoubleSide }); // Flamingo for ground
+                const groundMaterial = new THREE.MeshStandardMaterial({ color: '#000000', side: THREE.DoubleSide }); // Black for ground
                 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
                 ground.rotation.x = -Math.PI / 2; // Horizontal plane
                 ground.position.set(0, 0, 0);
@@ -171,33 +171,15 @@
                 ground.userData.isStatic = true; // Mark as static (non-rotating)
                 scene.add(ground);
 
-                // Left side wall (fixed)
-                const leftWallGeometry = new THREE.PlaneGeometry(200, 50);
-                const leftWallMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.DoubleSide }); // Flamingo for walls
-                const leftWall = new THREE.Mesh(leftWallGeometry, leftWallMaterial);
-                leftWall.position.set(-100, 25, 0); // Left side, centered vertically
-                leftWall.receiveShadow = true;
-                leftWall.userData.isStatic = true; // Mark as static (non-rotating)
-                scene.add(leftWall);
-
-                // Right side wall (fixed)
-                const rightWallGeometry = new THREE.PlaneGeometry(200, 50);
-                const rightWallMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.DoubleSide }); // Flamingo for walls
-                const rightWall = new THREE.Mesh(rightWallGeometry, rightWallMaterial);
-                rightWall.position.set(100, 25, 0); // Right side, centered vertically
-                rightWall.receiveShadow = true;
-                rightWall.userData.isStatic = true; // Mark as static (non-rotating)
-                scene.add(rightWall);
-
                 // Background wall (fixed)
                 const backWallGeometry = new THREE.PlaneGeometry(200, 50);
-                const backWallMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.DoubleSide }); // Flamingo for walls
+                const backWallMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.DoubleSide }); // Flamingo for background wall
                 const backWall = new THREE.Mesh(backWallGeometry, backWallMaterial);
                 backWall.position.set(0, 25, -100); // Behind models, centered vertically
                 backWall.receiveShadow = true;
                 backWall.userData.isStatic = true; // Mark as static (non-rotating)
                 scene.add(backWall);
-                console.log("Showroom meshes (ground, left wall, right wall, background wall) added as fixed, non-rotating elements");
+                console.log("Showroom meshes (ground and background wall) added as fixed, non-rotating elements");
             }
 
             addShowroomMeshes();
@@ -245,7 +227,7 @@
                             scene.add(whiteSpotlight);
                             scene.add(whiteSpotlight.target);
 
-                            const yellowSpotlight = new THREE.SpotLight(0xffff00, 4.97664, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (4.1472 to 4.97664)
+                            const yellowSpotlight = new THREE.SpotLight(0xffff00, 4.97664, 30, Math.PI / 6, 0.2, 1); // Bright yellow spotlight
                             yellowSpotlight.position.set(position.x, 20, position.z); // Same position as white spotlight
                             yellowSpotlight.target = modelObject;
                             yellowSpotlight.castShadow = true; // Enable shadows
@@ -267,23 +249,39 @@
                 );
             }
 
-            // Load logo in the main viewport center with detailed debugging
+            // Load logo in the center of the background mesh with mixed color palette
             if (viewportId === 'mainViewport') {
                 console.log("Attempting to load logo from: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png");
                 textureLoader.load(
                     'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png',
                     function(texture) {
                         console.log("Logo texture loaded successfully");
-                        const logoGeometry = new THREE.PlaneGeometry(5, 5); // Adjust size as needed
-                        const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide });
+                        // Mix the color palette (Paradiso, Quill Gray, Jaffa, Flamingo) for a blended effect
+                        const paletteColors = [
+                            new THREE.Color('#2c7481'), // Paradiso
+                            new THREE.Color('#dadad8'), // Quill Gray
+                            new THREE.Color('#f47e42'), // Jaffa
+                            new THREE.Color('#f46c27')  // Flamingo
+                        ];
+                        let mixedColor = new THREE.Color(0, 0, 0);
+                        paletteColors.forEach(color => mixedColor.add(color));
+                        mixedColor.divideScalar(paletteColors.length); // Average the colors
+
+                        const logoGeometry = new THREE.PlaneGeometry(10, 5); // Larger size to fit background wall
+                        const logoMaterial = new THREE.MeshBasicMaterial({
+                            map: texture,
+                            transparent: true,
+                            side: THREE.DoubleSide,
+                            color: mixedColor // Apply mixed color as a tint
+                        });
                         const logo = new THREE.Mesh(logoGeometry, logoMaterial);
-                        logo.position.set(0, 5, 0); // Center in main viewport
-                        logo.rotation.y = Math.PI; // Face the camera
+                        logo.position.set(0, 25, -100); // Center on background wall
+                        logo.rotation.y = 0; // Face forward
                         scene.add(logo);
 
                         // Add yellow spotlight above the logo
-                        const logoSpotlight = new THREE.SpotLight(0xffff00, 4.97664, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (4.1472 to 4.97664)
-                        logoSpotlight.position.set(0, 25, 0); // Above the logo
+                        const logoSpotlight = new THREE.SpotLight(0xffff00, 4.97664, 30, Math.PI / 6, 0.2, 1); // Bright yellow spotlight
+                        logoSpotlight.position.set(0, 35, -100); // Above the logo on the background wall
                         logoSpotlight.target = logo;
                         logoSpotlight.castShadow = true;
                         logoSpotlight.shadow.mapSize.width = 1024;
@@ -292,7 +290,7 @@
                         logoSpotlight.shadow.camera.far = 50;
                         scene.add(logoSpotlight);
                         scene.add(logoSpotlight.target);
-                        console.log("Logo and yellow spotlight added to main viewport");
+                        console.log("Logo with mixed color palette and yellow spotlight added to background wall");
                     },
                     function(xhr) {
                         console.log(`Logo loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
