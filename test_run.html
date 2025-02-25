@@ -10,12 +10,12 @@
             font-family: Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
-            background-color: #dadad8; /* Quill Gray */
+            background-color: #34495e;
             display: flex;
         }
         .sidebar {
             width: 20%;
-            background-color: #2c7481; /* Paradiso */
+            background-color: #2c3e50;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -26,53 +26,13 @@
             width: 100px;
             height: 100px;
             margin: 10px;
-            border-radius: 15px; /* Rounded corners */
-            background: linear-gradient(135deg, #f47e42, #f46c27); /* Gradient from Jaffa to Flamingo */
-            color: #FFFFFF; /* White text */
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5); /* Deeper shadow for 3D effect */
-            border: 2px solid #f46c27; /* Outline in Flamingo color */
-            position: relative; /* For positioning bevel effect */
-            overflow: hidden; /* To clip the bevel effect */
-            transition: transform 0.2s, box-shadow 0.2s; /* Smooth transition for hover effects */
-        }
-        .button:before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: inherit; /* Use the same gradient */
-            border-radius: 15px; /* Match button corners */
-            filter: blur(5px); /* Bevel effect */
-            z-index: -1; /* Behind the button */
-            transform: translate(15px, 3px); /* Offset for bevel effect */
-        }
-        .button:hover {
-            transform: translateY(-5px) scale(1.05); /* Lift and scale effect on hover */
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6); /* Enhanced shadow on hover */
-        }
-        .tooltip {
-            display: none; /* Initially hidden */
-            position: absolute;
-            background-color: rgba(255, 255, 255, 0.9);
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 5px;
-            z-index: 100; /* Ensure it appears above other elements */
-            transition: opacity 0.2s ease-in-out;
-            opacity: 0; /* Start invisible */
-            top: 110%; /* Position below the button */
-            left: 50%;
-            transform: translateX(-50%); /* Center the tooltip */
-        }
-        .button:hover .tooltip {
-            display: block; /* Show on hover */
-            opacity: 1; /* Fade in */
         }
         .viewport {
             width: 80%;
@@ -96,18 +56,16 @@
             top: 10px;
             left: 10px;
             padding: 10px 20px;
-            background-color: #f46c27; /* Flamingo */
-            color: #FFFFFF; /* White text */
+            background-color: #e74c3c;
+            color: white;
             cursor: pointer;
-            border-radius: 5px; /* Rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth effect */
         }
         .title {
             position: absolute;
             top: 10px;
             right: 10px;
             font-size: 24px;
-            color: #2c7481; /* Paradiso */
+            color: white;
         }
         .text-popup {
             position: absolute;
@@ -133,27 +91,17 @@
             0% { transform: scale(0); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-        /* Animation for button rotation */
-        @keyframes rotateY {
-            0% { transform: rotateY(0deg); }
-            100% { transform: rotateY(360deg); }
-        }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <div class="button" id="btnGeometry">Geometry
-            <div class="tooltip">Learn about Geometry</div>
-        </div>
-        <div class="button" id="btnPhysics">Physics
-            <div class="tooltip">Learn about Physics</div>
-        </div>
-        <div class="button" id="btnChemistry">Chemistry
-            <div class="tooltip">Learn about Chemistry</div>
-        </div>
-        <div class="button" id="btnBiology">Biology
-            <div class="tooltip">Learn about Biology</div>
-        </div>
+        <div class="button" id="btnGeometry">Geometry</div>
+        <div class="button" id="btnPhysics">Physics</div>
+        <div class="button" id="btnChemistry">Chemistry</div>
+        <div class="button" id="btnBiology">Biology</div>
+        <div class="button" id="btnHuman">Human</div>
+        <div class="button" id="btnAgriculture">Agriculture</div>
+        <div class="button" id="btnAnimal">Animal</div>
     </div>
     <div class="viewport" id="mainViewport"></div>
     <div class="category-viewport" id="geometryViewport">
@@ -176,14 +124,34 @@
             <button class="close-button" id="closePopup">Close Window</button>
         </div>
     </div>
+    <div class="category-viewport" id="humanViewport">
+        <div class="back-button" id="backHuman">Back</div>
+        <div class="title">Human</div>
+    </div>
+    <div class="category-viewport" id="agricultureViewport">
+        <div class="back-button" id="backAgriculture">Back</div>
+        <div class="title">Agriculture</div>
+    </div>
+    <div class="category-viewport" id="animalViewport">
+        <div class="back-button" id="backAnimal">Back</div>
+        <div class="title">Animal</div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script>
+        console.log("Starting script initialization...");
+
         function createScene(viewportId, models, enableDoubleClickZoom = false) {
+            console.log(`Initializing scene for viewport: ${viewportId}`);
             const viewport = document.getElementById(viewportId);
+            if (!viewport) {
+                console.error(`Viewport ${viewportId} not found in DOM`);
+                return;
+            }
+
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
             const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -207,22 +175,37 @@
             const loaderOBJ = new THREE.OBJLoader();
 
             function loadModel(loader, modelPath, position, scale = 1) {
-                loader.load(modelPath, function(object) {
-                    if (object.scene) {
-                        object.scene.position.set(position.x, position.y, position.z);
-                        object.scene.scale.set(scale, scale, scale);
-                        scene.add(object.scene);
-                    } else {
-                        object.position.set(position.x, position.y, position.z);
-                        object.scale.set(scale, scale, scale);
-                        scene.add(object);
+                console.log(`Loading model from: ${modelPath}`);
+                loader.load(
+                    modelPath,
+                    function(object) {
+                        console.log(`Model loaded successfully: ${modelPath}`);
+                        if (object.scene) {
+                            object.scene.position.set(position.x, position.y, position.z);
+                            object.scene.scale.set(scale, scale, scale);
+                            scene.add(object.scene);
+                        } else {
+                            object.position.set(position.x, position.y, position.z);
+                            object.scale.set(scale, scale, scale);
+                            scene.add(object);
+                        }
+                    },
+                    function(xhr) {
+                        console.log(`Progress for ${modelPath}: ${xhr.loaded / xhr.total * 100}% loaded`);
+                    },
+                    function(error) {
+                        console.error(`Error loading model: ${modelPath}`, error);
                     }
-                }, undefined, function(error) {
-                    console.error(`Error loading model: ${modelPath}`, error);
-                });
+                );
             }
 
-            models.forEach(model => loadModel(model.loader, model.path, model.position, model.scale));
+            // Ensure models are spaced out to avoid overlap
+            let xOffset = -15;
+            const spacing = 10; // Distance between models
+            models.forEach(model => {
+                loadModel(model.loader, model.path, { x: xOffset, y: 0, z: 0 }, model.scale);
+                xOffset += spacing; // Move each model further right
+            });
 
             function animate() {
                 requestAnimationFrame(animate);
@@ -239,6 +222,7 @@
 
             if (enableDoubleClickZoom) {
                 viewport.addEventListener('dblclick', (event) => {
+                    console.log(`Double-click detected on ${viewportId}`);
                     const rect = renderer.domElement.getBoundingClientRect();
                     const mouse = new THREE.Vector2(
                         ((event.clientX - rect.left) / rect.width) * 2 - 1,
@@ -251,6 +235,7 @@
                     const intersects = raycaster.intersectObjects(scene.children, true);
 
                     if (intersects.length > 0) {
+                        console.log(`Intersection detected with object: ${intersects[0].object.name || 'Unnamed object'}`);
                         const target = intersects[0].object;
                         const box = new THREE.Box3().setFromObject(target);
                         const center = box.getCenter(new THREE.Vector3());
@@ -266,83 +251,230 @@
 
                         camera.position.copy(newCameraPosition);
                         camera.lookAt(center);
+                    } else {
+                        console.log("No intersection detected on double-click");
                     }
                 });
             }
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                console.log(`Resizing viewport ${viewportId}...`);
+                camera.aspect = viewport.clientWidth / viewport.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            });
+
+            console.log(`Scene for ${viewportId} initialized successfully`);
         }
 
         const mainModels = [
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: -10, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: -5, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: 5, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 10, y: 0, z: 0 }, scale: 1 }
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: -30, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: -20, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: -10, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 10, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 20, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 30, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', position: { x: 40, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 50, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 60, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/unidentified_agriculture_vehicle.glb', position: { x: 70, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', position: { x: 80, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/poison_dart_frog.glb', position: { x: 90, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 100, y: 0, z: 0 }, scale: 1 }
         ];
 
-        createScene('mainViewport', mainModels);
-
         const categoryModels = {
-            geometry: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
-            physics: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
-            chemistry: [{ loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
+            geometry: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: -10, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', position: { x: 10, y: 0, z: 0 }, scale: 1 }
+            ],
+            physics: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: -10, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 10, y: 0, z: 0 }, scale: 1 }
+            ],
+            chemistry: [
+                { loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: -10, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+            ],
             biology: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: -5, y: 0, z: 0 }, scale: 1 },
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/microcells.glb', position: { x: 5, y: 0, z: 0 }, scale: 1 }
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: -10, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/poison_dart_frog.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+            ],
+            human: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: -5, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 5, y: 0, z: 0 }, scale: 1 }
+            ],
+            agriculture: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/unidentified_agriculture_vehicle.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+            ],
+            animal: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ]
         };
 
+        console.log("Initializing main viewport...");
+        try {
+            createScene('mainViewport', mainModels);
+            console.log("Main viewport initialized successfully");
+        } catch (error) {
+            console.error("Error initializing main viewport:", error);
+        }
+
+        console.log("Setting up category buttons...");
         document.getElementById('btnGeometry').addEventListener('click', () => {
+            console.log("Geometry button clicked");
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('geometryViewport').style.display = 'flex';
-            createScene('geometryViewport', categoryModels.geometry, true);
+            const geometryViewport = document.getElementById('geometryViewport');
+            geometryViewport.style.display = 'flex';
+            try {
+                createScene('geometryViewport', categoryModels.geometry, true);
+                console.log("Geometry viewport initialized successfully");
+            } catch (error) {
+                console.error("Error initializing Geometry viewport:", error);
+            }
         });
 
         document.getElementById('btnPhysics').addEventListener('click', () => {
+            console.log("Physics button clicked");
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('physicsViewport').style.display = 'flex';
-            createScene('physicsViewport', categoryModels.physics, true);
+            const physicsViewport = document.getElementById('physicsViewport');
+            physicsViewport.style.display = 'flex';
+            try {
+                createScene('physicsViewport', categoryModels.physics, true);
+                console.log("Physics viewport initialized successfully");
+            } catch (error) {
+                console.error("Error initializing Physics viewport:", error);
+            }
         });
 
         document.getElementById('btnChemistry').addEventListener('click', () => {
+            console.log("Chemistry button clicked");
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('chemistryViewport').style.display = 'flex';
-            createScene('chemistryViewport', categoryModels.chemistry, true);
+            const chemistryViewport = document.getElementById('chemistryViewport');
+            chemistryViewport.style.display = 'flex';
+            try {
+                createScene('chemistryViewport', categoryModels.chemistry, true);
+                console.log("Chemistry viewport initialized successfully");
+            } catch (error) {
+                console.error("Error initializing Chemistry viewport:", error);
+            }
         });
 
         document.getElementById('btnBiology').addEventListener('click', () => {
+            console.log("Biology button clicked");
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('biologyViewport').style.display = 'flex';
-            createScene('biologyViewport', categoryModels.biology, true);
+            const biologyViewport = document.getElementById('biologyViewport');
+            biologyViewport.style.display = 'flex';
+            try {
+                createScene('biologyViewport', categoryModels.biology, true);
+                console.log("Biology viewport initialized successfully");
+            } catch (error) {
+                console.error("Error initializing Biology viewport:", error);
+            }
         });
 
+        document.getElementById('btnHuman').addEventListener('click', () => {
+            console.log("Human button clicked");
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            const humanViewport = document.getElementById('humanViewport');
+            humanViewport.style.display = 'flex';
+            try {
+                createScene('humanViewport', categoryModels.human, true);
+                console.log("Human viewport initialized successfully");
+            } catch (error) {
+                console.error("Error initializing Human viewport:", error);
+            }
+        });
+
+        document.getElementById('btnAgriculture').addEventListener('click', () => {
+            console.log("Agriculture button clicked");
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            const agricultureViewport = document.getElementById('agricultureViewport');
+            agricultureViewport.style.display = 'flex';
+            try {
+                createScene('agricultureViewport', categoryModels.agriculture, true);
+                console.log("Agriculture viewport initialized successfully");
+            } catch (error) {
+                console.error("Error initializing Agriculture viewport:", error);
+            }
+        });
+
+        document.getElementById('btnAnimal').addEventListener('click', () => {
+            console.log("Animal button clicked");
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            const animalViewport = document.getElementById('animalViewport');
+            animalViewport.style.display = 'flex';
+            try {
+                createScene('animalViewport', categoryModels.animal, true);
+                console.log("Animal viewport initialized successfully");
+            } catch (error) {
+                console.error("Error initializing Animal viewport:", error);
+            }
+        });
+
+        console.log("Setting up back buttons...");
         document.getElementById('backGeometry').addEventListener('click', () => {
+            console.log("Back to main from Geometry clicked");
             document.getElementById('geometryViewport').style.display = 'none';
             document.getElementById('mainViewport').style.display = 'block';
         });
 
         document.getElementById('backPhysics').addEventListener('click', () => {
+            console.log("Back to main from Physics clicked");
             document.getElementById('physicsViewport').style.display = 'none';
             document.getElementById('mainViewport').style.display = 'block';
         });
 
         document.getElementById('backChemistry').addEventListener('click', () => {
+            console.log("Back to main from Chemistry clicked");
             document.getElementById('chemistryViewport').style.display = 'none';
             document.getElementById('mainViewport').style.display = 'block';
         });
 
         document.getElementById('backBiology').addEventListener('click', () => {
+            console.log("Back to main from Biology clicked");
             document.getElementById('biologyViewport').style.display = 'none';
             document.getElementById('mainViewport').style.display = 'block';
         });
 
+        document.getElementById('backHuman').addEventListener('click', () => {
+            console.log("Back to main from Human clicked");
+            document.getElementById('humanViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backAgriculture').addEventListener('click', () => {
+            console.log("Back to main from Agriculture clicked");
+            document.getElementById('agricultureViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backAnimal').addEventListener('click', () => {
+            console.log("Back to main from Animal clicked");
+            document.getElementById('animalViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
         document.getElementById('biologyViewport').addEventListener('dblclick', (event) => {
+            console.log("Double-click detected on Biology viewport");
             const textPopup = document.getElementById('textPopup');
             const popupContent = document.getElementById('popupContent');
             textPopup.style.display = 'block';
 
             fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/info/insect%20info.txt')
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
                 .then(text => {
-                    const listItems = text.split('\n').map(item => `<li>${item}</li>`).join('');
+                    console.log("Fetched insect info successfully");
+                    const listItems = text.split('\n').map(item => `<li>${item.trim()}</li>`).join('');
                     popupContent.innerHTML = listItems;
 
                     textPopup.style.left = '50%';
@@ -353,16 +485,11 @@
         });
 
         document.getElementById('closePopup').addEventListener('click', () => {
+            console.log("Closing text popup");
             document.getElementById('textPopup').style.display = 'none';
         });
 
-        // Add staggered rotation animation to buttons on page load
-        window.onload = () => {
-            const buttons = document.querySelectorAll('.button');
-            buttons.forEach((button, index) => {
-                button.style.animation = `rotateY 0.5s linear ${index * 0.1}s forwards`; // Fast Y-axis rotation with stagger
-            });
-        };
+        console.log("Script initialization completed successfully");
     </script>
 </body>
 </html>
