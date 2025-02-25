@@ -184,7 +184,7 @@
 
                         // Add white and yellow spotlights for each model (store-like effect)
                         if (addSpotlight) {
-                            const whiteSpotlight = new THREE.SpotLight(0xffffff, 4.68, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (3.9 to 4.68)
+                            const whiteSpotlight = new THREE.SpotLight(0xffffff, 4.68, 30, Math.PI / 6, 0.2, 1); // Bright spotlight
                             whiteSpotlight.position.set(position.x, 20, position.z); // Higher position for dramatic effect
                             whiteSpotlight.target = modelObject;
                             whiteSpotlight.castShadow = true; // Enable shadows
@@ -195,7 +195,7 @@
                             scene.add(whiteSpotlight);
                             scene.add(whiteSpotlight.target);
 
-                            const yellowSpotlight = new THREE.SpotLight(0xffff00, 2.4, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (2 to 2.4)
+                            const yellowSpotlight = new THREE.SpotLight(0xffff00, 3.456, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (2.88 to 3.456)
                             yellowSpotlight.position.set(position.x, 20, position.z); // Same position as white spotlight
                             yellowSpotlight.target = modelObject;
                             yellowSpotlight.castShadow = true; // Enable shadows
@@ -230,7 +230,7 @@
                         scene.add(logo);
 
                         // Add yellow spotlight above the logo
-                        const logoSpotlight = new THREE.SpotLight(0xffff00, 2.4, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (2 to 2.4)
+                        const logoSpotlight = new THREE.SpotLight(0xffff00, 3.456, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (2.88 to 3.456)
                         logoSpotlight.position.set(0, 25, 0); // Above the logo
                         logoSpotlight.target = logo;
                         logoSpotlight.castShadow = true;
@@ -251,8 +251,8 @@
 
             // Position models in a circular layout for main viewport, or circularly for categories
             const radius = 40; // Radius for main viewport
-            const categoryRadius = 3; // Reduced for Human to bring models closer (default for other categories)
-            const humanRadius = 3; // Reduced for Human category
+            const categoryRadius = 3; // Reduced for Human and default for other categories
+            const humanRadius = 2; // Further reduced for Human to bring models closer
             const agricultureRadius = 6; // Slightly increased for Agriculture
             if (viewportId === 'mainViewport') {
                 const angleStep = (2 * Math.PI) / models.length; // Angle between models
@@ -336,7 +336,7 @@
 
                         const maxDim = Math.max(size.x, size.y, size.z) * 1.5; // Increased for larger models
                         const fov = camera.fov * (Math.PI / 180);
-                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 4; // Increased for closer zoom
+                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 8; // Increased for closer zoom
 
                         const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
                         const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
@@ -360,7 +360,7 @@
                         const size = overallBox.getSize(new THREE.Vector3());
                         const maxDim = Math.max(size.x, size.y, size.z) * 1.5;
                         const fov = camera.fov * (Math.PI / 180);
-                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 4; // Increased for closer zoom
+                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 8; // Increased for closer zoom
 
                         const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
                         const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
@@ -412,17 +412,13 @@
 
         const mainModels = [
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/plant.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
@@ -434,12 +430,10 @@
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             physics: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             chemistry: [
-                { loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: 0, y: 0, z: 0 }, scale: 1 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             biology: [
@@ -451,11 +445,9 @@
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             agriculture: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/plant.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             animal: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ]
         };
