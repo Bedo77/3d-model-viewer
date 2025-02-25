@@ -86,6 +86,8 @@
             color: white;
         }
     </style>
+    <!-- Include Tween.js in the head to ensure it's loaded before the main script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.min.js"></script>
 </head>
 <body>
     <div class="sidebar">
@@ -191,13 +193,14 @@
                         let modelObject;
                         if (object.scene) {
                             modelObject = object.scene;
-                            // Ensure model materials receive lighting and are solid
+                            // Ensure model materials receive lighting and are solid, with debugging
                             modelObject.traverse((child) => {
                                 if (child.isMesh) {
                                     child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
                                     child.castShadow = true;
                                     child.receiveShadow = true;
                                     child.material.transparent = false; // Ensure no transparency for solidity
+                                    console.log(`Mesh material for ${modelPath}:`, child.material);
                                 }
                             });
                         } else {
@@ -207,6 +210,7 @@
                                 modelObject.castShadow = true;
                                 modelObject.receiveShadow = true;
                                 modelObject.material.transparent = false; // Ensure no transparency for solidity
+                                console.log(`Mesh material for ${modelPath}:`, modelObject.material);
                             }
                         }
                         modelObject.position.set(position.x, position.y, position.z);
@@ -266,6 +270,7 @@
                     },
                     function(error) {
                         console.error(`Error loading model: ${modelPath}`, error);
+                        console.log("Possible CORS or network issue. Consider using a local server or proxy.");
                     }
                 );
             }
@@ -298,7 +303,7 @@
                         console.log(`Logo loaded successfully: logo.glb`);
                         const logoObject = gltf.scene;
                         logoObject.position.set(0, 0, 0); // Center of the main viewport
-                        logoObject.scale.set(3, 3, 3); // Triple size (reverted solidity)
+                        logoObject.scale.set(3, 3, 3); // Triple size
                         logoObject.userData.isZoomed = false; // Track zoom state
                         logoObject.userData.isStatic = false; // Allow rotation like other models
                         logoObject.userData.originalScale = 3; // Store original scale for zoom toggle
@@ -312,6 +317,7 @@
                                 child.castShadow = true;
                                 child.receiveShadow = true;
                                 child.material.transparent = false; // Ensure no transparency for solidity
+                                console.log(`Logo mesh material:`, child.material);
                             }
                         });
 
@@ -348,10 +354,7 @@
                     },
                     function(error) {
                         console.error(`Error loading logo.glb:`, error);
-                        console.log("Checking logo path validity...");
-                        console.log("URL used: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.glb");
-                        console.log("Possible issues: File not found (404), network error, or incorrect path.");
-                        console.log("Try verifying the file exists at the GitHub repository or use a local path, e.g., 'file:///E:/Python backups/3d converter/models/logo.glb'");
+                        console.log("Possible CORS or network issue. Consider using a local server or proxy.");
                     }
                 );
             } else {
@@ -535,6 +538,7 @@
                 }
                 controls.update(); // Update controls for performance
                 renderer.render(scene, camera);
+                console.log(`Rendering frame for ${viewportId}, scene children:`, scene.children.length);
             }
 
             animate();
@@ -732,9 +736,7 @@
             document.getElementById('mainViewport').style.display = 'block';
         });
 
-        // Include Tween.js for smooth animations
         console.log("Script initialization completed successfully, including Tween.js for animations");
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.min.js"></script>
 </body>
 </html>
