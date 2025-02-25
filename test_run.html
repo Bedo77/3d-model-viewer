@@ -173,17 +173,13 @@
                 scene.add(backWall);
                 console.log("Showroom background wall added as fixed, non-rotating element");
 
-                // Add text to background wall
-                fontLoader.load(
-                    'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',
-                    function(font) {
-                        const textGeometry = new THREE.TextGeometry('SMARTISTIC LAB STUDIO', {
-                            font: font,
-                            size: 5,
-                            height: 0.1,
-                            curveSegments: 12,
-                            bevelEnabled: false
-                        });
+                // Add logo to background wall
+                console.log("Attempting to load logo from: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/logo.png");
+                textureLoader.load(
+                    'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/logo.png',
+                    function(texture) {
+                        console.log("Logo texture loaded successfully");
+                        const logoGeometry = new THREE.PlaneGeometry(10, 5); // Larger size to fit background wall
                         const paletteColors = [
                             new THREE.Color('#2c7481'), // Paradiso
                             new THREE.Color('#dadad8'), // Quill Gray
@@ -194,19 +190,28 @@
                         paletteColors.forEach(color => mixedColor.add(color));
                         mixedColor.divideScalar(paletteColors.length); // Average the colors
 
-                        const textMaterial = new THREE.MeshStandardMaterial({ color: mixedColor });
-                        const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-                        textMesh.position.set(-50, 28, -100.1); // Centered on background wall, slightly in front
-                        textMesh.receiveShadow = true;
-                        textMesh.userData.isStatic = true; // Mark as static (non-rotating)
-                        scene.add(textMesh);
-                        console.log("Text 'SMARTISTIC LAB STUDIO' added to background wall with mixed color palette");
+                        const logoMaterial = new THREE.MeshBasicMaterial({
+                            map: texture,
+                            transparent: true,
+                            side: THREE.DoubleSide,
+                            color: mixedColor // Apply mixed color as a tint
+                        });
+                        const logo = new THREE.Mesh(logoGeometry, logoMaterial);
+                        logo.position.set(0, 25, -100.1); // Center on background wall, slightly in front
+                        logo.rotation.y = 0; // Face forward
+                        logo.userData.isStatic = true; // Mark as static (non-rotating)
+                        scene.add(logo);
+                        console.log("Logo with mixed color palette added to background wall");
                     },
                     function(xhr) {
-                        console.log(`Font loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
+                        console.log(`Logo loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
                     },
                     function(error) {
-                        console.error("Error loading font for text:", error);
+                        console.error("Error loading logo:", error);
+                        console.log("Checking logo path validity...");
+                        console.log("URL used: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/logo.png");
+                        console.log("Possible issues: File not found (404), network error, or incorrect path.");
+                        console.log("Try verifying the file exists at the GitHub repository or use a local path, e.g., 'file:///E:/Python backups/3d converter/images/logo.png'");
                     }
                 );
             }
@@ -278,76 +283,20 @@
                 );
             }
 
-            // Load logo in the center of the background mesh with mixed color palette (already handled in addShowroomMeshes)
-            if (viewportId === 'mainViewport') {
-                console.log("Attempting to load logo from: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png");
-                textureLoader.load(
-                    'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png',
-                    function(texture) {
-                        console.log("Logo texture loaded successfully");
-                        const logoGeometry = new THREE.PlaneGeometry(10, 5); // Larger size to fit background wall
-                        const paletteColors = [
-                            new THREE.Color('#2c7481'), // Paradiso
-                            new THREE.Color('#dadad8'), // Quill Gray
-                            new THREE.Color('#f47e42'), // Jaffa
-                            new THREE.Color('#f46c27')  // Flamingo
-                        ];
-                        let mixedColor = new THREE.Color(0, 0, 0);
-                        paletteColors.forEach(color => mixedColor.add(color));
-                        mixedColor.divideScalar(paletteColors.length); // Average the colors
-
-                        const logoMaterial = new THREE.MeshBasicMaterial({
-                            map: texture,
-                            transparent: true,
-                            side: THREE.DoubleSide,
-                            color: mixedColor // Apply mixed color as a tint
-                        });
-                        const logo = new THREE.Mesh(logoGeometry, logoMaterial);
-                        logo.position.set(0, 25, -100); // Center on background wall
-                        logo.rotation.y = 0; // Face forward
-                        logo.userData.isStatic = true; // Mark as static (non-rotating)
-                        scene.add(logo);
-
-                        // Add yellow spotlight above the logo
-                        const logoSpotlight = new THREE.SpotLight(0xffff00, 4.97664, 30, Math.PI / 6, 0.2, 1); // Bright yellow spotlight
-                        logoSpotlight.position.set(0, 35, -100); // Above the logo on the background wall
-                        logoSpotlight.target = logo;
-                        logoSpotlight.castShadow = true;
-                        logoSpotlight.shadow.mapSize.width = 1024;
-                        logoSpotlight.shadow.mapSize.height = 1024;
-                        logoSpotlight.shadow.camera.near = 0.5;
-                        logoSpotlight.shadow.camera.far = 50;
-                        scene.add(logoSpotlight);
-                        scene.add(logoSpotlight.target);
-                        console.log("Logo with mixed color palette and yellow spotlight added to background wall");
-                    },
-                    function(xhr) {
-                        console.log(`Logo loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
-                    },
-                    function(error) {
-                        console.error("Error loading logo:", error);
-                        console.log("Checking logo path validity...");
-                        console.log("URL used: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png");
-                        console.log("Possible issues: File not found (404), network error, or incorrect path.");
-                        console.log("Try verifying the file exists at the GitHub repository or use a local path, e.g., 'file:///E:/Python backups/3d converter/models/logo.png'");
-                    }
-                );
-            }
-
             // Position models in a circular layout for main viewport, or circularly for categories
             const radius = 40; // Radius for main viewport
             const categoryRadius = 3; // Reduced for Human and default for other categories
             const humanRadius = 2; // Further reduced for Human to bring models closer
             const agricultureRadius = 6; // Slightly increased for Agriculture
             if (viewportId === 'mainViewport') {
-                const angleStep = (2 * Math.PI) / 10; // Angle between 10 models
+                const angleStep = (2 * Math.PI) / 10; // Angle between 10 models, ensuring equal and even distance
                 models.forEach((model, index) => {
                     const angle = index * angleStep + Math.PI / 2; // Offset for visibility around logo
                     const x = radius * Math.cos(angle);
                     const z = radius * Math.sin(angle);
                     let scale = model.scale;
                     if (model.path.includes('skull_keychain.glb') || model.path.includes('bullet_physics_animation_8_reconstruction.glb')) {
-                        scale *= 1.5; // Scale up by 50%
+                        scale *= 2.25; // Increased scale to 2.25 (50% more than 1.5)
                     }
                     if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
                         scale *= 0.6; // Scale down by 40%
@@ -365,7 +314,7 @@
                     const z = currentRadius * Math.sin(angle);
                     let scale = model.scale;
                     if (model.path.includes('skull_keychain.glb') || model.path.includes('bullet_physics_animation_8_reconstruction.glb')) {
-                        scale *= 1.5; // Scale up by 50%
+                        scale *= 2.25; // Increased scale to 2.25 (50% more than 1.5)
                     }
                     if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
                         scale *= 0.6; // Scale down by 40%
@@ -396,6 +345,7 @@
             animate();
 
             if (enableDoubleClickZoom) {
+                // Remove and re-add zoom-in function for dynamic, responsive behavior
                 viewport.addEventListener('dblclick', (event) => {
                     console.log(`Double-click detected on ${viewportId}`);
                     const rect = renderer.domElement.getBoundingClientRect();
@@ -407,7 +357,11 @@
                     const raycaster = new THREE.Raycaster();
                     raycaster.setFromCamera(mouse, camera);
 
-                    const intersects = raycaster.intersectObjects(scene.children, true);
+                    // Filter out static meshes (background wall, logo) to ensure only models are targeted
+                    const modelObjects = scene.children.filter(child => 
+                        (child.isGroup || child.isObject3D) && !child.userData.isStatic
+                    );
+                    const intersects = raycaster.intersectObjects(modelObjects, true);
 
                     if (intersects.length > 0) {
                         console.log(`Intersection detected with object: ${intersects[0].object.name || 'Unnamed object'}`);
@@ -427,7 +381,7 @@
 
                         const maxDim = Math.max(size.x, size.y, size.z) * 1.5; // Increased for larger models
                         const fov = camera.fov * (Math.PI / 180);
-                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 10; // Increased for closer zoom
+                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 12; // Increased for even closer, dynamic zoom
 
                         const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
                         const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
@@ -451,7 +405,7 @@
                         const size = overallBox.getSize(new THREE.Vector3());
                         const maxDim = Math.max(size.x, size.y, size.z) * 1.5;
                         const fov = camera.fov * (Math.PI / 180);
-                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 10; // Increased for closer zoom
+                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 12; // Increased for even closer, dynamic zoom
 
                         const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
                         const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
@@ -505,9 +459,9 @@
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 1.5 }, // Scaled up by 50%
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 2.25 }, // Increased scale to 2.25 (50% more than 1.5)
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 0, y: 0, z: 0 }, scale: 1.5 }, // Scaled up by 50%
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 0, y: 0, z: 0 }, scale: 2.25 }, // Increased scale to 2.25 (50% more than 1.5)
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
@@ -520,7 +474,7 @@
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             physics: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 0, y: 0, z: 0 }, scale: 1.5 }, // Scaled up by 50%
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 0, y: 0, z: 0 }, scale: 2.25 }, // Increased scale to 2.25 (50% more than 1.5)
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 }
             ],
             chemistry: [
@@ -532,7 +486,7 @@
             ],
             human: [
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 1.5 } // Scaled up by 50%
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 2.25 } // Increased scale to 2.25 (50% more than 1.5)
             ],
             agriculture: [
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
