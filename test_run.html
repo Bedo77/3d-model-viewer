@@ -173,19 +173,43 @@
             const textureLoader = new THREE.TextureLoader();
             const fontLoader = new THREE.FontLoader();
 
-            // Add showroom meshes (fixed, non-rotating) - only background wall
+            // Add showroom meshes (fixed, non-rotating) - only background wall with bevel and doubled thickness
             function addShowroomMeshes() {
-                // Background wall (fixed, solid)
-                const backWallGeometry = new THREE.PlaneGeometry(200, 50);
+                // Create a shape for the background wall with rounded edges
+                const shape = new THREE.Shape();
+                const width = 200;
+                const height = 100; // Doubled thickness from 50 to 100
+                const radius = 10; // Bevel radius for rounded edges
+
+                shape.moveTo(-width/2 + radius, -height/2);
+                shape.lineTo(width/2 - radius, -height/2);
+                shape.quadraticCurveTo(width/2, -height/2, width/2, -height/2 + radius);
+                shape.lineTo(width/2, height/2 - radius);
+                shape.quadraticCurveTo(width/2, height/2, width/2 - radius, height/2);
+                shape.lineTo(-width/2 + radius, height/2);
+                shape.quadraticCurveTo(-width/2, height/2, -width/2, height/2 - radius);
+                shape.lineTo(-width/2, -height/2 + radius);
+                shape.quadraticCurveTo(-width/2, -height/2, -width/2 + radius, -height/2);
+
+                const extrudeSettings = {
+                    depth: 0.1, // Thin depth for solidity
+                    bevelEnabled: true,
+                    bevelSegments: 2,
+                    steps: 2,
+                    bevelSize: radius,
+                    bevelThickness: 1
+                };
+
+                const backWallGeometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
                 const backWallMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.FrontSide }); // Flamingo for background wall, solid (single-sided)
                 const backWall = new THREE.Mesh(backWallGeometry, backWallMaterial);
-                backWall.position.set(0, 25, -100); // Behind models, centered vertically
+                backWall.position.set(0, 25, -100); // Centered vertically, behind models
                 backWall.receiveShadow = true;
                 backWall.userData.isStatic = true; // Mark as static (non-rotating)
                 scene.add(backWall);
-                console.log("Showroom background wall added as fixed, non-rotating, solid element");
+                console.log("Showroom background wall added as fixed, non-rotating, beveled, solid element with doubled thickness");
 
-                // Attempt to load text locally or use default if local fails
+                // Add text to background wall
                 console.log("Attempting to load font from local path or default...");
                 try {
                     fontLoader.load(
@@ -194,19 +218,42 @@
                             console.log("Font loaded successfully from local path");
                             const textGeometry = new THREE.TextGeometry('Smartis Lab Studio', {
                                 font: font,
-                                size: 5,
-                                height: 0.1,
+                                size: 10, // Double the font size (from 5 to 10)
+                                height: 0.2, // Double the depth for boldness (from 0.1 to 0.2)
                                 curveSegments: 12,
-                                bevelEnabled: false,
-                                style: 'bold' // Attempt to simulate bold Times New Roman
+                                bevelEnabled: false
                             });
                             const textMaterial = new THREE.MeshStandardMaterial({ color: '#000000' }); // Bold black
                             const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-                            textMesh.position.set(-50, 28, -100.1); // Centered on background wall, slightly in front
+                            textMesh.position.set(-100, 28, -100.1); // Centered on background wall, slightly in front (adjusted for doubled size)
                             textMesh.receiveShadow = true;
                             textMesh.userData.isStatic = true; // Mark as static (non-rotating)
                             scene.add(textMesh);
-                            console.log("Text 'Smartis Lab Studio' added to background wall in bold black");
+                            console.log("Text 'Smartis Lab Studio' added to background wall in bold black, doubled size and boldness");
+
+                            // Add spotlight directed at the text
+                            const textSpotlightWhite = new THREE.SpotLight(0xffffff, 9.36, 50, Math.PI / 6, 0.2, 1); // Doubled intensity (4.68 * 2)
+                            textSpotlightWhite.position.set(0, 50, -50); // Above and slightly in front of the text
+                            textSpotlightWhite.target = textMesh;
+                            textSpotlightWhite.castShadow = true;
+                            textSpotlightWhite.shadow.mapSize.width = 1024;
+                            textSpotlightWhite.shadow.mapSize.height = 1024;
+                            textSpotlightWhite.shadow.camera.near = 0.5;
+                            textSpotlightWhite.shadow.camera.far = 100;
+                            scene.add(textSpotlightWhite);
+                            scene.add(textSpotlightWhite.target);
+
+                            const textSpotlightYellow = new THREE.SpotLight(0xffff00, 9.95328, 50, Math.PI / 6, 0.2, 1); // Doubled intensity (4.97664 * 2)
+                            textSpotlightYellow.position.set(0, 50, -50); // Same position as white spotlight
+                            textSpotlightYellow.target = textMesh;
+                            textSpotlightYellow.castShadow = true;
+                            textSpotlightYellow.shadow.mapSize.width = 1024;
+                            textSpotlightYellow.shadow.mapSize.height = 1024;
+                            textSpotlightYellow.shadow.camera.near = 0.5;
+                            textSpotlightYellow.shadow.camera.far = 100;
+                            scene.add(textSpotlightYellow);
+                            scene.add(textSpotlightYellow.target);
+                            console.log("Added white and yellow spotlights directed at the text on the background wall");
                         },
                         function(xhr) {
                             console.log(`Font loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
@@ -220,19 +267,42 @@
                                     console.log("Default font loaded successfully");
                                     const textGeometry = new THREE.TextGeometry('Smartis Lab Studio', {
                                         font: defaultFont,
-                                        size: 5,
-                                        height: 0.1,
+                                        size: 10, // Double the font size (from 5 to 10)
+                                        height: 0.2, // Double the depth for boldness (from 0.1 to 0.2)
                                         curveSegments: 12,
-                                        bevelEnabled: false,
-                                        style: 'bold' // Attempt to simulate bold Times New Roman
+                                        bevelEnabled: false
                                     });
                                     const textMaterial = new THREE.MeshStandardMaterial({ color: '#000000' }); // Bold black
                                     const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-                                    textMesh.position.set(-50, 28, -100.1); // Centered on background wall, slightly in front
+                                    textMesh.position.set(-100, 28, -100.1); // Centered on background wall, slightly in front (adjusted for doubled size)
                                     textMesh.receiveShadow = true;
                                     textMesh.userData.isStatic = true; // Mark as static (non-rotating)
                                     scene.add(textMesh);
-                                    console.log("Fallback text 'Smartis Lab Studio' added to background wall in bold black");
+                                    console.log("Fallback text 'Smartis Lab Studio' added to background wall in bold black, doubled size and boldness");
+
+                                    // Add spotlight directed at the text
+                                    const textSpotlightWhite = new THREE.SpotLight(0xffffff, 9.36, 50, Math.PI / 6, 0.2, 1); // Doubled intensity (4.68 * 2)
+                                    textSpotlightWhite.position.set(0, 50, -50); // Above and slightly in front of the text
+                                    textSpotlightWhite.target = textMesh;
+                                    textSpotlightWhite.castShadow = true;
+                                    textSpotlightWhite.shadow.mapSize.width = 1024;
+                                    textSpotlightWhite.shadow.mapSize.height = 1024;
+                                    textSpotlightWhite.shadow.camera.near = 0.5;
+                                    textSpotlightWhite.shadow.camera.far = 100;
+                                    scene.add(textSpotlightWhite);
+                                    scene.add(textSpotlightWhite.target);
+
+                                    const textSpotlightYellow = new THREE.SpotLight(0xffff00, 9.95328, 50, Math.PI / 6, 0.2, 1); // Doubled intensity (4.97664 * 2)
+                                    textSpotlightYellow.position.set(0, 50, -50); // Same position as white spotlight
+                                    textSpotlightYellow.target = textMesh;
+                                    textSpotlightYellow.castShadow = true;
+                                    textSpotlightYellow.shadow.mapSize.width = 1024;
+                                    textSpotlightYellow.shadow.mapSize.height = 1024;
+                                    textSpotlightYellow.shadow.camera.near = 0.5;
+                                    textSpotlightYellow.shadow.camera.far = 100;
+                                    scene.add(textSpotlightYellow);
+                                    scene.add(textSpotlightYellow.target);
+                                    console.log("Fallback added white and yellow spotlights directed at the text on the background wall");
                                 },
                                 function(xhr) {
                                     console.log(`Default font loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
@@ -253,19 +323,42 @@
                             console.log("Default font loaded successfully");
                             const textGeometry = new THREE.TextGeometry('Smartis Lab Studio', {
                                 font: defaultFont,
-                                size: 5,
-                                height: 0.1,
+                                size: 10, // Double the font size (from 5 to 10)
+                                height: 0.2, // Double the depth for boldness (from 0.1 to 0.2)
                                 curveSegments: 12,
-                                bevelEnabled: false,
-                                style: 'bold' // Attempt to simulate bold Times New Roman
+                                bevelEnabled: false
                             });
                             const textMaterial = new THREE.MeshStandardMaterial({ color: '#000000' }); // Bold black
                             const textMesh = new THREE.Mesh(textGeometry, textMaterial);
-                            textMesh.position.set(-50, 28, -100.1); // Centered on background wall, slightly in front
+                            textMesh.position.set(-100, 28, -100.1); // Centered on background wall, slightly in front (adjusted for doubled size)
                             textMesh.receiveShadow = true;
                             textMesh.userData.isStatic = true; // Mark as static (non-rotating)
                             scene.add(textMesh);
-                            console.log("Fallback text 'Smartis Lab Studio' added to background wall in bold black");
+                            console.log("Fallback text 'Smartis Lab Studio' added to background wall in bold black, doubled size and boldness");
+
+                            // Add spotlight directed at the text
+                            const textSpotlightWhite = new THREE.SpotLight(0xffffff, 9.36, 50, Math.PI / 6, 0.2, 1); // Doubled intensity (4.68 * 2)
+                            textSpotlightWhite.position.set(0, 50, -50); // Above and slightly in front of the text
+                            textSpotlightWhite.target = textMesh;
+                            textSpotlightWhite.castShadow = true;
+                            textSpotlightWhite.shadow.mapSize.width = 1024;
+                            textSpotlightWhite.shadow.mapSize.height = 1024;
+                            textSpotlightWhite.shadow.camera.near = 0.5;
+                            textSpotlightWhite.shadow.camera.far = 100;
+                            scene.add(textSpotlightWhite);
+                            scene.add(textSpotlightWhite.target);
+
+                            const textSpotlightYellow = new THREE.SpotLight(0xffff00, 9.95328, 50, Math.PI / 6, 0.2, 1); // Doubled intensity (4.97664 * 2)
+                            textSpotlightYellow.position.set(0, 50, -50); // Same position as white spotlight
+                            textSpotlightYellow.target = textMesh;
+                            textSpotlightYellow.castShadow = true;
+                            textSpotlightYellow.shadow.mapSize.width = 1024;
+                            textSpotlightYellow.shadow.mapSize.height = 1024;
+                            textSpotlightYellow.shadow.camera.near = 0.5;
+                            textSpotlightYellow.shadow.camera.far = 100;
+                            scene.add(textSpotlightYellow);
+                            scene.add(textSpotlightYellow.target);
+                            console.log("Fallback added white and yellow spotlights directed at the text on the background wall");
                         },
                         function(xhr) {
                             console.log(`Default font loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
@@ -310,19 +403,16 @@
                         modelObject.userData.isZoomed = false; // Track zoom state (unused now, but kept for consistency)
                         scene.add(modelObject);
 
-                        // Add small rounded mesh (cylinder) underneath the model
-                        const baseGeometry = new THREE.CylinderGeometry(1, 1, 0.5, 32); // Small cylinder (radius 1, height 0.5)
-                        const baseMaterial = new THREE.MeshStandardMaterial({ color: '#dadad8', metalness: 0.5, roughness: 0.5 }); // Quill Gray, metallic look
-                        const baseMesh = new THREE.Mesh(baseGeometry, baseMaterial);
-                        baseMesh.position.set(position.x, -0.25, position.z); // Position slightly below the model
-                        baseMesh.receiveShadow = true;
-                        baseMesh.castShadow = true;
-                        baseMesh.userData.isStatic = true; // Mark as static (non-rotating)
-                        scene.add(baseMesh);
-
-                        // Add white and yellow spotlights for each model (store-like effect)
+                        // Add white and yellow spotlights for each model (store-like effect), with doubled intensity for specific models
                         if (addSpotlight) {
-                            const whiteSpotlight = new THREE.SpotLight(0xffffff, 4.68, 30, Math.PI / 6, 0.2, 1); // Bright spotlight
+                            let whiteIntensity = 4.68;
+                            let yellowIntensity = 4.97664;
+                            if (modelPath.includes('a_modern_agricultural_worker-944.glb') || modelPath.includes('geometry_texture_effect_spheres.glb')) {
+                                whiteIntensity *= 2; // Double to 9.36
+                                yellowIntensity *= 2; // Double to 9.95328
+                            }
+
+                            const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1); // Adjusted intensity
                             whiteSpotlight.position.set(position.x, 20, position.z); // Higher position for dramatic effect
                             whiteSpotlight.target = modelObject;
                             whiteSpotlight.castShadow = true; // Enable shadows
@@ -333,9 +423,9 @@
                             scene.add(whiteSpotlight);
                             scene.add(whiteSpotlight.target);
 
-                            const yellowSpotlight = new THREE.SpotLight(0xffff00, 4.97664, 30, Math.PI / 6, 0.2, 1); // Bright yellow spotlight
+                            const yellowSpotlight = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // Adjusted intensity
                             yellowSpotlight.position.set(position.x, 20, position.z); // Same position as white spotlight
-                            yellowSpotlight.target = modelObject;
+                            yellowSpotlight.target = scaleObject;
                             yellowSpotlight.castShadow = true; // Enable shadows
                             yellowSpotlight.shadow.mapSize.width = 1024;
                             yellowSpotlight.shadow.mapSize.height = 1024;
@@ -343,7 +433,7 @@
                             yellowSpotlight.shadow.camera.far = 50;
                             scene.add(yellowSpotlight);
                             scene.add(yellowSpotlight.target);
-                            console.log(`Added white and yellow spotlights to model at ${position.x}, ${position.z}`);
+                            console.log(`Added white and yellow spotlights to model at ${position.x}, ${position.z} with intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow)`);
                         }
                     },
                     function(xhr) {
@@ -358,7 +448,7 @@
             // Position models in a circular layout for main viewport, or circularly for categories
             const radius = 35; // Narrowed circle for main viewport
             const categoryRadius = 3; // Reduced for Human and default for other categories
-            const humanRadius = 2; // Further reduced for Human to bring models closer
+            const humanRadius = 3; // Increased slightly to prevent overlap in Human
             const agricultureRadius = 6; // Slightly increased for Agriculture
             if (viewportId === 'mainViewport') {
                 const angleStep = (2 * Math.PI) / 9; // Angle between 9 models, ensuring equal and even distance
@@ -368,7 +458,7 @@
                     const z = radius * Math.sin(angle);
                     let scale = model.scale;
                     if (model.path.includes('generalized_human_body.glb')) {
-                        scale *= 3; // Triple size
+                        scale *= 1; // Scaled down to match female_human_skeleton (scale 1)
                     }
                     if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
                         scale *= 0.6; // Scale down by 40%
@@ -382,11 +472,18 @@
                 const angleStep = (2 * Math.PI) / models.length; // Angle between models
                 models.forEach((model, index) => {
                     const angle = index * angleStep;
-                    const x = currentRadius * Math.cos(angle);
-                    const z = currentRadius * Math.sin(angle);
+                    let x, z;
+                    if (viewportId === 'humanViewport') {
+                        // Position models on the same X-axis (x: 0) in Human category
+                        x = 0;
+                        z = currentRadius * (index === 0 ? -1 : 1); // Alternate z for even spacing
+                    } else {
+                        x = currentRadius * Math.cos(angle);
+                        z = currentRadius * Math.sin(angle);
+                    }
                     let scale = model.scale;
                     if (model.path.includes('generalized_human_body.glb')) {
-                        scale *= 3; // Triple size
+                        scale *= 1; // Scaled down to match female_human_skeleton (scale 1)
                     }
                     if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
                         scale *= 0.6; // Scale down by 40%
@@ -431,7 +528,7 @@
         const mainModels = [
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 3 }, // Triple size
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }, // Scaled down to match female_human_skeleton (scale 1)
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
@@ -456,7 +553,7 @@
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             human: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 3 }, // Triple size
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }, // Scaled down to match female_human_skeleton (scale 1)
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             agriculture: [
