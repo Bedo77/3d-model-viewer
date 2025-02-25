@@ -154,7 +154,7 @@
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            const renderer = new THREE.WebGLRenderer({ antialias: true, shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } }); // Enable shadow mapping
 
             renderer.setSize(viewport.clientWidth, viewport.clientHeight);
             viewport.appendChild(renderer.domElement);
@@ -163,7 +163,7 @@
             const controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.1;
-            controls.minDistance = 10;
+            controls.minDistance = 5;
             controls.maxDistance = 200;
 
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); // Reduced ambient for spotlight emphasis
@@ -187,8 +187,21 @@
                         let modelObject;
                         if (object.scene) {
                             modelObject = object.scene;
+                            // Ensure model materials receive lighting
+                            modelObject.traverse((child) => {
+                                if (child.isMesh) {
+                                    child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
+                                    child.castShadow = true;
+                                    child.receiveShadow = true;
+                                }
+                            });
                         } else {
                             modelObject = object;
+                            if (modelObject.isMesh) {
+                                modelObject.material = modelObject.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
+                                modelObject.castShadow = true;
+                                modelObject.receiveShadow = true;
+                            }
                         }
                         modelObject.position.set(position.x, position.y, position.z);
                         modelObject.scale.set(scale, scale, scale);
@@ -196,10 +209,14 @@
 
                         // Add white spotlight for each model (store-like effect)
                         if (addSpotlight) {
-                            const spotlight = new THREE.SpotLight(0xffffff, 2, 30, Math.PI / 6, 0.2, 1); // Brighter, tighter spotlight
-                            spotlight.position.set(position.x, 15, position.z); // Higher position for dramatic effect
+                            const spotlight = new THREE.SpotLight(0xffffff, 3, 30, Math.PI / 6, 0.2, 1); // Brighter, tighter spotlight
+                            spotlight.position.set(position.x, 20, position.z); // Higher position for dramatic effect
                             spotlight.target = modelObject;
-                            spotlight.castShadow = true; // Enable shadows for realism
+                            spotlight.castShadow = true; // Enable shadows
+                            spotlight.shadow.mapSize.width = 1024; // Improve shadow quality
+                            spotlight.shadow.mapSize.height = 1024;
+                            spotlight.shadow.camera.near = 0.5;
+                            spotlight.shadow.camera.far = 50;
                             scene.add(spotlight);
                             scene.add(spotlight.target);
                             console.log(`Added spotlight to model at ${position.x}, ${position.z}`);
@@ -216,7 +233,7 @@
 
             // Position models in a circular layout for main viewport, or circularly for categories
             const radius = 40; // Radius for main viewport
-            const categoryRadius = 15; // Smaller radius for categories to bring models closer
+            const categoryRadius = 5; // Smaller radius to bring models closer in categories
             if (viewportId === 'mainViewport') {
                 const angleStep = (2 * Math.PI) / models.length; // Angle between models
                 models.forEach((model, index) => {
@@ -278,17 +295,18 @@
                     if (intersects.length > 0) {
                         console.log(`Intersection detected with object: ${intersects[0].object.name || 'Unnamed object'}`);
                         const target = intersects[0].object;
-                        while (target.parent && !target.userData.isRoot) {
-                            target = target.parent;
+                        let rootTarget = target;
+                        while (rootTarget.parent && !rootTarget.userData.isRoot) {
+                            rootTarget = rootTarget.parent;
                         }
-                        target.userData.isRoot = true; // Mark as root for rotation control
-                        target.userData.isZoomed = true; // Mark as zoomed to stop rotation
+                        rootTarget.userData.isRoot = true; // Mark as root for rotation control
+                        rootTarget.userData.isZoomed = true; // Mark as zoomed to stop rotation
 
-                        const box = new THREE.Box3().setFromObject(target);
+                        const box = new THREE.Box3().setFromObject(rootTarget);
                         const center = box.getCenter(new THREE.Vector3());
                         const size = box.getSize(new THREE.Vector3());
 
-                        const maxDim = Math.max(size.x, size.y, size.z);
+                        const maxDim = Math.max(size.x, size.y, size.z) * 1.5; // Increased for larger models
                         const fov = camera.fov * (Math.PI / 180);
                         let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 2.5; // Adjusted for better zoom
 
