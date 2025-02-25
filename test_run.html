@@ -14,19 +14,19 @@
             display: flex;
         }
         .sidebar {
-            width: 20%; /* Reverted from 40% for original size */
+            width: 20%; /* Reverted for original size */
             background-color: #2c7481; /* Paradiso, solid */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 10px; /* Reverted from 20px for original size */
+            padding: 10px; /* Reverted for original size */
             border: none; /* Remove any borders or gradients for solidity */
         }
         .button {
-            width: 100px; /* Reverted from 200px for original size */
-            height: 100px; /* Reverted from 200px for original size */
-            margin: 10px; /* Reverted from 20px for original size */
+            width: 100px; /* Reverted for original size */
+            height: 100px; /* Reverted for original size */
+            margin: 10px; /* Reverted for original size */
             border-radius: 50%;
             background-color: #dadad8; /* Quill Gray, solid */
             color: #000000; /* Bold black text */
@@ -38,7 +38,7 @@
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
             border: none; /* Remove any borders for solidity */
             font-weight: bold; /* Ensure bold text */
-            font-size: 16px; /* Reverted from 24px for original readability */
+            font-size: 16px; /* Reverted for original readability */
         }
         .button:hover {
             transform: scale(1.1); /* Pop-up effect: scale up 10% */
@@ -53,7 +53,7 @@
             color: #000000; /* Bold black text on active */
         }
         .viewport {
-            width: 80%; /* Reverted from 60% to accommodate original sidebar size */
+            width: 80%; /* Reverted to accommodate original sidebar size */
             height: 100%;
             position: relative;
         }
@@ -191,12 +191,13 @@
                         let modelObject;
                         if (object.scene) {
                             modelObject = object.scene;
-                            // Ensure model materials receive lighting
+                            // Ensure model materials receive lighting and are solid
                             modelObject.traverse((child) => {
                                 if (child.isMesh) {
                                     child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
                                     child.castShadow = true;
                                     child.receiveShadow = true;
+                                    child.material.transparent = false; // Ensure no transparency for solidity
                                 }
                             });
                         } else {
@@ -205,6 +206,7 @@
                                 modelObject.material = modelObject.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
                                 modelObject.castShadow = true;
                                 modelObject.receiveShadow = true;
+                                modelObject.material.transparent = false; // Ensure no transparency for solidity
                             }
                         }
                         modelObject.position.set(position.x, position.y, position.z);
@@ -268,7 +270,7 @@
             const humanRadius = 3; // Increased slightly to prevent overlap in Human
             const agricultureRadius = 6; // Slightly increased for Agriculture
             if (viewportId === 'mainViewport') {
-                const angleStep = (2 * Math.PI) / 9; // Angle between 9 models, ensuring equal and even distance
+                const angleStep = (2 * Math.PI) / 10; // Angle between 10 models (9 + logo), ensuring equal and even distance
                 models.forEach((model, index) => {
                     const angle = index * angleStep + Math.PI / 2; // Offset for visibility
                     const x = radius * Math.cos(angle);
@@ -283,21 +285,31 @@
                     loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
                 });
 
-                // Load logo.glb at the center of the main viewport
+                // Load logo.glb at the center of the main viewport, triple size, rotating, with high-intensity lights
                 loaderGLTF.load(
                     'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.glb',
                     function(gltf) {
                         console.log(`Logo loaded successfully: logo.glb`);
                         const logoObject = gltf.scene;
                         logoObject.position.set(0, 0, 0); // Center of the main viewport
-                        logoObject.scale.set(1, 1, 1); // Default scale, adjust if needed
+                        logoObject.scale.set(3, 3, 3); // Triple size
                         logoObject.userData.isZoomed = false; // Track zoom state
-                        logoObject.userData.isStatic = true; // Mark as static (non-rotating)
+                        logoObject.userData.isStatic = false; // Allow rotation like other models
                         scene.add(logoObject);
 
-                        // Add white and yellow spotlights for the logo, matching other models
-                        const whiteIntensity = 23.4;
-                        const yellowIntensity = 24.8832;
+                        // Solidify logo by ensuring materials are non-transparent
+                        logoObject.traverse((child) => {
+                            if (child.isMesh) {
+                                child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
+                                child.castShadow = true;
+                                child.receiveShadow = true;
+                                child.material.transparent = false; // Ensure no transparency for solidity
+                            }
+                        });
+
+                        // Add white and yellow spotlights for the logo, with high intensity
+                        const whiteIntensity = 46.8; // Double the current 23.4 for high intensity
+                        const yellowIntensity = 49.7664; // Double the current 24.8832 for high intensity
 
                         const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1);
                         whiteSpotlight.position.set(0, 20, 0); // Centered, higher position
@@ -310,29 +322,18 @@
                         scene.add(whiteSpotlight);
                         scene.add(whiteSpotlight.target);
 
-                        const yellowSpotlight1 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1);
-                        yellowSpotlight1.position.set(0, 20, 0); // Centered, same height as white
-                        yellowSpotlight1.target = logoObject;
-                        yellowSpotlight1.castShadow = true;
-                        yellowSpotlight1.shadow.mapSize.width = 1024;
-                        yellowSpotlight1.shadow.mapSize.height = 1024;
-                        yellowSpotlight1.shadow.camera.near = 0.5;
-                        yellowSpotlight1.shadow.camera.far = 50;
-                        scene.add(yellowSpotlight1);
-                        scene.add(yellowSpotlight1.target);
+                        const yellowSpotlight = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1);
+                        yellowSpotlight.position.set(0, 20, 0); // Centered, same height as white
+                        yellowSpotlight.target = logoObject;
+                        yellowSpotlight.castShadow = true;
+                        yellowSpotlight.shadow.mapSize.width = 1024;
+                        yellowSpotlight.shadow.mapSize.height = 1024;
+                        yellowSpotlight.shadow.camera.near = 0.5;
+                        yellowSpotlight.shadow.camera.far = 50;
+                        scene.add(yellowSpotlight);
+                        scene.add(yellowSpotlight.target);
 
-                        const yellowSpotlight2 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1);
-                        yellowSpotlight2.position.set(0, 25, 5); // Slightly offset for coverage
-                        yellowSpotlight2.target = logoObject;
-                        yellowSpotlight2.castShadow = true;
-                        yellowSpotlight2.shadow.mapSize.width = 1024;
-                        yellowSpotlight2.shadow.mapSize.height = 1024;
-                        yellowSpotlight2.shadow.camera.near = 0.5;
-                        yellowSpotlight2.shadow.camera.far = 50;
-                        scene.add(yellowSpotlight2);
-                        scene.add(yellowSpotlight2.target);
-
-                        console.log(`Added white and yellow spotlights to logo at 0, 0, 0 with uniform intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow) for each yellow light`);
+                        console.log(`Added white and yellow spotlights to logo at 0, 0, 0 with high intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow)`);
                     },
                     function(xhr) {
                         console.log(`Progress for logo.glb: ${xhr.loaded / xhr.total * 100}% loaded`);
