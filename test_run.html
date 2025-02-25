@@ -121,6 +121,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FontLoader.js"></script>
     <script>
         console.log("Starting script initialization...");
 
@@ -158,19 +159,10 @@
             const loaderGLTF = new THREE.GLTFLoader();
             const loaderOBJ = new THREE.OBJLoader();
             const textureLoader = new THREE.TextureLoader();
+            const fontLoader = new THREE.FontLoader();
 
-            // Add showroom meshes (fixed, non-rotating)
+            // Add showroom meshes (fixed, non-rotating) - only background wall
             function addShowroomMeshes() {
-                // Ground mesh (fixed, black)
-                const groundGeometry = new THREE.PlaneGeometry(200, 200);
-                const groundMaterial = new THREE.MeshStandardMaterial({ color: '#000000', side: THREE.DoubleSide }); // Black for ground
-                const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-                ground.rotation.x = -Math.PI / 2; // Horizontal plane
-                ground.position.set(0, 0, 0);
-                ground.receiveShadow = true;
-                ground.userData.isStatic = true; // Mark as static (non-rotating)
-                scene.add(ground);
-
                 // Background wall (fixed)
                 const backWallGeometry = new THREE.PlaneGeometry(200, 50);
                 const backWallMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.DoubleSide }); // Flamingo for background wall
@@ -179,7 +171,44 @@
                 backWall.receiveShadow = true;
                 backWall.userData.isStatic = true; // Mark as static (non-rotating)
                 scene.add(backWall);
-                console.log("Showroom meshes (ground and background wall) added as fixed, non-rotating elements");
+                console.log("Showroom background wall added as fixed, non-rotating element");
+
+                // Add text to background wall
+                fontLoader.load(
+                    'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json',
+                    function(font) {
+                        const textGeometry = new THREE.TextGeometry('SMARTISTIC LAB STUDIO', {
+                            font: font,
+                            size: 5,
+                            height: 0.1,
+                            curveSegments: 12,
+                            bevelEnabled: false
+                        });
+                        const paletteColors = [
+                            new THREE.Color('#2c7481'), // Paradiso
+                            new THREE.Color('#dadad8'), // Quill Gray
+                            new THREE.Color('#f47e42'), // Jaffa
+                            new THREE.Color('#f46c27')  // Flamingo
+                        ];
+                        let mixedColor = new THREE.Color(0, 0, 0);
+                        paletteColors.forEach(color => mixedColor.add(color));
+                        mixedColor.divideScalar(paletteColors.length); // Average the colors
+
+                        const textMaterial = new THREE.MeshStandardMaterial({ color: mixedColor });
+                        const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                        textMesh.position.set(-50, 28, -100.1); // Centered on background wall, slightly in front
+                        textMesh.receiveShadow = true;
+                        textMesh.userData.isStatic = true; // Mark as static (non-rotating)
+                        scene.add(textMesh);
+                        console.log("Text 'SMARTISTIC LAB STUDIO' added to background wall with mixed color palette");
+                    },
+                    function(xhr) {
+                        console.log(`Font loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
+                    },
+                    function(error) {
+                        console.error("Error loading font for text:", error);
+                    }
+                );
             }
 
             addShowroomMeshes();
@@ -249,14 +278,14 @@
                 );
             }
 
-            // Load logo in the center of the background mesh with mixed color palette
+            // Load logo in the center of the background mesh with mixed color palette (already handled in addShowroomMeshes)
             if (viewportId === 'mainViewport') {
                 console.log("Attempting to load logo from: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png");
                 textureLoader.load(
                     'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png',
                     function(texture) {
                         console.log("Logo texture loaded successfully");
-                        // Mix the color palette (Paradiso, Quill Gray, Jaffa, Flamingo) for a blended effect
+                        const logoGeometry = new THREE.PlaneGeometry(10, 5); // Larger size to fit background wall
                         const paletteColors = [
                             new THREE.Color('#2c7481'), // Paradiso
                             new THREE.Color('#dadad8'), // Quill Gray
@@ -267,7 +296,6 @@
                         paletteColors.forEach(color => mixedColor.add(color));
                         mixedColor.divideScalar(paletteColors.length); // Average the colors
 
-                        const logoGeometry = new THREE.PlaneGeometry(10, 5); // Larger size to fit background wall
                         const logoMaterial = new THREE.MeshBasicMaterial({
                             map: texture,
                             transparent: true,
@@ -277,6 +305,7 @@
                         const logo = new THREE.Mesh(logoGeometry, logoMaterial);
                         logo.position.set(0, 25, -100); // Center on background wall
                         logo.rotation.y = 0; // Face forward
+                        logo.userData.isStatic = true; // Mark as static (non-rotating)
                         scene.add(logo);
 
                         // Add yellow spotlight above the logo
@@ -311,7 +340,7 @@
             const humanRadius = 2; // Further reduced for Human to bring models closer
             const agricultureRadius = 6; // Slightly increased for Agriculture
             if (viewportId === 'mainViewport') {
-                const angleStep = (2 * Math.PI) / models.length; // Angle between models
+                const angleStep = (2 * Math.PI) / 10; // Angle between 10 models
                 models.forEach((model, index) => {
                     const angle = index * angleStep + Math.PI / 2; // Offset for visibility around logo
                     const x = radius * Math.cos(angle);
@@ -482,8 +511,7 @@
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
         ];
 
         const categoryModels = {
