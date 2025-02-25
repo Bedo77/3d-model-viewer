@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational 3D Models</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #34495e;
+            display: flex;
+        }
+        .sidebar {
+            width: 18%; /* Narrowed for a slight reduction */
+            background-color: #2c7481; /* Paradiso, solid */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px; /* Maintain original padding */
+            border: none; /* Remove any borders or gradients for solidity */
+        }
+        .button {
+            width: 100px; /* Maintain original size */
+            height: 100px; /* Maintain original size */
+            margin: 10px; /* Maintain original margin */
+            border-radius: 50%;
+            background-color: #dadad8; /* Quill Gray, solid */
+            color: #000000; /* Bold black text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            border: none; /* Remove any borders for solidity */
+            font-weight: bold; /* Ensure bold text */
+            font-size: 16px; /* Maintain original readability */
+        }
+        .button:hover {
+            transform: scale(1.1); /* Pop-up effect: scale up 10% */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Enhanced shadow on hover */
+            background-color: #f47e42; /* Jaffa, solid */
+            color: #000000; /* Bold black text on hover */
+        }
+        .button:active {
+            transform: scale(0.95); /* Slight scale down on click */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            background-color: #f46c27; /* Flamingo, solid */
+            color: #000000; /* Bold black text on active */
+        }
+        .viewport {
+            width: 82%; /* Adjusted to accommodate narrowed sidebar */
+            height: 100%;
+            position: relative;
+        }
+        .category-viewport {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #34495e;
+        }
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            cursor: pointer;
+        }
+        .title {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: white;
+        }
+    </style>
+    <!-- Include Tween.js at the top of the head to ensure it's loaded before the main script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.min.js"></script>
+    <script>
+        // Wait for DOM content and Tween.js to load before initializing
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof TWEEN === 'undefined') {
+                console.error("Tween.js failed to load. Check the network tab or use a local copy.");
+                return;
+            }
+
+            console.log("Starting script initialization after DOM and Tween.js loaded...");
+
+            function createScene(viewportId, models, enableDoubleClickZoom = false) {
+                console.log(`Initializing scene for viewport: ${viewportId}`);
+                const viewport = document.getElementById(viewportId);
+                if (!viewport) {
+                    console.error(`Viewport ${viewportId} not found in DOM`);
+                    return;
+                }
+
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({ antialias: true, shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } }); // Enable shadow mapping
+
+                renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+                viewport.appendChild(renderer.domElement);
+
+                // Optimized OrbitControls for better performance
+                const controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05; // Reduced damping for smoother, faster response
+                controls.minDistance = 2; // Reduced for closer view
+                controls.maxDistance = 200;
+                controls.rotateSpeed = 0.5; // Slightly faster rotation
+                controls.panSpeed = 0.5; // Slightly faster panning
+                controls.zoomSpeed = 0.5; // Slightly faster zooming
+                controls.update(); // Initial update for performance
+
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Bright background
+                scene.add(ambientLight);
+
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7); // Bright background
+                directionalLight.position.set(5, 10, 7.5);
+                scene.add(directionalLight);
+
+                // Set camera position 15% closer in category viewports, default in main
+                if (viewportId !== 'mainViewport') {
+                    camera.position.set(0, 5, 25.5); // 15% closer (30 * 0.85 = 25.5)
+                } else {
+                    camera.position.set(0, 5, 30); // Main viewport default position
+                }
+
+                const loaderGLTF = new THREE.GLTFLoader();
+                const loaderOBJ = new THREE.OBJLoader();
+                const textureLoader = new THREE.TextureLoader();
+
+                // Remove background mesh (no showroom meshes added)
+                console.log("No background mesh added for viewport: " + viewportId);
+
+                function loadModel(loader, modelPath, position, scale = 1, addSpotlight = true) {
+                    console.log(`Loading model from: ${modelPath}`);
+                    loader.load(
+                        modelPath,
+                        function(object) {
+                            console.log(`Model loaded successfully: ${modelPath}`);
+                            let modelObject;
+                            if (object.scene) {
+                                modelObject = object.scene;
+                                // Ensure model materials receive lighting and are solid, with detailed debugging
+                                modelObject.traverse((child) => {
+                                    if (child.isMesh) {
+                                        if (!child.material || child.material.type === 'undefined' || child.material.type === null) {
+                                            console.warn(`No valid material for mesh in ${modelPath}, applying default`);
+                                            child.material = new THREE.MeshStandardMaterial({ 
+                                                color: 0xff0000, // Red for debugging visibility
+                                                transparent: false,
+                                                castShadow: true,
+                                                receiveShadow: true 
+                                            });
+                                        } else {
+                                            console.log(`Mesh material for ${modelPath}:`, child.material.type, child.material);
+                                            child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
+                                            child.material.transparent = false; // Ensure no transparency for solidity
+                                            child.castShadow = true;
+                                            child.receiveShadow = true;
+                                        }
+                                    }
+                                });
+                            } else {
+                                modelObject = object;
+                                if (modelObject.isMesh) {
+                                    if (!modelObject.material || modelObject.material.type === 'undefined' || modelObject.material.type === null) {
+                                        console.warn(`No valid material for object in ${modelPath}, applying default`);
+                                        modelObject.material = new THREE.MeshStandardMaterial({ 
+                                            color: 0xff0000, // Red for debugging visibility
+                                            transparent: false,
+                                            castShadow: true,
+                                            receiveShadow: true 
+                                        });
+                                    } else {
+                                        console.log(`Mesh material for ${modelPath}:`, modelObject.material.type, modelObject.material);
+                                        modelObject.material = modelObject.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
+                                        modelObject.material.transparent = false; // Ensure no transparency for solidity
+                                        modelObject.castShadow = true;
+                                        modelObject.receiveShadow = true;
+                                    }
+                                }
+                            }
+                            modelObject.position.set(position.x, position.y, position.z);
+                            modelObject.scale.set(scale, scale, scale);
+                            modelObject.userData.isZoomed = false; // Track zoom state
+                            modelObject.userData.originalScale = scale; // Store original scale for zoom toggle
+                            modelObject.userData.originalPosition = position; // Store original position for zoom toggle
+                            scene.add(modelObject);
+                            console.log(`Added model to scene, position: ${position.x}, ${position.y}, ${position.z}, scale: ${scale}`);
+
+                            // Add white and yellow spotlights for each model, reduced in category viewports
+                            if (addSpotlight) {
+                                let whiteIntensity = 23.4;
+                                let yellowIntensity = 24.8832;
+                                if (viewportId !== 'mainViewport') {
+                                    whiteIntensity = 11.7; // Half of 23.4 for category viewports
+                                    yellowIntensity = 12.4416; // Half of 24.8832 for category viewports
+                                }
+
+                                const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1); // Adjusted intensity
+                                whiteSpotlight.position.set(position.x, 20, position.z); // Higher position for dramatic effect
+                                whiteSpotlight.target = modelObject;
+                                whiteSpotlight.castShadow = true; // Enable shadows
+                                whiteSpotlight.shadow.mapSize.width = 1024; // Improve shadow quality
+                                whiteSpotlight.shadow.mapSize.height = 1024;
+                                whiteSpotlight.shadow.camera.near = 0.5;
+                                whiteSpotlight.shadow.camera.far = 50;
+                                scene.add(whiteSpotlight);
+                                scene.add(whiteSpotlight.target);
+
+                                const yellowSpotlight1 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // First yellow spotlight
+                                yellowSpotlight1.position.set(position.x, 20, position.z); // Same position as white spotlight
+                                yellowSpotlight1.target = modelObject;
+                                yellowSpotlight1.castShadow = true; // Enable shadows
+                                yellowSpotlight1.shadow.mapSize.width = 1024;
+                                yellowSpotlight1.shadow.mapSize.height = 1024;
+                                yellowSpotlight1.shadow.camera.near = 0.5;
+                                yellowSpotlight1.shadow.camera.far = 50;
+                                scene.add(yellowSpotlight1);
+                                scene.add(yellowSpotlight1.target);
+
+                                const yellowSpotlight2 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // Additional yellow spotlight
+                                yellowSpotlight2.position.set(position.x, 25, position.z + 5); // Slightly offset for coverage
+                                yellowSpotlight2.target = modelObject;
+                                yellowSpotlight2.castShadow = true; // Enable shadows
+                                yellowSpotlight2.shadow.mapSize.width = 1024;
+                                yellowSpotlight2.shadow.mapSize.height = 1024;
+                                yellowSpotlight2.shadow.camera.near = 0.5;
+                                yellowSpotlight2.shadow.camera.far = 50;
+                                scene.add(yellowSpotlight2);
+                                scene.add(yellowSpotlight2.target);
+
+                                console.log(`Added white and yellow spotlights to model at ${position.x}, ${position.z} with intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow) for each yellow light in viewport ${viewportId}`);
+                            }
+                        },
+                        function(xhr) {
+                            console.log(`Progress for ${modelPath}: ${xhr.loaded / xhr.total * 100}% loaded`);
+                        },
+                        function(error) {
+                            console.error(`Error loading model: ${modelPath}`, error);
+                            console.log("Possible CORS or network issue. Consider using a local server or proxy.");
+                        }
+                    );
+                }
+
+                // Position models in a circular layout for main viewport, or circularly for categories
+                const radius = 35; // Narrowed circle for main viewport
+                const categoryRadius = 3; // Reduced for Human and default for other categories
+                const humanRadius = 3; // Increased slightly to prevent overlap in Human
+                const agricultureRadius = 6; // Slightly increased for Agriculture
+                if (viewportId === 'mainViewport') {
+                    const angleStep = (2 * Math.PI) / 10; // Angle between 10 models (9 + logo), ensuring equal and even distance
+                    models.forEach((model, index) => {
+                        const angle = index * angleStep + Math.PI / 2; // Offset for visibility
+                        const x = radius * Math.cos(angle);
+                        const z = radius * Math.sin(angle);
+                        let scale = model.scale;
+                        if (model.path.includes('generalized_human_body.glb')) {
+                            scale *= 1; // Scaled down to match female_human_skeleton (scale 1)
+                        }
+                        if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
+                            scale *= 0.6; // Scale down by 40%
+                        }
+                        loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
+                    });
+
+                    // Load logo.glb at the center of the main viewport, triple size, rotating, with increased light intensity
+                    loaderGLTF.load(
+                        'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.glb',
+                        function(gltf) {
+                            console.log(`Logo loaded successfully: logo.glb`);
+                            const logoObject = gltf.scene;
+                            logoObject.position.set(0, 0, 0); // Center of the main viewport
+                            logoObject.scale.set(3, 3, 3); // Triple size
+                            logoObject.userData.isZoomed = false; // Track zoom state
+                            logoObject.userData.isStatic = false; // Allow rotation like other models
+                            logoObject.userData.originalScale = 3; // Store original scale for zoom toggle
+                            logoObject.userData.originalPosition = { x: 0, y: 0, z: 0 }; // Store original position for zoom toggle
+                            scene.add(logoObject);
+
+                            // Revert to default solid material (no shiny effect), with debugging
+                            logoObject.traverse((child) => {
+                                if (child.isMesh) {
+                                    if (!child.material || child.material.type === 'undefined' || child.material.type === null) {
+                                        console.warn(`No valid material for logo mesh, applying default`);
+                                        child.material = new THREE.MeshStandardMaterial({ 
+                                            color: 0xff0000, // Red for debugging visibility
+                                            transparent: false,
+                                            castShadow: true,
+                                            receiveShadow: true 
+                                        });
+                                    } else {
+                                        console.log(`Logo mesh material:`, child.material.type, child.material);
+                                        child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
+                                        child.material.transparent = false; // Ensure no transparency for solidity
+                                        child.castShadow = true;
+                                        child.receiveShadow = true;
+                                    }
+                                }
+                            });
+
+                            // Add white and yellow spotlights for the logo, with doubled intensity
+                            const whiteIntensity = 93.6; // Doubled from 46.8 for increased intensity
+                            const yellowIntensity = 99.5328; // Doubled from 49.7664 for increased intensity
+
+                            const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1);
+                            whiteSpotlight.position.set(0, 20, 0); // Centered, higher position
+                            whiteSpotlight.target = logoObject;
+                            whiteSpotlight.castShadow = true;
+                            whiteSpotlight.shadow.mapSize.width = 1024;
+                            whiteSpotlight.shadow.mapSize.height = 1024;
+                            whiteSpotlight.shadow.camera.near = 0.5;
+                            whiteSpotlight.shadow.camera.far = 50;
+                            scene.add(whiteSpotlight);
+                            scene.add(whiteSpotlight.target);
+
+                            const yellowSpotlight = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1);
+                            yellowSpotlight.position.set(0, 20, 0); // Centered, same height as white
+                            yellowSpotlight.target = logoObject;
+                            yellowSpotlight.castShadow = true;
+                            yellowSpotlight.shadow.mapSize.width = 1024;
+                            yellowSpotlight.shadow.mapSize.height = 1024;
+                            yellowSpotlight.shadow.camera.near = 0.5;
+                            yellowSpotlight.shadow.camera.far = 50;
+                            scene.add(yellowSpotlight);
+                            scene.add(yellowSpotlight.target);
+
+                            console.log(`Added white and yellow spotlights to logo at 0, 0, 0 with increased intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow)`);
+                        },
+                        function(xhr) {
+                            console.log(`Progress for logo.glb: ${xhr.loaded / xhr.total * 100}% loaded`);
+                        },
+                        function(error) {
+                            console.error(`Error loading logo.glb:`, error);
+                            console.log("Possible CORS or network issue. Consider using a local server or proxy.");
+                        }
+                    );
+                } else {
+                    // Circular layout for all categories with models
+                    const currentRadius = (viewportId === 'humanViewport') ? humanRadius : 
+                                        (viewportId === 'agricultureViewport') ? agricultureRadius : categoryRadius;
+                    const angleStep = (2 * Math.PI) / models.length; // Angle between models
+                    models.forEach((model, index) => {
+                        const angle = index * angleStep;
+                        let x, z;
+                        if (viewportId === 'humanViewport') {
+                            // Position models on the same X-axis (x: 0) in Human category
+                            x = 0;
+                            z = currentRadius * (index === 0 ? -1 : 1); // Alternate z for even spacing
+                        } else {
+                            x = currentRadius * Math.cos(angle);
+                            z = currentRadius * Math.sin(angle);
+                        }
+                        let scale = model.scale;
+                        if (model.path.includes('generalized_human_body.glb')) {
+                            scale *= 1; // Scaled down to match female_human_skeleton (scale 1)
+                        }
+                        if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
+                            scale *= 0.6; // Scale down by 40%
+                        }
+                        loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
+                    });
+                }
+
+                let isRotating = true; // Track rotation state
+                let selectedModel = null; // Track selected model for orbit restriction
+                let hoverModel = null; // Track hovered model for dynamic orbiting
+
+                // Mouse hover detection for dynamic orbiting
+                const raycaster = new THREE.Raycaster();
+                const mouse = new THREE.Vector2();
+
+                function onMouseMove(event) {
+                    // Normalize mouse position to NDC (-1 to 1)
+                    mouse.x = ((event.clientX - viewport.getBoundingClientRect().left) / viewport.clientWidth) * 2 - 1;
+                    mouse.y = -((event.clientY - viewport.getBoundingClientRect().top) / viewport.clientHeight) * 2 + 1;
+
+                    // Update raycaster
+                    raycaster.setFromCamera(mouse, camera);
+
+                    // Filter out static objects (e.g., lights, non-models)
+                    const modelObjects = scene.children.filter(child => 
+                        (child.isGroup || child.isObject3D) && !child.userData.isStatic
+                    );
+                    const intersects = raycaster.intersectObjects(modelObjects, true);
+
+                    if (intersects.length > 0) {
+                        const intersectedObject = intersects[0].object;
+                        let rootTarget = intersectedObject;
+                        while (rootTarget.parent && !rootTarget.userData.isRoot) {
+                            rootTarget = rootTarget.parent;
+                        }
+                        if (!rootTarget.userData.isRoot) {
+                            rootTarget.userData.isRoot = true; // Mark as root for tracking
+                        }
+                        hoverModel = rootTarget; // Set hovered model
+                        controls.target.lerp(rootTarget.position, 0.1); // Smoothly transition to orbit around hovered model
+                    } else {
+                        hoverModel = null; // Reset if no model is hovered
+                        controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1); // Smoothly return to scene center
+                    }
+                    controls.update(); // Update controls for smooth orbiting
+                }
+
+                // Double-click zoom-in functionality
+                function onDoubleClick(event) {
+                    // Normalize mouse position to NDC (-1 to 1)
+                    mouse.x = ((event.clientX - viewport.getBoundingClientRect().left) / viewport.clientWidth) * 2 - 1;
+                    mouse.y = -((event.clientY - viewport.getBoundingClientRect().top) / viewport.clientHeight) * 2 + 1;
+
+                    // Update raycaster
+                    raycaster.setFromCamera(mouse, camera);
+
+                    // Filter out static objects (e.g., lights, non-models)
+                    const modelObjects = scene.children.filter(child => 
+                        (child.isGroup || child.isObject3D) && !child.userData.isStatic
+                    );
+                    const intersects = raycaster.intersectObjects(modelObjects, true);
+
+                    if (intersects.length > 0) {
+                        const intersectedObject = intersects[0].object;
+                        let rootTarget = intersectedObject;
+                        while (rootTarget.parent && !rootTarget.userData.isRoot) {
+                            rootTarget = rootTarget.parent;
+                        }
+                        if (!rootTarget.userData.isRoot) {
+                            rootTarget.userData.isRoot = true; // Mark as root for tracking
+                        }
+                        const targetModel = rootTarget;
+
+                        if (targetModel.userData.isZoomed) {
+                            // Zoom out: return to original scale and position
+                            new TWEEN.Tween(targetModel.scale)
+                                .to({ x: targetModel.userData.originalScale, y: targetModel.userData.originalScale, z: targetModel.userData.originalScale }, 500)
+                                .easing(TWEEN.Easing.Quadratic.InOut)
+                                .start()
+                                .onComplete(() => {
+                                    targetModel.userData.isZoomed = false;
+                                });
+
+                            new TWEEN.Tween(targetModel.position)
+                                .to({ x: targetModel.userData.originalPosition.x, y: targetModel.userData.originalPosition.y, z: targetModel.userData.originalPosition.z }, 500)
+                                .easing(TWEEN.Easing.Quadratic.InOut)
+                                .start();
+
+                            new TWEEN.Tween(camera.position)
+                                .to({ x: 0, y: 5, z: (viewportId === 'mainViewport' ? 30 : 25.5) }, 500)
+                                .easing(TWEEN.Easing.Quadratic.InOut)
+                                .onUpdate(() => {
+                                    controls.target.set(0, 0, 0); // Center orbit after zoom out
+                                    controls.update();
+                                })
+                                .start();
+                        } else {
+                            // Zoom in: scale up, center, and ensure full visibility
+                            const zoomScale = 2; // Double scale for zoom-in (adjust if needed for visibility)
+                            const modelPosition = targetModel.position.clone();
+                            const distance = 10; // Distance for clear visibility, adjustable
+
+                            new TWEEN.Tween(targetModel.scale)
+                                .to({ x: targetModel.userData.originalScale * zoomScale, y: targetModel.userData.originalScale * zoomScale, z: targetModel.userData.originalScale * zoomScale }, 500)
+                                .easing(TWEEN.Easing.Quadratic.InOut)
+                                .start()
+                                .onComplete(() => {
+                                    targetModel.userData.isZoomed = true;
+                                });
+
+                            const targetPosition = modelPosition.clone();
+                            const cameraTarget = new THREE.Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
+                            const cameraDistance = new THREE.Vector3(
+                                targetPosition.x,
+                                targetPosition.y + 5,
+                                targetPosition.z + distance
+                            );
+
+                            new TWEEN.Tween(camera.position)
+                                .to({ x: cameraDistance.x, y: cameraDistance.y, z: cameraDistance.z }, 500)
+                                .easing(TWEEN.Easing.Quadratic.InOut)
+                                .onUpdate(() => {
+                                    controls.target.copy(cameraTarget);
+                                    camera.lookAt(cameraTarget);
+                                    controls.update();
+                                })
+                                .start();
+                        }
+                    }
+                }
+
+                // Add mouse move and double-click listeners only for main and category viewports
+                if (viewportId === 'mainViewport' || viewportId.includes('Viewport')) {
+                    viewport.addEventListener('mousemove', onMouseMove);
+                    viewport.addEventListener('mouseleave', () => {
+                        hoverModel = null; // Reset on mouse leave
+                        controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1); // Smoothly return to scene center
+                        controls.update();
+                    });
+                    viewport.addEventListener('dblclick', onDoubleClick); // Add double-click listener
+                }
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    if (typeof TWEEN !== 'undefined') {
+                        TWEEN.update(); // Update Tween.js animations only if defined
+                    } else {
+                        console.warn("TWEEN is not defined, skipping animations.");
+                    }
+                    scene.children.forEach(child => {
+                        if (child.isGroup || child.isObject3D) {
+                            if (isRotating && !child.userData.isZoomed && !child.userData.isStatic) { // Only rotate non-static, unzoomed models
+                                child.rotation.y += 0.01; // Slow rotation for visibility
+                            }
+                        }
+                    });
+                    if (selectedModel) {
+                        controls.target.copy(selectedModel.position); // Orbit only around selected model (manual interaction)
+                    } else if (hoverModel) {
+                        controls.target.lerp(hoverModel.position, 0.1); // Dynamic orbit around hovered model
+                    } else {
+                        controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1); // Default to scene center if no hover or selection
+                    }
+                    controls.update(); // Update controls for performance
+                    renderer.render(scene, camera);
+                    console.log(`Rendering frame for ${viewportId}, scene children:`, scene.children.length, "Camera position:", camera.position);
+                }
+
+                animate();
+
+                // Handle window resize correctly
+                window.addEventListener('resize', () => {
+                    console.log(`Resizing viewport ${viewportId}...`);
+                    camera.aspect = viewport.clientWidth / viewport.clientHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+                    controls.update(); // Use update() for performance
+                });
+
+                console.log(`Scene for ${viewportId} initialized successfully`);
+            }
+
+            const mainModels = [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }, // Scaled down to match female_human_skeleton (scale 1)
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+            ];
+
+            const categoryModels = {
+                geometry: [
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+                ],
+                physics: [
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 }
+                ],
+                chemistry: [
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+                ],
+                biology: [
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+                ],
+                human: [
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }, // Scaled down to match female_human_skeleton (scale 1)
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+                ],
+                agriculture: [
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+                ],
+                animal: [
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+                ]
+            };
+
+            console.log("Initializing main viewport...");
+            try {
+                createScene('mainViewport', mainModels, true); // Enable double-click zoom
+                console.log("Main viewport initialized successfully");
+            } catch (error) {
+                console.error("Error initializing main viewport:", error);
+            }
+
+            console.log("Setting up category buttons...");
+            document.getElementById('btnGeometry').addEventListener('click', () => {
+                console.log("Geometry button clicked");
+                document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+                const geometryViewport = document.getElementById('geometryViewport');
+                geometryViewport.style.display = 'flex';
+                try {
+                    createScene('geometryViewport', categoryModels.geometry, true); // Enable double-click zoom
+                    console.log("Geometry viewport initialized successfully");
+                } catch (error) {
+                    console.error("Error initializing Geometry viewport:", error);
+                }
+            });
+
+            document.getElementById('btnPhysics').addEventListener('click', () => {
+                console.log("Physics button clicked");
+                document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+                const physicsViewport = document.getElementById('physicsViewport');
+                physicsViewport.style.display = 'flex';
+                try {
+                    createScene('physicsViewport', categoryModels.physics, true); // Enable double-click zoom
+                    console.log("Physics viewport initialized successfully");
+                } catch (error) {
+                    console.error("Error initializing Physics viewport:", error);
+                }
+            });
+
+            document.getElementById('btnChemistry').addEventListener('click', () => {
+                console.log("Chemistry button clicked");
+                document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+                const chemistryViewport = document.getElementById('chemistryViewport');
+                chemistryViewport.style.display = 'flex';
+                try {
+                    createScene('chemistryViewport', categoryModels.chemistry, true); // Enable double-click zoom
+                    console.log("Chemistry viewport initialized successfully");
+                } catch (error) {
+                    console.error("Error initializing Chemistry viewport:", error);
+                }
+            });
+
+            document.getElementById('btnBiology').addEventListener('click', () => {
+                console.log("Biology button clicked");
+                document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+                const biologyViewport = document.getElementById('biologyViewport');
+                biologyViewport.style.display = 'flex';
+                try {
+                    createScene('biologyViewport', categoryModels.biology, true); // Enable double-click zoom
+                    console.log("Biology viewport initialized successfully");
+                } catch (error) {
+                    console.error("Error initializing Biology viewport:", error);
+                }
+            });
+
+            document.getElementById('btnHuman').addEventListener('click', () => {
+                console.log("Human button clicked");
+                document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+                const humanViewport = document.getElementById('humanViewport');
+                humanViewport.style.display = 'flex';
+                try {
+                    createScene('humanViewport', categoryModels.human, true); // Enable double-click zoom
+                    console.log("Human viewport initialized successfully");
+                } catch (error) {
+                    console.error("Error initializing Human viewport:", error);
+                }
+            });
+
+            document.getElementById('btnAgriculture').addEventListener('click', () => {
+                console.log("Agriculture button clicked");
+                document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+                const agricultureViewport = document.getElementById('agricultureViewport');
+                agricultureViewport.style.display = 'flex';
+                try {
+                    createScene('agricultureViewport', categoryModels.agriculture, true); // Enable double-click zoom
+                    console.log("Agriculture viewport initialized successfully");
+                } catch (error) {
+                    console.error("Error initializing Agriculture viewport:", error);
+                }
+            });
+
+            document.getElementById('btnAnimal').addEventListener('click', () => {
+                console.log("Animal button clicked");
+                document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+                const animalViewport = document.getElementById('animalViewport');
+                animalViewport.style.display = 'flex';
+                try {
+                    createScene('animalViewport', categoryModels.animal, true); // Enable double-click zoom
+                    console.log("Animal viewport initialized successfully");
+                } catch (error) {
+                    console.error("Error initializing Animal viewport:", error);
+                }
+            });
+
+            console.log("Setting up back buttons...");
+            document.getElementById('backGeometry').addEventListener('click', () => {
+                console.log("Back to main from Geometry clicked");
+                document.getElementById('geometryViewport').style.display = 'none';
+                document.getElementById('mainViewport').style.display = 'block';
+            });
+
+            document.getElementById('backPhysics').addEventListener('click', () => {
+                console.log("Back to main from Physics clicked");
+                document.getElementById('physicsViewport').style.display = 'none';
+                document.getElementById('mainViewport').style.display = 'block';
+            });
+
+            document.getElementById('backChemistry').addEventListener('click', () => {
+                console.log("Back to main from Chemistry clicked");
+                document.getElementById('chemistryViewport').style.display = 'none';
+                document.getElementById('mainViewport').style.display = 'block';
+            });
+
+            document.getElementById('backBiology').addEventListener('click', () => {
+                console.log("Back to main from Biology clicked");
+                document.getElementById('biologyViewport').style.display = 'none';
+                document.getElementById('mainViewport').style.display = 'block';
+            });
+
+            document.getElementById('backHuman').addEventListener('click', () => {
+                console.log("Back to main from Human clicked");
+                document.getElementById('humanViewport').style.display = 'none';
+                document.getElementById('mainViewport').style.display = 'block';
+            });
+
+            document.getElementById('backAgriculture').addEventListener('click', () => {
+                console.log("Back to main from Agriculture clicked");
+                document.getElementById('agricultureViewport').style.display = 'none';
+                document.getElementById('mainViewport').style.display = 'block';
+            });
+
+            document.getElementById('backAnimal').addEventListener('click', () => {
+                console.log("Back to main from Animal clicked");
+                document.getElementById('animalViewport').style.display = 'none';
+                document.getElementById('mainViewport').style.display = 'block';
+            });
+
+            console.log("Script initialization completed successfully, including Tween.js for animations");
+        });
+    </script>
+</body>
+</html>
