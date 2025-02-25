@@ -136,7 +136,7 @@
             const controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.1;
-            controls.minDistance = 5;
+            controls.minDistance = 2; // Reduced for closer zoom
             controls.maxDistance = 200;
 
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Bright background
@@ -182,19 +182,30 @@
                         modelObject.userData.isZoomed = false; // Track zoom state
                         scene.add(modelObject);
 
-                        // Add white spotlight for each model (store-like effect)
+                        // Add white and yellow spotlights for each model (store-like effect)
                         if (addSpotlight) {
-                            const spotlight = new THREE.SpotLight(0xffffff, 3.9, 30, Math.PI / 6, 0.2, 1); // Bright spotlight
-                            spotlight.position.set(position.x, 20, position.z); // Higher position for dramatic effect
-                            spotlight.target = modelObject;
-                            spotlight.castShadow = true; // Enable shadows
-                            spotlight.shadow.mapSize.width = 1024; // Improve shadow quality
-                            spotlight.shadow.mapSize.height = 1024;
-                            spotlight.shadow.camera.near = 0.5;
-                            spotlight.shadow.camera.far = 50;
-                            scene.add(spotlight);
-                            scene.add(spotlight.target);
-                            console.log(`Added spotlight to model at ${position.x}, ${position.z}`);
+                            const whiteSpotlight = new THREE.SpotLight(0xffffff, 4.68, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (3.9 to 4.68)
+                            whiteSpotlight.position.set(position.x, 20, position.z); // Higher position for dramatic effect
+                            whiteSpotlight.target = modelObject;
+                            whiteSpotlight.castShadow = true; // Enable shadows
+                            whiteSpotlight.shadow.mapSize.width = 1024; // Improve shadow quality
+                            whiteSpotlight.shadow.mapSize.height = 1024;
+                            whiteSpotlight.shadow.camera.near = 0.5;
+                            whiteSpotlight.shadow.camera.far = 50;
+                            scene.add(whiteSpotlight);
+                            scene.add(whiteSpotlight.target);
+
+                            const yellowSpotlight = new THREE.SpotLight(0xffff00, 2.4, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (2 to 2.4)
+                            yellowSpotlight.position.set(position.x, 20, position.z); // Same position as white spotlight
+                            yellowSpotlight.target = modelObject;
+                            yellowSpotlight.castShadow = true; // Enable shadows
+                            yellowSpotlight.shadow.mapSize.width = 1024;
+                            yellowSpotlight.shadow.mapSize.height = 1024;
+                            yellowSpotlight.shadow.camera.near = 0.5;
+                            yellowSpotlight.shadow.camera.far = 50;
+                            scene.add(yellowSpotlight);
+                            scene.add(yellowSpotlight.target);
+                            console.log(`Added white and yellow spotlights to model at ${position.x}, ${position.z}`);
                         }
                     },
                     function(xhr) {
@@ -209,7 +220,7 @@
             // Load logo in the main viewport center
             if (viewportId === 'mainViewport') {
                 textureLoader.load(
-                    'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png', // Replace with actual logo path or local path
+                    'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png', // Corrected path to raw file
                     function(texture) {
                         const logoGeometry = new THREE.PlaneGeometry(5, 5); // Adjust size as needed
                         const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true, side: THREE.DoubleSide });
@@ -219,7 +230,7 @@
                         scene.add(logo);
 
                         // Add yellow spotlight above the logo
-                        const logoSpotlight = new THREE.SpotLight(0xffff00, 2, 30, Math.PI / 6, 0.2, 1); // Yellow light
+                        const logoSpotlight = new THREE.SpotLight(0xffff00, 2.4, 30, Math.PI / 6, 0.2, 1); // Increased by 20% (2 to 2.4)
                         logoSpotlight.position.set(0, 25, 0); // Above the logo
                         logoSpotlight.target = logo;
                         logoSpotlight.castShadow = true;
@@ -240,7 +251,8 @@
 
             // Position models in a circular layout for main viewport, or circularly for categories
             const radius = 40; // Radius for main viewport
-            const categoryRadius = 5; // Default radius for categories
+            const categoryRadius = 3; // Reduced for Human to bring models closer (default for other categories)
+            const humanRadius = 3; // Reduced for Human category
             const agricultureRadius = 6; // Slightly increased for Agriculture
             if (viewportId === 'mainViewport') {
                 const angleStep = (2 * Math.PI) / models.length; // Angle between models
@@ -256,7 +268,8 @@
                 });
             } else {
                 // Circular layout for all categories with models
-                const currentRadius = (viewportId === 'agricultureViewport') ? agricultureRadius : categoryRadius;
+                const currentRadius = (viewportId === 'humanViewport') ? humanRadius : 
+                                    (viewportId === 'agricultureViewport') ? agricultureRadius : categoryRadius;
                 const angleStep = (2 * Math.PI) / models.length; // Angle between models
                 models.forEach((model, index) => {
                     const angle = index * angleStep;
@@ -323,7 +336,7 @@
 
                         const maxDim = Math.max(size.x, size.y, size.z) * 1.5; // Increased for larger models
                         const fov = camera.fov * (Math.PI / 180);
-                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 2.5; // Adjusted for better zoom
+                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 4; // Increased for closer zoom
 
                         const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
                         const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
@@ -334,6 +347,35 @@
                         controls.update(); // Ensure controls reflect new target
                         selectedModel = rootTarget; // Restrict orbit to this model
                         isRotating = false; // Stop all rotations temporarily
+                    } else if (models.length > 1 && viewportId !== 'mainViewport') {
+                        // Zoom to include all models in category when clicking empty space
+                        console.log(`Zooming to all models in ${viewportId}`);
+                        const allBoxes = models.map(model => {
+                            const dummy = new THREE.Object3D();
+                            dummy.position.copy(model.position);
+                            return new THREE.Box3().setFromObject(dummy);
+                        });
+                        const overallBox = allBoxes.reduce((acc, box) => acc.union(box), new THREE.Box3());
+                        const center = overallBox.getCenter(new THREE.Vector3());
+                        const size = overallBox.getSize(new THREE.Vector3());
+                        const maxDim = Math.max(size.x, size.y, size.z) * 1.5;
+                        const fov = camera.fov * (Math.PI / 180);
+                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2)) * 4; // Increased for closer zoom
+
+                        const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
+                        const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
+
+                        camera.position.copy(newCameraPosition);
+                        camera.lookAt(center);
+                        controls.target.copy(center); // Center on all models
+                        controls.update(); // Ensure controls reflect new target
+                        selectedModel = null; // No specific model selected
+                        isRotating = false; // Stop all rotations temporarily
+                        scene.children.forEach(child => {
+                            if (child.userData.isZoomed) {
+                                child.userData.isZoomed = false; // Reset zoom state for all models
+                            }
+                        });
                     } else {
                         console.log("No intersection detected on double-click");
                     }
@@ -376,12 +418,9 @@
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/unidentified_agriculture_vehicle.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/poison_dart_frog.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/plant.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
@@ -392,8 +431,7 @@
         const categoryModels = {
             geometry: [
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             physics: [
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
@@ -406,7 +444,6 @@
             ],
             biology: [
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/poison_dart_frog.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             human: [
@@ -414,7 +451,6 @@
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             agriculture: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/unidentified_agriculture_vehicle.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/plant.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
