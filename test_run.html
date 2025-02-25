@@ -33,12 +33,17 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         }
         .button:hover {
+            transform: scale(1.1); /* Pop-up effect: scale up 10% */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Enhanced shadow on hover */
             background-color: #f47e42; /* Jaffa */
         }
         .button:active {
+            transform: scale(0.95); /* Slight scale down on click */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
             background-color: #f46c27; /* Flamingo */
         }
         .viewport {
@@ -153,7 +158,12 @@
             directionalLight.position.set(5, 10, 7.5);
             scene.add(directionalLight);
 
-            camera.position.set(0, 5, 30); // Closer initial position for categories
+            // Set camera position 20% closer in category viewports
+            if (viewportId !== 'mainViewport') {
+                camera.position.set(0, 5, 24); // 20% closer (30 * 0.8 = 24)
+            } else {
+                camera.position.set(0, 5, 30); // Main viewport stays as is
+            }
 
             const loaderGLTF = new THREE.GLTFLoader();
             const loaderOBJ = new THREE.OBJLoader();
@@ -161,15 +171,15 @@
 
             // Add showroom meshes (fixed, non-rotating) - only background wall
             function addShowroomMeshes() {
-                // Background wall (fixed)
+                // Background wall (fixed, solid)
                 const backWallGeometry = new THREE.PlaneGeometry(200, 50);
-                const backWallMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.DoubleSide }); // Flamingo for background wall
+                const backWallMaterial = new THREE.MeshStandardMaterial({ color: '#f46c27', side: THREE.FrontSide }); // Flamingo for background wall, solid (single-sided)
                 const backWall = new THREE.Mesh(backWallGeometry, backWallMaterial);
                 backWall.position.set(0, 25, -100); // Behind models, centered vertically
                 backWall.receiveShadow = true;
                 backWall.userData.isStatic = true; // Mark as static (non-rotating)
                 scene.add(backWall);
-                console.log("Showroom background wall added as fixed, non-rotating element");
+                console.log("Showroom background wall added as fixed, non-rotating, solid element");
 
                 // Add logo to background wall
                 console.log("Attempting to load logo from: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/logo.png");
@@ -243,7 +253,7 @@
                         }
                         modelObject.position.set(position.x, position.y, position.z);
                         modelObject.scale.set(scale, scale, scale);
-                        modelObject.userData.isZoomed = false; // Track zoom state
+                        modelObject.userData.isZoomed = false; // Track zoom state (unused now, but kept for consistency)
                         scene.add(modelObject);
 
                         // Add white and yellow spotlights for each model (store-like effect)
@@ -282,12 +292,12 @@
             }
 
             // Position models in a circular layout for main viewport, or circularly for categories
-            const radius = 35; // Narrowed circle slightly for main viewport
+            const radius = 35; // Narrowed circle for main viewport
             const categoryRadius = 3; // Reduced for Human and default for other categories
             const humanRadius = 2; // Further reduced for Human to bring models closer
             const agricultureRadius = 6; // Slightly increased for Agriculture
             if (viewportId === 'mainViewport') {
-                const angleStep = (2 * Math.PI) / 7; // Angle between 7 models, ensuring equal and even distance
+                const angleStep = (2 * Math.PI) / 9; // Angle between 9 models, ensuring equal and even distance
                 models.forEach((model, index) => {
                     const angle = index * angleStep + Math.PI / 2; // Offset for visibility around logo
                     const x = radius * Math.cos(angle);
@@ -355,7 +365,9 @@
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
         ];
 
         const categoryModels = {
@@ -374,10 +386,11 @@
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             human: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             agriculture: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             animal: [
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
@@ -399,7 +412,7 @@
             const geometryViewport = document.getElementById('geometryViewport');
             geometryViewport.style.display = 'flex';
             try {
-                createScene('geometryViewport', categoryModels.geometry, false); // Removed zoom-in
+                createScene('geometryViewport', categoryModels.geometry, false);
                 console.log("Geometry viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Geometry viewport:", error);
@@ -412,7 +425,7 @@
             const physicsViewport = document.getElementById('physicsViewport');
             physicsViewport.style.display = 'flex';
             try {
-                createScene('physicsViewport', categoryModels.physics, false); // Removed zoom-in
+                createScene('physicsViewport', categoryModels.physics, false);
                 console.log("Physics viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Physics viewport:", error);
@@ -425,7 +438,7 @@
             const chemistryViewport = document.getElementById('chemistryViewport');
             chemistryViewport.style.display = 'flex';
             try {
-                createScene('chemistryViewport', categoryModels.chemistry, false); // Removed zoom-in
+                createScene('chemistryViewport', categoryModels.chemistry, false);
                 console.log("Chemistry viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Chemistry viewport:", error);
@@ -438,7 +451,7 @@
             const biologyViewport = document.getElementById('biologyViewport');
             biologyViewport.style.display = 'flex';
             try {
-                createScene('biologyViewport', categoryModels.biology, false); // Removed zoom-in
+                createScene('biologyViewport', categoryModels.biology, false);
                 console.log("Biology viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Biology viewport:", error);
@@ -451,7 +464,7 @@
             const humanViewport = document.getElementById('humanViewport');
             humanViewport.style.display = 'flex';
             try {
-                createScene('humanViewport', categoryModels.human, false); // Removed zoom-in
+                createScene('humanViewport', categoryModels.human, false);
                 console.log("Human viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Human viewport:", error);
@@ -464,7 +477,7 @@
             const agricultureViewport = document.getElementById('agricultureViewport');
             agricultureViewport.style.display = 'flex';
             try {
-                createScene('agricultureViewport', categoryModels.agriculture, false); // Removed zoom-in
+                createScene('agricultureViewport', categoryModels.agriculture, false);
                 console.log("Agriculture viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Agriculture viewport:", error);
@@ -477,7 +490,7 @@
             const animalViewport = document.getElementById('animalViewport');
             animalViewport.style.display = 'flex';
             try {
-                createScene('animalViewport', categoryModels.animal, false); // Removed zoom-in
+                createScene('animalViewport', categoryModels.animal, false);
                 console.log("Animal viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Animal viewport:", error);
