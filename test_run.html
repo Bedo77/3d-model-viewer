@@ -67,30 +67,6 @@
             font-size: 24px;
             color: white;
         }
-        .text-popup {
-            position: absolute;
-            background-color: rgba(255, 165, 0, 0.9);
-            border: 2px solid #ff8c00;
-            border-radius: 85%;
-            padding: 15px;
-            display: none;
-            z-index: 10;
-            min-width: 180px;
-            max-width: 360px;
-            overflow: hidden;
-            text-align: center;
-            animation: popUpEffect 0.5s ease-in-out forwards;
-            font-size: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        .popup-content {
-            margin-top: 3mm;
-        }
-        @keyframes popUpEffect {
-            0% { transform: scale(0); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
     </style>
 </head>
 <body>
@@ -119,10 +95,6 @@
     <div class="category-viewport" id="biologyViewport">
         <div class="back-button" id="backBiology">Back</div>
         <div class="title">Biology</div>
-        <div class="text-popup" id="textPopup">
-            <div class="popup-content" id="popupContent"></div>
-            <button class="close-button" id="closePopup">Close Window</button>
-        </div>
     </div>
     <div class="category-viewport" id="humanViewport">
         <div class="back-button" id="backHuman">Back</div>
@@ -141,6 +113,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js"></script>
     <script>
         console.log("Starting script initialization...");
 
@@ -166,17 +139,18 @@
             controls.minDistance = 5;
             controls.maxDistance = 200;
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); // Reduced ambient for spotlight emphasis
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Increased ambient for brighter background
             scene.add(ambientLight);
 
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5); // Reduced directional for spotlight emphasis
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7); // Increased directional for brighter background
             directionalLight.position.set(5, 10, 7.5);
             scene.add(directionalLight);
 
-            camera.position.set(0, 5, 50); // Adjusted for better visibility in circular layout
+            camera.position.set(0, 5, 30); // Closer initial position for categories
 
             const loaderGLTF = new THREE.GLTFLoader();
             const loaderOBJ = new THREE.OBJLoader();
+            const textureLoader = new THREE.TextureLoader();
 
             function loadModel(loader, modelPath, position, scale = 1, addSpotlight = true) {
                 console.log(`Loading model from: ${modelPath}`);
@@ -205,11 +179,12 @@
                         }
                         modelObject.position.set(position.x, position.y, position.z);
                         modelObject.scale.set(scale, scale, scale);
+                        modelObject.userData.originalControls = controls.clone(); // Store original controls for individual orbit
                         scene.add(modelObject);
 
                         // Add white spotlight for each model (store-like effect)
                         if (addSpotlight) {
-                            const spotlight = new THREE.SpotLight(0xffffff, 3, 30, Math.PI / 6, 0.2, 1); // Brighter, tighter spotlight
+                            const spotlight = new THREE.SpotLight(0xffffff, 3.9, 30, Math.PI / 6, 0.2, 1); // Increased intensity by 30% (3 to 3.9)
                             spotlight.position.set(position.x, 20, position.z); // Higher position for dramatic effect
                             spotlight.target = modelObject;
                             spotlight.castShadow = true; // Enable shadows
@@ -231,13 +206,46 @@
                 );
             }
 
+            // Load logo in the main viewport center
+            if (viewportId === 'mainViewport') {
+                textureLoader.load(
+                    'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.png', // Replace with actual logo path
+                    function(texture) {
+                        const logoGeometry = new THREE.PlaneGeometry(5, 5); // Adjust size as needed
+                        const logoMaterial = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+                        const logo = new THREE.Mesh(logoGeometry, logoMaterial);
+                        logo.position.set(0, 5, 0); // Center in main viewport
+                        logo.rotation.y = Math.PI; // Face the camera
+                        scene.add(logo);
+
+                        // Add yellow spotlight above the logo
+                        const logoSpotlight = new THREE.SpotLight(0xffff00, 2, 30, Math.PI / 6, 0.2, 1); // Yellow light
+                        logoSpotlight.position.set(0, 25, 0); // Above the logo
+                        logoSpotlight.target = logo;
+                        logoSpotlight.castShadow = true;
+                        logoSpotlight.shadow.mapSize.width = 1024;
+                        logoSpotlight.shadow.mapSize.height = 1024;
+                        logoSpotlight.shadow.camera.near = 0.5;
+                        logoSpotlight.shadow.camera.far = 50;
+                        scene.add(logoSpotlight);
+                        scene.add(logoSpotlight.target);
+                        console.log("Logo and yellow spotlight added to main viewport");
+                    },
+                    undefined,
+                    function(error) {
+                        console.error("Error loading logo:", error);
+                    }
+                );
+            }
+
             // Position models in a circular layout for main viewport, or circularly for categories
             const radius = 40; // Radius for main viewport
-            const categoryRadius = 5; // Smaller radius to bring models closer in categories
+            const categoryRadius = 5; // Default radius for categories
+            const agricultureRadius = 6; // Slightly increased for Agriculture
             if (viewportId === 'mainViewport') {
                 const angleStep = (2 * Math.PI) / models.length; // Angle between models
                 models.forEach((model, index) => {
-                    const angle = index * angleStep;
+                    const angle = index * angleStep + Math.PI / 2; // Offset for visibility around logo
                     const x = radius * Math.cos(angle);
                     const z = radius * Math.sin(angle);
                     let scale = model.scale;
@@ -248,11 +256,12 @@
                 });
             } else {
                 // Circular layout for all categories with models
+                const currentRadius = (viewportId === 'agricultureViewport') ? agricultureRadius : categoryRadius;
                 const angleStep = (2 * Math.PI) / models.length; // Angle between models
                 models.forEach((model, index) => {
                     const angle = index * angleStep;
-                    const x = categoryRadius * Math.cos(angle);
-                    const z = categoryRadius * Math.sin(angle);
+                    const x = currentRadius * Math.cos(angle);
+                    const z = currentRadius * Math.sin(angle);
                     let scale = model.scale;
                     if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
                         scale *= 0.6; // Scale down by 40%
@@ -262,6 +271,7 @@
             }
 
             let isRotating = true; // Track rotation state
+            let selectedModel = null; // Track selected model for orbit restriction
 
             function animate() {
                 requestAnimationFrame(animate);
@@ -272,6 +282,9 @@
                         }
                     }
                 });
+                if (selectedModel) {
+                    controls.target.copy(selectedModel.position); // Orbit only around selected model
+                }
                 controls.update();
                 renderer.render(scene, camera);
             }
@@ -317,9 +330,27 @@
                         camera.lookAt(center);
                         controls.target.copy(center); // Center the controls on the clicked model
                         controls.update(); // Ensure controls reflect new target
+                        selectedModel = rootTarget; // Restrict orbit to this model
+                        isRotating = false; // Stop all rotations temporarily
                     } else {
                         console.log("No intersection detected on double-click");
                     }
+                });
+
+                // Restore full orbit when returning to main or another category
+                document.querySelectorAll('.back-button').forEach(backButton => {
+                    backButton.addEventListener('click', () => {
+                        console.log(`Restoring full orbit from ${viewportId}`);
+                        selectedModel = null; // Reset selected model
+                        isRotating = true; // Resume rotation for all models
+                        scene.children.forEach(child => {
+                            if (child.userData.isZoomed) {
+                                child.userData.isZoomed = false; // Reset zoom state
+                            }
+                        });
+                        controls.target.set(0, 0, 0); // Reset orbit target to origin
+                        controls.update();
+                    });
                 });
             }
 
@@ -532,36 +563,6 @@
             console.log("Back to main from Animal clicked");
             document.getElementById('animalViewport').style.display = 'none';
             document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('biologyViewport').addEventListener('dblclick', (event) => {
-            console.log("Double-click detected on Biology viewport");
-            const textPopup = document.getElementById('textPopup');
-            const popupContent = document.getElementById('popupContent');
-            textPopup.style.display = 'block';
-
-            fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/info/insect%20info.txt')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    return response.text();
-                })
-                .then(text => {
-                    console.log("Fetched insect info successfully");
-                    const listItems = text.split('\n').map(item => `<li>${item.trim()}</li>`).join('');
-                    popupContent.innerHTML = listItems;
-
-                    textPopup.style.left = '50%';
-                    textPopup.style.top = '50%';
-                    textPopup.style.transform = 'translate(-50%, -50%)';
-                })
-                .catch(error => console.error('Error fetching text info:', error));
-        });
-
-        document.getElementById('closePopup').addEventListener('click', () => {
-            console.log("Closing text popup");
-            document.getElementById('textPopup').style.display = 'none';
         });
 
         console.log("Script initialization completed successfully");
