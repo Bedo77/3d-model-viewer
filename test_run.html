@@ -168,9 +168,9 @@
             directionalLight.position.set(5, 10, 7.5);
             scene.add(directionalLight);
 
-            // Set camera position 20% closer in category viewports
+            // Set camera position 15% closer in category viewports, default in main
             if (viewportId !== 'mainViewport') {
-                camera.position.set(0, 5, 24); // 20% closer (30 * 0.8 = 24)
+                camera.position.set(0, 5, 25.5); // 15% closer (30 * 0.85 = 25.5)
             } else {
                 camera.position.set(0, 5, 30); // Main viewport default position
             }
@@ -211,13 +211,19 @@
                         }
                         modelObject.position.set(position.x, position.y, position.z);
                         modelObject.scale.set(scale, scale, scale);
-                        modelObject.userData.isZoomed = false; // Track zoom state (unused now, but kept for consistency)
+                        modelObject.userData.isZoomed = false; // Track zoom state
+                        modelObject.userData.originalScale = scale; // Store original scale for zoom toggle
+                        modelObject.userData.originalPosition = position; // Store original position for zoom toggle
                         scene.add(modelObject);
 
-                        // Add white and yellow spotlights for each model (store-like effect), with uniform intensity
+                        // Add white and yellow spotlights for each model, reduced in category viewports
                         if (addSpotlight) {
-                            const whiteIntensity = 23.4; // Match intensity of all models
-                            const yellowIntensity = 24.8832; // Match intensity of all models
+                            let whiteIntensity = 23.4;
+                            let yellowIntensity = 24.8832;
+                            if (viewportId !== 'mainViewport') {
+                                whiteIntensity = 11.7; // Half of 23.4 for category viewports
+                                yellowIntensity = 12.4416; // Half of 24.8832 for category viewports
+                            }
 
                             const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1); // Adjusted intensity
                             whiteSpotlight.position.set(position.x, 20, position.z); // Higher position for dramatic effect
@@ -252,7 +258,7 @@
                             scene.add(yellowSpotlight2);
                             scene.add(yellowSpotlight2.target);
 
-                            console.log(`Added white and yellow spotlights to model at ${position.x}, ${position.z} with uniform intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow) for each yellow light`);
+                            console.log(`Added white and yellow spotlights to model at ${position.x}, ${position.z} with intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow) for each yellow light in viewport ${viewportId}`);
                         }
                     },
                     function(xhr) {
@@ -292,9 +298,11 @@
                         console.log(`Logo loaded successfully: logo.glb`);
                         const logoObject = gltf.scene;
                         logoObject.position.set(0, 0, 0); // Center of the main viewport
-                        logoObject.scale.set(3, 3, 3); // Reverted to triple size (removed doubled thickness)
+                        logoObject.scale.set(3, 3, 3); // Triple size (reverted solidity)
                         logoObject.userData.isZoomed = false; // Track zoom state
                         logoObject.userData.isStatic = false; // Allow rotation like other models
+                        logoObject.userData.originalScale = 3; // Store original scale for zoom toggle
+                        logoObject.userData.originalPosition = { x: 0, y: 0, z: 0 }; // Store original position for zoom toggle
                         scene.add(logoObject);
 
                         // Revert to default solid material (no shiny effect)
@@ -413,18 +421,104 @@
                 controls.update(); // Update controls for smooth orbiting
             }
 
-            // Add mouse move listener only for main viewport
-            if (viewportId === 'mainViewport') {
+            // Double-click zoom-in functionality
+            function onDoubleClick(event) {
+                // Normalize mouse position to NDC (-1 to 1)
+                mouse.x = ((event.clientX - viewport.getBoundingClientRect().left) / viewport.clientWidth) * 2 - 1;
+                mouse.y = -((event.clientY - viewport.getBoundingClientRect().top) / viewport.clientHeight) * 2 + 1;
+
+                // Update raycaster
+                raycaster.setFromCamera(mouse, camera);
+
+                // Filter out static objects (e.g., lights, non-models)
+                const modelObjects = scene.children.filter(child => 
+                    (child.isGroup || child.isObject3D) && !child.userData.isStatic
+                );
+                const intersects = raycaster.intersectObjects(modelObjects, true);
+
+                if (intersects.length > 0) {
+                    const intersectedObject = intersects[0].object;
+                    let rootTarget = intersectedObject;
+                    while (rootTarget.parent && !rootTarget.userData.isRoot) {
+                        rootTarget = rootTarget.parent;
+                    }
+                    if (!rootTarget.userData.isRoot) {
+                        rootTarget.userData.isRoot = true; // Mark as root for tracking
+                    }
+                    const targetModel = rootTarget;
+
+                    if (targetModel.userData.isZoomed) {
+                        // Zoom out: return to original scale and position
+                        new TWEEN.Tween(targetModel.scale)
+                            .to({ x: targetModel.userData.originalScale, y: targetModel.userData.originalScale, z: targetModel.userData.originalScale }, 500)
+                            .easing(TWEEN.Easing.Quadratic.InOut)
+                            .start()
+                            .onComplete(() => {
+                                targetModel.userData.isZoomed = false;
+                            });
+
+                        new TWEEN.Tween(targetModel.position)
+                            .to({ x: targetModel.userData.originalPosition.x, y: targetModel.userData.originalPosition.y, z: targetModel.userData.originalPosition.z }, 500)
+                            .easing(TWEEN.Easing.Quadratic.InOut)
+                            .start();
+
+                        new TWEEN.Tween(camera.position)
+                            .to({ x: 0, y: 5, z: (viewportId === 'mainViewport' ? 30 : 25.5) }, 500)
+                            .easing(TWEEN.Easing.Quadratic.InOut)
+                            .onUpdate(() => {
+                                controls.target.set(0, 0, 0); // Center orbit after zoom out
+                                controls.update();
+                            })
+                            .start();
+                    } else {
+                        // Zoom in: scale up, center, and ensure full visibility
+                        const zoomScale = 2; // Double scale for zoom-in (adjust if needed for visibility)
+                        const modelPosition = targetModel.position.clone();
+                        const distance = 10; // Distance for clear visibility, adjustable
+
+                        new TWEEN.Tween(targetModel.scale)
+                            .to({ x: targetModel.userData.originalScale * zoomScale, y: targetModel.userData.originalScale * zoomScale, z: targetModel.userData.originalScale * zoomScale }, 500)
+                            .easing(TWEEN.Easing.Quadratic.InOut)
+                            .start()
+                            .onComplete(() => {
+                                targetModel.userData.isZoomed = true;
+                            });
+
+                        const targetPosition = modelPosition.clone();
+                        const cameraTarget = new THREE.Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
+                        const cameraDistance = new THREE.Vector3(
+                            targetPosition.x,
+                            targetPosition.y + 5,
+                            targetPosition.z + distance
+                        );
+
+                        new TWEEN.Tween(camera.position)
+                            .to({ x: cameraDistance.x, y: cameraDistance.y, z: cameraDistance.z }, 500)
+                            .easing(TWEEN.Easing.Quadratic.InOut)
+                            .onUpdate(() => {
+                                controls.target.copy(cameraTarget);
+                                camera.lookAt(cameraTarget);
+                                controls.update();
+                            })
+                            .start();
+                    }
+                }
+            }
+
+            // Add mouse move and double-click listeners only for main and category viewports
+            if (viewportId === 'mainViewport' || viewportId.includes('Viewport')) {
                 viewport.addEventListener('mousemove', onMouseMove);
                 viewport.addEventListener('mouseleave', () => {
                     hoverModel = null; // Reset on mouse leave
                     controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1); // Smoothly return to scene center
                     controls.update();
                 });
+                viewport.addEventListener('dblclick', onDoubleClick); // Add double-click listener
             }
 
             function animate() {
                 requestAnimationFrame(animate);
+                TWEEN.update(); // Update Tween.js animations
                 scene.children.forEach(child => {
                     if (child.isGroup || child.isObject3D) {
                         if (isRotating && !child.userData.isZoomed && !child.userData.isStatic) { // Only rotate non-static, unzoomed models
@@ -497,7 +591,7 @@
 
         console.log("Initializing main viewport...");
         try {
-            createScene('mainViewport', mainModels);
+            createScene('mainViewport', mainModels, true); // Enable double-click zoom
             console.log("Main viewport initialized successfully");
         } catch (error) {
             console.error("Error initializing main viewport:", error);
@@ -510,7 +604,7 @@
             const geometryViewport = document.getElementById('geometryViewport');
             geometryViewport.style.display = 'flex';
             try {
-                createScene('geometryViewport', categoryModels.geometry, false);
+                createScene('geometryViewport', categoryModels.geometry, true); // Enable double-click zoom
                 console.log("Geometry viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Geometry viewport:", error);
@@ -523,7 +617,7 @@
             const physicsViewport = document.getElementById('physicsViewport');
             physicsViewport.style.display = 'flex';
             try {
-                createScene('physicsViewport', categoryModels.physics, false);
+                createScene('physicsViewport', categoryModels.physics, true); // Enable double-click zoom
                 console.log("Physics viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Physics viewport:", error);
@@ -536,7 +630,7 @@
             const chemistryViewport = document.getElementById('chemistryViewport');
             chemistryViewport.style.display = 'flex';
             try {
-                createScene('chemistryViewport', categoryModels.chemistry, false);
+                createScene('chemistryViewport', categoryModels.chemistry, true); // Enable double-click zoom
                 console.log("Chemistry viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Chemistry viewport:", error);
@@ -549,7 +643,7 @@
             const biologyViewport = document.getElementById('biologyViewport');
             biologyViewport.style.display = 'flex';
             try {
-                createScene('biologyViewport', categoryModels.biology, false);
+                createScene('biologyViewport', categoryModels.biology, true); // Enable double-click zoom
                 console.log("Biology viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Biology viewport:", error);
@@ -562,7 +656,7 @@
             const humanViewport = document.getElementById('humanViewport');
             humanViewport.style.display = 'flex';
             try {
-                createScene('humanViewport', categoryModels.human, false);
+                createScene('humanViewport', categoryModels.human, true); // Enable double-click zoom
                 console.log("Human viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Human viewport:", error);
@@ -575,7 +669,7 @@
             const agricultureViewport = document.getElementById('agricultureViewport');
             agricultureViewport.style.display = 'flex';
             try {
-                createScene('agricultureViewport', categoryModels.agriculture, false);
+                createScene('agricultureViewport', categoryModels.agriculture, true); // Enable double-click zoom
                 console.log("Agriculture viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Agriculture viewport:", error);
@@ -588,7 +682,7 @@
             const animalViewport = document.getElementById('animalViewport');
             animalViewport.style.display = 'flex';
             try {
-                createScene('animalViewport', categoryModels.animal, false);
+                createScene('animalViewport', categoryModels.animal, true); // Enable double-click zoom
                 console.log("Animal viewport initialized successfully");
             } catch (error) {
                 console.error("Error initializing Animal viewport:", error);
@@ -638,7 +732,9 @@
             document.getElementById('mainViewport').style.display = 'block';
         });
 
-        console.log("Script initialization completed successfully");
+        // Include Tween.js for smooth animations
+        console.log("Script initialization completed successfully, including Tween.js for animations");
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.min.js"></script>
 </body>
 </html>
