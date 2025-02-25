@@ -159,16 +159,17 @@
             renderer.setSize(viewport.clientWidth, viewport.clientHeight);
             viewport.appendChild(renderer.domElement);
 
-            // Restore OrbitControls for standard orbit functionality
+            // Use OrbitControls for standard orbit functionality
             const controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.1;
             controls.minDistance = 10;
             controls.maxDistance = 200;
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.3); // Reduced ambient for spotlight emphasis
             scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5); // Reduced directional for spotlight emphasis
             directionalLight.position.set(5, 10, 7.5);
             scene.add(directionalLight);
 
@@ -193,11 +194,12 @@
                         modelObject.scale.set(scale, scale, scale);
                         scene.add(modelObject);
 
-                        // Add white spotlight for each model
+                        // Add white spotlight for each model (store-like effect)
                         if (addSpotlight) {
-                            const spotlight = new THREE.SpotLight(0xffffff, 1, 50, Math.PI / 4, 0.5, 1);
-                            spotlight.position.set(position.x, 10, position.z); // Position above the model
+                            const spotlight = new THREE.SpotLight(0xffffff, 2, 30, Math.PI / 6, 0.2, 1); // Brighter, tighter spotlight
+                            spotlight.position.set(position.x, 15, position.z); // Higher position for dramatic effect
                             spotlight.target = modelObject;
+                            spotlight.castShadow = true; // Enable shadows for realism
                             scene.add(spotlight);
                             scene.add(spotlight.target);
                             console.log(`Added spotlight to model at ${position.x}, ${position.z}`);
@@ -212,8 +214,9 @@
                 );
             }
 
-            // Position models in a circular layout for main viewport, or linearly/circularly for categories
-            const radius = 40; // Radius for circular layout
+            // Position models in a circular layout for main viewport, or circularly for categories
+            const radius = 40; // Radius for main viewport
+            const categoryRadius = 15; // Smaller radius for categories to bring models closer
             if (viewportId === 'mainViewport') {
                 const angleStep = (2 * Math.PI) / models.length; // Angle between models
                 models.forEach((model, index) => {
@@ -227,28 +230,18 @@
                     loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
                 });
             } else {
-                // Circular layout for categories with multiple models
-                if (models.length > 1) {
-                    const angleStep = (2 * Math.PI) / models.length; // Angle between models
-                    models.forEach((model, index) => {
-                        const angle = index * angleStep;
-                        const x = radius * Math.cos(angle);
-                        const z = radius * Math.sin(angle);
-                        let scale = model.scale;
-                        if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
-                            scale *= 0.6; // Scale down by 40%
-                        }
-                        loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
-                    });
-                } else {
-                    // Single model, center it
-                    const model = models[0];
+                // Circular layout for all categories with models
+                const angleStep = (2 * Math.PI) / models.length; // Angle between models
+                models.forEach((model, index) => {
+                    const angle = index * angleStep;
+                    const x = categoryRadius * Math.cos(angle);
+                    const z = categoryRadius * Math.sin(angle);
                     let scale = model.scale;
                     if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
                         scale *= 0.6; // Scale down by 40%
                     }
-                    loadModel(model.loader, model.path, { x: 0, y: 0, z: 0 }, scale);
-                }
+                    loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
+                });
             }
 
             let isRotating = true; // Track rotation state
@@ -305,6 +298,7 @@
                         camera.position.copy(newCameraPosition);
                         camera.lookAt(center);
                         controls.target.copy(center); // Center the controls on the clicked model
+                        controls.update(); // Ensure controls reflect new target
                     } else {
                         console.log("No intersection detected on double-click");
                     }
