@@ -149,12 +149,16 @@
             renderer.setSize(viewport.clientWidth, viewport.clientHeight);
             viewport.appendChild(renderer.domElement);
 
-            // Use OrbitControls for standard orbit functionality
+            // Optimized OrbitControls for better performance
             const controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
-            controls.dampingFactor = 0.1;
+            controls.dampingFactor = 0.05; // Reduced damping for smoother, faster response
             controls.minDistance = 2; // Reduced for closer view
             controls.maxDistance = 200;
+            controls.rotateSpeed = 0.5; // Slightly faster rotation
+            controls.panSpeed = 0.5; // Slightly faster panning
+            controls.zoomSpeed = 0.5; // Slightly faster zooming
+            controls.update(); // Initial update for performance
 
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Bright background
             scene.add(ambientLight);
@@ -167,7 +171,7 @@
             if (viewportId !== 'mainViewport') {
                 camera.position.set(0, 5, 24); // 20% closer (30 * 0.8 = 24)
             } else {
-                camera.position.set(0, 5, 30); // Main viewport starts here, animated later
+                camera.position.set(0, 5, 30); // Main viewport default position
             }
 
             const loaderGLTF = new THREE.GLTFLoader();
@@ -281,122 +285,6 @@
                     }
                     loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
                 });
-
-                // Camera animation for a slow, focused tour in main viewport
-                let tourComplete = false;
-                let currentModelIndex = 0;
-                function startCameraTour() {
-                    if (tourComplete) return;
-                    const tourDurationPerModel = 1000; // 1 second per model (9 seconds total for 9 models)
-                    const settleDuration = 2000; // 2 seconds to settle back slowly
-                    const tourRadius = radius + 10; // Slightly larger radius for the tour path
-                    const modelPositions = models.map((_, index) => {
-                        const angle = index * angleStep + Math.PI / 2;
-                        return {
-                            x: tourRadius * Math.cos(angle),
-                            z: tourRadius * Math.sin(angle)
-                        };
-                    });
-
-                    function animateTour(timestamp) {
-                        if (tourComplete) {
-                            // Slow settlement back to original position
-                            const startTime = performance.now();
-                            function settleBack(currentTime) {
-                                const elapsed = currentTime - startTime;
-                                if (elapsed < settleDuration) {
-                                    const progress = elapsed / settleDuration;
-                                    const easedProgress = 1 - Math.pow(1 - progress, 4); // Ease out (slows down at the end)
-                                    camera.position.lerpVectors(
-                                        new THREE.Vector3(modelPositions[currentModelIndex - 1].x, 10, modelPositions[currentModelIndex - 1].z),
-                                        new THREE.Vector3(0, 5, 30),
-                                        easedProgress
-                                    );
-                                    camera.lookAt(0, 0, 0);
-                                    controls.target.lerpVectors(
-                                        new THREE.Vector3(0, 0, 0),
-                                        new THREE.Vector3(0, 0, 0),
-                                        easedProgress
-                                    );
-                                    controls.update();
-                                    requestAnimationFrame(settleBack);
-                                } else {
-                                    camera.position.set(0, 5, 30); // Final position
-                                    controls.target.set(0, 0, 0); // Reset orbit target
-                                    controls.update();
-                                    console.log("Camera tour completed, settled back slowly to original position");
-                                }
-                            }
-                            requestAnimationFrame(settleBack);
-                            return;
-                        }
-
-                        if (currentModelIndex < models.length) {
-                            const startTime = performance.now();
-                            const targetPosition = modelPositions[currentModelIndex];
-                            const focusDuration = tourDurationPerModel / 2; // Half second to move, half to focus
-
-                            function focusModel(currentTime) {
-                                const elapsed = currentTime - startTime;
-                                if (elapsed < focusDuration) {
-                                    // Move to the model's position
-                                    const progress = elapsed / focusDuration;
-                                    const easedProgress = progress * progress; // Ease in (accelerates)
-                                    camera.position.lerpVectors(
-                                        camera.position.clone(),
-                                        new THREE.Vector3(targetPosition.x, 10, targetPosition.z),
-                                        easedProgress
-                                    );
-                                    camera.lookAt(
-                                        models[currentModelIndex].position.x || 0,
-                                        0,
-                                        models[currentModelIndex].position.z || 0
-                                    );
-                                    controls.target.lerpVectors(
-                                        controls.target.clone(),
-                                        new THREE.Vector3(
-                                            models[currentModelIndex].position.x || 0,
-                                            0,
-                                            models[currentModelIndex].position.z || 0
-                                        ),
-                                        easedProgress
-                                    );
-                                    controls.update();
-                                    requestAnimationFrame(focusModel);
-                                } else if (elapsed < tourDurationPerModel) {
-                                    // Focus on the model (hold position)
-                                    camera.position.set(targetPosition.x, 10, targetPosition.z);
-                                    camera.lookAt(
-                                        models[currentModelIndex].position.x || 0,
-                                        0,
-                                        models[currentModelIndex].position.z || 0
-                                    );
-                                    controls.target.set(
-                                        models[currentModelIndex].position.x || 0,
-                                        0,
-                                        models[currentModelIndex].position.z || 0
-                                    );
-                                    controls.update();
-                                    requestAnimationFrame(focusModel);
-                                } else {
-                                    currentModelIndex++;
-                                    if (currentModelIndex < models.length) {
-                                        requestAnimationFrame(animateTour);
-                                    } else {
-                                        tourComplete = true;
-                                        requestAnimationFrame(animateTour);
-                                    }
-                                }
-                            }
-
-                            requestAnimationFrame(focusModel);
-                        }
-                    }
-
-                    setTimeout(() => requestAnimationFrame(animateTour), 1000); // Delay to ensure models load
-                }
-
-                startCameraTour();
             } else {
                 // Circular layout for all categories with models
                 const currentRadius = (viewportId === 'humanViewport') ? humanRadius : 
@@ -426,6 +314,53 @@
 
             let isRotating = true; // Track rotation state
             let selectedModel = null; // Track selected model for orbit restriction
+            let hoverModel = null; // Track hovered model for dynamic orbiting
+
+            // Mouse hover detection for dynamic orbiting
+            const raycaster = new THREE.Raycaster();
+            const mouse = new THREE.Vector2();
+
+            function onMouseMove(event) {
+                // Normalize mouse position to NDC (-1 to 1)
+                mouse.x = ((event.clientX - viewport.getBoundingClientRect().left) / viewport.clientWidth) * 2 - 1;
+                mouse.y = -((event.clientY - viewport.getBoundingClientRect().top) / viewport.clientHeight) * 2 + 1;
+
+                // Update raycaster
+                raycaster.setFromCamera(mouse, camera);
+
+                // Filter out static objects (e.g., lights, non-models)
+                const modelObjects = scene.children.filter(child => 
+                    (child.isGroup || child.isObject3D) && !child.userData.isStatic
+                );
+                const intersects = raycaster.intersectObjects(modelObjects, true);
+
+                if (intersects.length > 0) {
+                    const intersectedObject = intersects[0].object;
+                    let rootTarget = intersectedObject;
+                    while (rootTarget.parent && !rootTarget.userData.isRoot) {
+                        rootTarget = rootTarget.parent;
+                    }
+                    if (!rootTarget.userData.isRoot) {
+                        rootTarget.userData.isRoot = true; // Mark as root for tracking
+                    }
+                    hoverModel = rootTarget; // Set hovered model
+                    controls.target.lerp(rootTarget.position, 0.1); // Smoothly transition to orbit around hovered model
+                } else {
+                    hoverModel = null; // Reset if no model is hovered
+                    controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1); // Smoothly return to scene center
+                }
+                controls.update(); // Update controls for smooth orbiting
+            }
+
+            // Add mouse move listener only for main viewport
+            if (viewportId === 'mainViewport') {
+                viewport.addEventListener('mousemove', onMouseMove);
+                viewport.addEventListener('mouseleave', () => {
+                    hoverModel = null; // Reset on mouse leave
+                    controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1); // Smoothly return to scene center
+                    controls.update();
+                });
+            }
 
             function animate() {
                 requestAnimationFrame(animate);
@@ -437,9 +372,13 @@
                     }
                 });
                 if (selectedModel) {
-                    controls.target.copy(selectedModel.position); // Orbit only around selected model
+                    controls.target.copy(selectedModel.position); // Orbit only around selected model (manual interaction)
+                } else if (hoverModel) {
+                    controls.target.lerp(hoverModel.position, 0.1); // Dynamic orbit around hovered model
+                } else {
+                    controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1); // Default to scene center if no hover or selection
                 }
-                controls.update();
+                controls.update(); // Update controls for performance
                 renderer.render(scene, camera);
             }
 
@@ -451,7 +390,7 @@
                 camera.aspect = viewport.clientWidth / viewport.clientHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(viewport.clientWidth, viewport.clientHeight);
-                controls.update(); // Use update() instead of handleResize
+                controls.update(); // Use update() for performance
             });
 
             console.log(`Scene for ${viewportId} initialized successfully`);
