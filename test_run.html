@@ -14,7 +14,7 @@
             display: flex;
         }
         .sidebar {
-            width: 18%; /* Narrowed from 20% for a slight reduction */
+            width: 18%; /* Narrowed for a slight reduction */
             background-color: #2c7481; /* Paradiso, solid */
             display: flex;
             flex-direction: column;
@@ -53,7 +53,7 @@
             color: #000000; /* Bold black text on active */
         }
         .viewport {
-            width: 82%; /* Adjusted from 80% to accommodate narrowed sidebar */
+            width: 82%; /* Adjusted to accommodate narrowed sidebar */
             height: 100%;
             position: relative;
         }
@@ -285,35 +285,31 @@
                     loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
                 });
 
-                // Load logo.glb at the center of the main viewport, triple size, doubled thickness, rotating, with shiny effect and high-intensity lights
+                // Load logo.glb at the center of the main viewport, triple size, rotating, with increased light intensity
                 loaderGLTF.load(
                     'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.glb',
                     function(gltf) {
                         console.log(`Logo loaded successfully: logo.glb`);
                         const logoObject = gltf.scene;
                         logoObject.position.set(0, 0, 0); // Center of the main viewport
-                        logoObject.scale.set(3, 3, 6); // Triple size, doubled thickness (Z-axis)
+                        logoObject.scale.set(3, 3, 3); // Reverted to triple size (removed doubled thickness)
                         logoObject.userData.isZoomed = false; // Track zoom state
                         logoObject.userData.isStatic = false; // Allow rotation like other models
                         scene.add(logoObject);
 
-                        // Solidify and make shiny by ensuring materials are non-transparent and reflective
+                        // Revert to default solid material (no shiny effect)
                         logoObject.traverse((child) => {
                             if (child.isMesh) {
-                                child.material = new THREE.MeshStandardMaterial({
-                                    color: 0xffffff, // Default white, adjust if logo has specific color
-                                    metalness: 0.9, // High metalness for shiny effect
-                                    roughness: 0.1, // Low roughness for glossy reflection
-                                    transparent: false // Ensure no transparency for solidity
-                                });
+                                child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
                                 child.castShadow = true;
                                 child.receiveShadow = true;
+                                child.material.transparent = false; // Ensure no transparency for solidity
                             }
                         });
 
-                        // Add white and yellow spotlights for the logo, with high intensity
-                        const whiteIntensity = 46.8; // Double the current 23.4 for high intensity
-                        const yellowIntensity = 49.7664; // Double the current 24.8832 for high intensity
+                        // Add white and yellow spotlights for the logo, with doubled intensity
+                        const whiteIntensity = 93.6; // Doubled from 46.8 for increased intensity
+                        const yellowIntensity = 99.5328; // Doubled from 49.7664 for increased intensity
 
                         const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1);
                         whiteSpotlight.position.set(0, 20, 0); // Centered, higher position
@@ -337,7 +333,7 @@
                         scene.add(yellowSpotlight);
                         scene.add(yellowSpotlight.target);
 
-                        console.log(`Added white and yellow spotlights to logo at 0, 0, 0 with high intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow), shiny effect applied`);
+                        console.log(`Added white and yellow spotlights to logo at 0, 0, 0 with increased intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow)`);
                     },
                     function(xhr) {
                         console.log(`Progress for logo.glb: ${xhr.loaded / xhr.total * 100}% loaded`);
