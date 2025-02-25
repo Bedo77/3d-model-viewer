@@ -207,13 +207,13 @@
                         modelObject.userData.isZoomed = false; // Track zoom state (unused now, but kept for consistency)
                         scene.add(modelObject);
 
-                        // Add white and yellow spotlights for each model (store-like effect), with increased intensity for specific models
+                        // Add white and yellow spotlights for each model (store-like effect), with doubled intensity for specific models
                         if (addSpotlight) {
                             let whiteIntensity = 4.68;
                             let yellowIntensity = 4.97664;
                             if (modelPath.includes('a_modern_agricultural_worker-944.glb') || modelPath.includes('geometry_texture_effect_spheres.glb')) {
-                                whiteIntensity *= 1.25; // Increase by 25% from 9.36 to 11.7 (9.36 * 1.25)
-                                yellowIntensity *= 1.25; // Increase by 25% from 9.95328 to 12.4416 (9.95328 * 1.25)
+                                whiteIntensity *= 4; // Double the current 11.7 (4.68 * 4 = 23.4)
+                                yellowIntensity *= 5; // Double the current 12.4416 (4.97664 * 5 = 24.8832, adjusted for precision)
                             }
 
                             const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1); // Adjusted intensity
