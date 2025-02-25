@@ -15,19 +15,20 @@
         }
         .sidebar {
             width: 20%;
-            background-color: #2c7481; /* Paradiso */
+            background-color: #2c7481; /* Paradiso, solid */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 10px;
+            border: none; /* Remove any borders or gradients for solidity */
         }
         .button {
             width: 100px;
             height: 100px;
             margin: 10px;
             border-radius: 50%;
-            background-color: #dadad8; /* Quill Gray */
+            background-color: #dadad8; /* Quill Gray, solid */
             color: white;
             display: flex;
             justify-content: center;
@@ -35,16 +36,17 @@
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            border: none; /* Remove any borders for solidity */
         }
         .button:hover {
             transform: scale(1.1); /* Pop-up effect: scale up 10% */
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Enhanced shadow on hover */
-            background-color: #f47e42; /* Jaffa */
+            background-color: #f47e42; /* Jaffa, solid */
         }
         .button:active {
             transform: scale(0.95); /* Slight scale down on click */
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-            background-color: #f46c27; /* Flamingo */
+            background-color: #f46c27; /* Flamingo, solid */
         }
         .viewport {
             width: 80%;
@@ -126,6 +128,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FontLoader.js"></script>
     <script>
         console.log("Starting script initialization...");
 
@@ -168,6 +171,7 @@
             const loaderGLTF = new THREE.GLTFLoader();
             const loaderOBJ = new THREE.OBJLoader();
             const textureLoader = new THREE.TextureLoader();
+            const fontLoader = new THREE.FontLoader();
 
             // Add showroom meshes (fixed, non-rotating) - only background wall
             function addShowroomMeshes() {
@@ -181,47 +185,97 @@
                 scene.add(backWall);
                 console.log("Showroom background wall added as fixed, non-rotating, solid element");
 
-                // Add logo to background wall
-                console.log("Attempting to load logo from: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/logo.png");
-                textureLoader.load(
-                    'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/logo.png',
-                    function(texture) {
-                        console.log("Logo texture loaded successfully");
-                        const logoGeometry = new THREE.PlaneGeometry(10, 5); // Larger size to fit background wall
-                        const paletteColors = [
-                            new THREE.Color('#2c7481'), // Paradiso
-                            new THREE.Color('#dadad8'), // Quill Gray
-                            new THREE.Color('#f47e42'), // Jaffa
-                            new THREE.Color('#f46c27')  // Flamingo
-                        ];
-                        let mixedColor = new THREE.Color(0, 0, 0);
-                        paletteColors.forEach(color => mixedColor.add(color));
-                        mixedColor.divideScalar(paletteColors.length); // Average the colors
-
-                        const logoMaterial = new THREE.MeshBasicMaterial({
-                            map: texture,
-                            transparent: true,
-                            side: THREE.DoubleSide,
-                            color: mixedColor // Apply mixed color as a tint
-                        });
-                        const logo = new THREE.Mesh(logoGeometry, logoMaterial);
-                        logo.position.set(0, 25, -100.1); // Center on background wall, slightly in front
-                        logo.rotation.y = 0; // Face forward
-                        logo.userData.isStatic = true; // Mark as static (non-rotating)
-                        scene.add(logo);
-                        console.log("Logo with mixed color palette added to background wall");
-                    },
-                    function(xhr) {
-                        console.log(`Logo loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
-                    },
-                    function(error) {
-                        console.error("Error loading logo:", error);
-                        console.log("Checking logo path validity...");
-                        console.log("URL used: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/logo.png");
-                        console.log("Possible issues: File not found (404), network error, or incorrect path.");
-                        console.log("Try verifying the file exists at the GitHub repository or use a local path, e.g., 'file:///E:/Python backups/3d converter/images/logo.png'");
-                    }
-                );
+                // Attempt to load text locally or use default if local fails
+                console.log("Attempting to load font from local path or default...");
+                try {
+                    fontLoader.load(
+                        'file:///E:/Backup Aug 2024/Smartistic/helvetiker_regular.typeface.json', // Local path for Times New Roman approximation
+                        function(font) {
+                            console.log("Font loaded successfully from local path");
+                            const textGeometry = new THREE.TextGeometry('Smartis Lab Studio', {
+                                font: font,
+                                size: 5,
+                                height: 0.1,
+                                curveSegments: 12,
+                                bevelEnabled: false,
+                                style: 'bold' // Attempt to simulate bold Times New Roman
+                            });
+                            const textMaterial = new THREE.MeshStandardMaterial({ color: '#000000' }); // Bold black
+                            const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                            textMesh.position.set(-50, 28, -100.1); // Centered on background wall, slightly in front
+                            textMesh.receiveShadow = true;
+                            textMesh.userData.isStatic = true; // Mark as static (non-rotating)
+                            scene.add(textMesh);
+                            console.log("Text 'Smartis Lab Studio' added to background wall in bold black");
+                        },
+                        function(xhr) {
+                            console.log(`Font loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
+                        },
+                        function(error) {
+                            console.error("Error loading local font:", error);
+                            console.log("Falling back to default Three.js font (helvetiker_regular)...");
+                            fontLoader.load(
+                                'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', // Default font as fallback
+                                function(defaultFont) {
+                                    console.log("Default font loaded successfully");
+                                    const textGeometry = new THREE.TextGeometry('Smartis Lab Studio', {
+                                        font: defaultFont,
+                                        size: 5,
+                                        height: 0.1,
+                                        curveSegments: 12,
+                                        bevelEnabled: false,
+                                        style: 'bold' // Attempt to simulate bold Times New Roman
+                                    });
+                                    const textMaterial = new THREE.MeshStandardMaterial({ color: '#000000' }); // Bold black
+                                    const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                                    textMesh.position.set(-50, 28, -100.1); // Centered on background wall, slightly in front
+                                    textMesh.receiveShadow = true;
+                                    textMesh.userData.isStatic = true; // Mark as static (non-rotating)
+                                    scene.add(textMesh);
+                                    console.log("Fallback text 'Smartis Lab Studio' added to background wall in bold black");
+                                },
+                                function(xhr) {
+                                    console.log(`Default font loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
+                                },
+                                function(defaultError) {
+                                    console.error("Error loading default font:", defaultError);
+                                    console.log("Text display failed; check font files or paths.");
+                                }
+                            );
+                        }
+                    );
+                } catch (localError) {
+                    console.error("Error accessing local font path:", localError);
+                    console.log("Falling back to default Three.js font (helvetiker_regular)...");
+                    fontLoader.load(
+                        'https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', // Default font as fallback
+                        function(defaultFont) {
+                            console.log("Default font loaded successfully");
+                            const textGeometry = new THREE.TextGeometry('Smartis Lab Studio', {
+                                font: defaultFont,
+                                size: 5,
+                                height: 0.1,
+                                curveSegments: 12,
+                                bevelEnabled: false,
+                                style: 'bold' // Attempt to simulate bold Times New Roman
+                            });
+                            const textMaterial = new THREE.MeshStandardMaterial({ color: '#000000' }); // Bold black
+                            const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                            textMesh.position.set(-50, 28, -100.1); // Centered on background wall, slightly in front
+                            textMesh.receiveShadow = true;
+                            textMesh.userData.isStatic = true; // Mark as static (non-rotating)
+                            scene.add(textMesh);
+                            console.log("Fallback text 'Smartis Lab Studio' added to background wall in bold black");
+                        },
+                        function(xhr) {
+                            console.log(`Default font loading progress: ${xhr.loaded / xhr.total * 100}% loaded`);
+                        },
+                        function(defaultError) {
+                            console.error("Error loading default font:", defaultError);
+                            console.log("Text display failed; check font files or paths.");
+                        }
+                    );
+                }
             }
 
             addShowroomMeshes();
@@ -255,6 +309,16 @@
                         modelObject.scale.set(scale, scale, scale);
                         modelObject.userData.isZoomed = false; // Track zoom state (unused now, but kept for consistency)
                         scene.add(modelObject);
+
+                        // Add small rounded mesh (cylinder) underneath the model
+                        const baseGeometry = new THREE.CylinderGeometry(1, 1, 0.5, 32); // Small cylinder (radius 1, height 0.5)
+                        const baseMaterial = new THREE.MeshStandardMaterial({ color: '#dadad8', metalness: 0.5, roughness: 0.5 }); // Quill Gray, metallic look
+                        const baseMesh = new THREE.Mesh(baseGeometry, baseMaterial);
+                        baseMesh.position.set(position.x, -0.25, position.z); // Position slightly below the model
+                        baseMesh.receiveShadow = true;
+                        baseMesh.castShadow = true;
+                        baseMesh.userData.isStatic = true; // Mark as static (non-rotating)
+                        scene.add(baseMesh);
 
                         // Add white and yellow spotlights for each model (store-like effect)
                         if (addSpotlight) {
@@ -303,6 +367,9 @@
                     const x = radius * Math.cos(angle);
                     const z = radius * Math.sin(angle);
                     let scale = model.scale;
+                    if (model.path.includes('generalized_human_body.glb')) {
+                        scale *= 3; // Triple size
+                    }
                     if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
                         scale *= 0.6; // Scale down by 40%
                     }
@@ -318,6 +385,9 @@
                     const x = currentRadius * Math.cos(angle);
                     const z = currentRadius * Math.sin(angle);
                     let scale = model.scale;
+                    if (model.path.includes('generalized_human_body.glb')) {
+                        scale *= 3; // Triple size
+                    }
                     if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
                         scale *= 0.6; // Scale down by 40%
                     }
@@ -361,7 +431,7 @@
         const mainModels = [
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 3 }, // Triple size
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 },
             { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
@@ -386,7 +456,7 @@
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             human: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 3 }, // Triple size
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
             ],
             agriculture: [
