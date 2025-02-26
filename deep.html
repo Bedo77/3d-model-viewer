@@ -268,14 +268,6 @@
             // Move the camera closer
             camera.position.set(0, 1, 10);
 
-            // Add a stage mesh
-            const stageGeometry = new THREE.PlaneGeometry(20, 10);
-            const stageMaterial = new THREE.MeshBasicMaterial({ color: 0xf46c27, side: THREE.DoubleSide });
-            const stageMesh = new THREE.Mesh(stageGeometry, stageMaterial);
-            stageMesh.rotation.x = -Math.PI / 2;
-            stageMesh.position.y = -1;
-            scene.add(stageMesh);
-
             function animate() {
                 requestAnimationFrame(animate);
                 controls.update();
@@ -290,74 +282,95 @@
             currentControls = controls;
         }
 
-        function loadModel(modelPath, position = { x: 0, y: 0, z: 0 }, scale = 1) {
-            // Clear the scene before loading a new model
-            while (currentScene.children.length > 0) {
-                const child = currentScene.children[0];
-                if (child !== currentScene.children.find(c => c.isScene)) {
-                    currentScene.remove(child);
-                }
-            }
+        function loadModels(models, viewportId) {
+            createScene(viewportId);
+            models.forEach((model, index) => {
+                const loader = new THREE.GLTFLoader();
+                loader.load(model.path, function(object) {
+                    if (object.scene) {
+                        object.scene.position.set(index * 5, 0, 0); // Adjust position to avoid overlap
+                        object.scene.scale.set(1, 1, 1);
+                        currentScene.add(object.scene);
 
-            const loader = new THREE.GLTFLoader();
-            loader.load(modelPath, function(object) {
-                if (object.scene) {
-                    object.scene.position.set(position.x, position.y, position.z);
-                    object.scene.scale.set(scale, scale, scale);
-                    currentScene.add(object.scene);
+                        // Adjust camera to fit all models
+                        const box = new THREE.Box3().setFromObject(object.scene);
+                        const size = box.getSize(new THREE.Vector3()).length();
+                        const center = box.getCenter(new THREE.Vector3());
 
-                    // Adjust camera to fit the model
-                    const box = new THREE.Box3().setFromObject(object.scene);
-                    const size = box.getSize(new THREE.Vector3()).length();
-                    const center = box.getCenter(new THREE.Vector3());
-
-                    currentCamera.position.copy(center);
-                    currentCamera.position.z = size * 1.5; // Adjust distance based on model size
-                    currentCamera.lookAt(center);
-                }
-            }, undefined, function(error) {
-                console.error(`Error loading model: ${modelPath}`, error);
+                        currentCamera.position.copy(center);
+                        currentCamera.position.z = size * 1.5; // Adjust distance based on model size
+                        currentCamera.lookAt(center);
+                    }
+                }, undefined, function(error) {
+                    console.error(`Error loading model: ${model.path}`, error);
+                });
             });
         }
 
         // Initialize main viewport
         createScene('mainViewport');
 
+        // Define models for each category
+        const models = {
+            geometry: [
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Sphere' },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', name: 'Fortress' }
+            ],
+            physics: [
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', name: 'Bullet' },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting' }
+            ],
+            chemistry: [
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set' }
+            ],
+            biology: [
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/poison_dart_frog.glb', name: 'Frog' },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', name: 'Wolf' }
+            ],
+            human: [
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Human Body' },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', name: 'Skull' }
+            ],
+            agriculture: [
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/unidentified_agriculture_vehicle.glb', name: 'Vehicle' }
+            ]
+        };
+
         // Add event listeners for category buttons
         document.getElementById('btnGeometry').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
             document.getElementById('geometryViewport').style.display = 'flex';
-            createScene('geometryModelViewport');
+            loadModels(models.geometry, 'geometryModelViewport');
         });
 
         document.getElementById('btnPhysics').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
             document.getElementById('physicsViewport').style.display = 'flex';
-            createScene('physicsModelViewport');
+            loadModels(models.physics, 'physicsModelViewport');
         });
 
         document.getElementById('btnChemistry').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
             document.getElementById('chemistryViewport').style.display = 'flex';
-            createScene('chemistryModelViewport');
+            loadModels(models.chemistry, 'chemistryModelViewport');
         });
 
         document.getElementById('btnBiology').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
             document.getElementById('biologyViewport').style.display = 'flex';
-            createScene('biologyModelViewport');
+            loadModels(models.biology, 'biologyModelViewport');
         });
 
         document.getElementById('btnHuman').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
             document.getElementById('humanViewport').style.display = 'flex';
-            createScene('humanModelViewport');
+            loadModels(models.human, 'humanModelViewport');
         });
 
         document.getElementById('btnAgriculture').addEventListener('click', () => {
             document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
             document.getElementById('agricultureViewport').style.display = 'flex';
-            createScene('agricultureModelViewport');
+            loadModels(models.agriculture, 'agricultureModelViewport');
         });
 
         // Add event listeners for back buttons
@@ -389,14 +402,6 @@
         document.getElementById('backAgriculture').addEventListener('click', () => {
             document.getElementById('agricultureViewport').style.display = 'none';
             document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        // Add drag-and-drop functionality
-        document.querySelectorAll('.track-button').forEach(button => {
-            button.addEventListener('click', () => {
-                const modelPath = `https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/${button.dataset.model}`;
-                loadModel(modelPath);
-            });
         });
     </script>
 </body>
