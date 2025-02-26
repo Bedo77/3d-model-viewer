@@ -38,6 +38,25 @@
             width: 80%;
             height: 100%;
             position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        .model-viewport {
+            width: 100%;
+            height: 50%;
+            position: relative;
+        }
+        .info-viewport {
+            width: 100%;
+            height: 50%;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
         }
         .category-viewport {
             width: 100%;
@@ -102,7 +121,28 @@
         <div class="button" id="btnHuman">Human</div>
         <div class="button" id="btnAgriculture">Agriculture</div>
     </div>
-    <div class="viewport" id="mainViewport"></div>
+    <div class="viewport">
+        <div class="model-viewport" id="mainViewport"></div>
+        <div class="info-viewport">
+            <h2>About Us</h2>
+            <p>
+                Welcome to <strong>EduTech Innovations</strong>, a leading company in educational technology. 
+                We specialize in creating cutting-edge products designed to inspire and educate learners of all ages, 
+                from 3 to 18 years old. Our diverse range of products includes:
+            </p>
+            <ul>
+                <li><strong>VinciBot</strong>: A programmable robot that introduces kids to coding and robotics.</li>
+                <li><strong>ClassVR</strong>: Immersive virtual reality experiences for interactive learning.</li>
+                <li><strong>TaleBot</strong>: A storytelling robot that encourages creativity and language skills.</li>
+                <li><strong>ProSet</strong>: Advanced STEM kits for hands-on learning and experimentation.</li>
+                <li><strong>Wizefloor</strong>: An interactive floor projection system for collaborative learning.</li>
+            </ul>
+            <p>
+                Our mission is to transform education by integrating technology into the learning process, 
+                making it more engaging, interactive, and effective. Join us in shaping the future of education!
+            </p>
+        </div>
+    </div>
     <div class="category-viewport" id="geometryViewport">
         <div class="back-button" id="backGeometry">Back</div>
         <div class="title">Geometry</div>
@@ -179,16 +219,25 @@
 
             models.forEach(model => loadModel(model.loader, model.path, model.position, model.scale));
 
+            // Add a stage mesh
+            const stageGeometry = new THREE.PlaneGeometry(20, 10);
+            const stageMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, side: THREE.DoubleSide });
+            const stageMesh = new THREE.Mesh(stageGeometry, stageMaterial);
+            stageMesh.rotation.x = -Math.PI / 2;
+            stageMesh.position.y = -1;
+            scene.add(stageMesh);
+
             function animate() {
-                requestAnimationFrame(animate);
-                scene.children.forEach(child => {
-                    if (child.isGroup || child.isObject3D) {
-                        child.rotation.y += 0.01;
-                    }
-                });
-                controls.update();
-                renderer.render(scene, camera);
-            }
+    requestAnimationFrame(animate);
+    scene.children.forEach(child => {
+        // Only rotate models, not the stage mesh
+        if ((child.isGroup || child.isObject3D) && child !== stageMesh) {
+            child.rotation.y += 0.01;
+        }
+    });
+    controls.update();
+    renderer.render(scene, camera);
+}
 
             animate();
 
@@ -227,10 +276,11 @@
         }
 
         const mainModels = [
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: -10, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: -5, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: 5, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 10, y: 0, z: 0 }, scale: 1 }
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: -8, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: -4, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 4, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', position: { x: 8, y: 0, z: 0 }, scale: 1 }
         ];
 
         createScene('mainViewport', mainModels);
