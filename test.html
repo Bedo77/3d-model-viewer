@@ -201,55 +201,31 @@
             pointer-events: none; /* Prevent interaction with dragged model */
         }
     </style>
-    <!-- Include necessary libraries with fallbacks for reliability -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" onload="console.log('Three.js loaded')" onerror="console.error('Three.js failed to load from CDN, using fallback')"></script>
+    <!-- Use static script tags with multiple CDNs and CORS support -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin="anonymous" onload="console.log('Three.js loaded')" onerror="console.error('Three.js failed to load from CDN, trying fallback'); loadFallback('https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js', 'Three.js')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" crossorigin="anonymous" onload="console.log('OrbitControls loaded')" onerror="console.error('OrbitControls failed to load from CDN, trying fallback'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js', 'OrbitControls')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js" crossorigin="anonymous" onload="console.log('GLTFLoader loaded')" onerror="console.error('GLTFLoader failed to load from CDN, trying fallback'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/GLTFLoader.js', 'GLTFLoader')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js" crossorigin="anonymous" onload="console.log('OBJLoader loaded')" onerror="console.error('OBJLoader failed to load from CDN, trying fallback'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/OBJLoader.js', 'OBJLoader')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js" crossorigin="anonymous" onload="console.log('TextureLoader loaded')" onerror="console.error('TextureLoader failed to load from CDN, trying fallback'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/TextureLoader.js', 'TextureLoader')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.min.js" crossorigin="anonymous" onload="console.log('Tween.js loaded')" onerror="console.error('Tween.js failed to load from CDN, trying fallback'); loadFallback('https://cdn.jsdelivr.net/npm/tween.js@18.6.4/dist/tween.umd.min.js', 'Tween.js')"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous" onload="console.log('jQuery loaded')" onerror="console.error('jQuery failed to load from CDN, trying fallback'); loadFallback('https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js', 'jQuery')"></script>
+
     <script>
-        if (typeof THREE === 'undefined') {
-            document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js" onload="console.log(\'Three.js loaded from fallback\')" onerror="console.error(\'Three.js fallback failed to load\')"></script>');
+        // Function to load fallback scripts dynamically
+        function loadFallback(url, libraryName) {
+            const script = document.createElement('script');
+            script.src = url;
+            script.crossorigin = 'anonymous';
+            script.onload = () => console.log(`${libraryName} loaded from fallback`);
+            script.onerror = () => console.error(`${libraryName} fallback failed to load`);
+            document.head.appendChild(script);
         }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" onload="console.log('OrbitControls loaded')" onerror="console.error('OrbitControls failed to load from CDN, using fallback')"></script>
-    <script>
-        if (typeof THREE.OrbitControls === 'undefined') {
-            document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" onload="console.log(\'OrbitControls loaded from fallback\')" onerror="console.error(\'OrbitControls fallback failed to load\')"></script>');
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js" onload="console.log('GLTFLoader loaded')" onerror="console.error('GLTFLoader failed to load from CDN, using fallback')"></script>
-    <script>
-        if (typeof THREE.GLTFLoader === 'undefined') {
-            document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js" onload="console.log(\'GLTFLoader loaded from fallback\')" onerror="console.error(\'GLTFLoader fallback failed to load\')"></script>');
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js" onload="console.log('OBJLoader loaded')" onerror="console.error('OBJLoader failed to load from CDN, using fallback')"></script>
-    <script>
-        if (typeof THREE.OBJLoader === 'undefined') {
-            document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js" onload="console.log(\'OBJLoader loaded from fallback\')" onerror="console.error(\'OBJLoader fallback failed to load\')"></script>');
-        }
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js" onload="console.log('TextureLoader loaded')" onerror="console.error('TextureLoader failed to load from CDN, using fallback')"></script>
-    <script>
-        if (typeof THREE.TextureLoader === 'undefined') {
-            document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js" onload="console.log(\'TextureLoader loaded from fallback\')" onerror="console.error(\'TextureLoader fallback failed to load\')"></script>');
-        }
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.min.js" onload="console.log('Tween.js loaded')" onerror="console.error('Tween.js failed to load from CDN, using fallback')"></script>
-    <script>
-        if (typeof TWEEN === 'undefined') {
-            document.write('<script src="https://cdn.jsdelivr.net/npm/tween.js@18.6.4/dist/tween.umd.min.js" onload="console.log(\'Tween.js loaded from fallback\')" onerror="console.error(\'Tween.js fallback failed to load\')"></script>');
-        }
-    </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" onload="console.log('jQuery loaded')" onerror="console.error('jQuery failed to load from CDN, using fallback')"></script>
-    <script>
-        if (typeof jQuery === 'undefined') {
-            document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js" onload="console.log(\'jQuery loaded from fallback\')" onerror="console.error(\'jQuery fallback failed to load\')"></script>');
-        }
-    </script>
-    <script>
+
         // Wait for DOM content and all libraries to load before initializing
         document.addEventListener('DOMContentLoaded', function() {
             console.log("Starting script initialization after DOM and libraries loaded...");
             
-            // Verify all libraries are loaded with retries
+            // Verify all libraries are loaded with a timeout
             function checkLibraries(callback) {
                 const maxRetries = 5;
                 let retries = 0;
@@ -261,9 +237,10 @@
                     } else if (retries < maxRetries) {
                         retries++;
                         console.warn(`Libraries not fully loaded, retrying (${retries}/${maxRetries})...`);
-                        setTimeout(check, 500); // Retry every 500ms
+                        setTimeout(check, 1000); // Retry every 1 second for reliability
                     } else {
                         console.error("Failed to load required libraries after retries. Check network or fallbacks.");
+                        alert("Critical libraries failed to load. Please check your internet connection or contact support.");
                         return;
                     }
                 }
@@ -435,7 +412,6 @@
                                 console.error(`Error loading model from GitHub: ${modelPath}`, error);
                                 if (error.message.includes('CORS') || error.message.includes('NetworkError')) {
                                     console.log("CORS or network error detected. Attempting proxy fallback...");
-                                    // Example CORS proxy (adjust URL as needed, e.g., CORS Anywhere or custom proxy)
                                     const proxyUrl = `https://cors-anywhere.herokuapp.com/${modelPath}`;
                                     loader.load(proxyUrl, 
                                         function(object) {
