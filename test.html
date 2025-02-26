@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,19 +14,19 @@
             display: flex;
         }
         .sidebar {
-            width: 18%; /* Narrowed for a slight reduction */
+            width: 18%; /* Maintained as is */
             background-color: #2c7481; /* Paradiso, solid */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 10px; /* Maintain original padding */
+            padding: 10px;
             border: none; /* Remove any borders or gradients for solidity */
         }
         .button {
-            width: 100px; /* Maintain original size */
-            height: 100px; /* Maintain original size */
-            margin: 10px; /* Maintain original margin */
+            width: 100px;
+            height: 100px;
+            margin: 10px;
             border-radius: 50%;
             background-color: #dadad8; /* Quill Gray, solid */
             color: #000000; /* Bold black text */
@@ -38,8 +37,8 @@
             transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
             border: none; /* Remove any borders for solidity */
-            font-weight: bold; /* Ensure bold text */
-            font-size: 16px; /* Maintain original readability */
+            font-weight: bold;
+            font-size: 16px;
         }
         .button:hover {
             transform: scale(1.1); /* Pop-up effect: scale up 10% */
@@ -54,9 +53,23 @@
             color: #000000; /* Bold black text on active */
         }
         .viewport {
-            width: 82%; /* Adjusted to accommodate narrowed sidebar */
+            width: 82%; /* Maintained as is for main viewport */
             height: 100%;
             position: relative;
+        }
+        .main-top {
+            width: 100%;
+            height: 41%; /* Top half for models */
+            position: relative;
+        }
+        .main-bottom {
+            width: 100%;
+            height: 41%; /* Bottom half for info */
+            background-color: #ffffff; /* White background for readability */
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 16px;
+            color: #333;
         }
         .category-viewport {
             width: 100%;
@@ -66,8 +79,55 @@
             left: 0;
             display: none;
             flex-direction: column;
-            align-items: center;
+            background-color: #34495e;
+        }
+        .category-left-sidebar {
+            width: 18%; /* Match main sidebar */
+            height: 100%;
+            background-color: #2c7481; /* Paradiso, solid */
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
+            padding: 10px;
+            border: none;
+        }
+        .category-top {
+            width: 64%; /* Remaining width after left and right sidebars (82% - 18% - 0%) */
+            height: auto; /* Adjust to fit paragraph, no extra space */
+            position: absolute;
+            left: 18%; /* After left sidebar */
+            top: 0;
+            background-color: #ffffff; /* White background for readability */
+            padding: 10px;
+            font-family: "Times New Roman", Times, serif; /* TimeNewRomance approximated as Times New Roman */
+            font-size: 16px;
+            color: #333;
+            word-wrap: break-word;
+        }
+        .category-right-sidebar {
+            width: 18%; /* Match main sidebar */
+            height: 100%;
+            background-color: #2c7481; /* Paradiso, solid */
+            position: absolute;
+            right: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            border: none;
+        }
+        .category-bottom {
+            width: 64%; /* Remaining width after left and right sidebars */
+            height: calc(100% - 100px); /* Adjust for top paragraph height (estimated) */
+            position: absolute;
+            left: 18%;
+            bottom: 0;
             background-color: #34495e;
         }
         .back-button {
@@ -86,560 +146,753 @@
             font-size: 24px;
             color: white;
         }
+        .grade-button {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 50%;
+            background-color: #dadad8; /* Quill Gray, solid */
+            color: #000000; /* Bold black text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            border: none; /* Remove any borders for solidity */
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .grade-button:hover {
+            transform: scale(1.1); /* Pop-up effect: scale up 10% */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Enhanced shadow on hover */
+            background-color: #f47e42; /* Jaffa, solid */
+            color: #000000; /* Bold black text on hover */
+        }
+        .grade-button:active {
+            transform: scale(0.95); /* Slight scale down on click */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            background-color: #f46c27; /* Flamingo, solid */
+            color: #000000; /* Bold black text on active */
+        }
+        .track-icon {
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+            background-color: #dadad8; /* Quill Gray, solid */
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        .track-icon:hover {
+            transform: scale(1.1); /* Pop-up effect: scale up 10% */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Enhanced shadow on hover */
+            background-color: #f47e42; /* Jaffa, solid */
+        }
+        .drag-area {
+            width: 100%;
+            height: 100%;
+            background-color: #34495e;
+            position: relative;
+        }
+        .dragged-model {
+            position: absolute;
+            pointer-events: none; /* Prevent interaction with dragged model */
+        }
     </style>
-</head>
-<body>
-    <div class="sidebar">
-        <div class="button" id="btnGeometry">Geometry</div>
-        <div class="button" id="btnPhysics">Physics</div>
-        <div class="button" id="btnChemistry">Chemistry</div>
-        <div class="button" id="btnBiology">Biology</div>
-        <div class="button" id="btnHuman">Human</div>
-        <div class="button" id="btnAgriculture">Agriculture</div>
-        <div class="button" id="btnAnimal">Animal</div>
-    </div>
-    <div class="viewport" id="mainViewport"></div>
-    <div class="category-viewport" id="geometryViewport">
-        <div class="back-button" id="backGeometry">Back</div>
-        <div class="title">Geometry</div>
-    </div>
-    <div class="category-viewport" id="physicsViewport">
-        <div class="back-button" id="backPhysics">Back</div>
-        <div class="title">Physics</div>
-    </div>
-    <div class="category-viewport" id="chemistryViewport">
-        <div class="back-button" id="backChemistry">Back</div>
-        <div class="title">Chemistry</div>
-    </div>
-    <div class="category-viewport" id="biologyViewport">
-        <div class="back-button" id="backBiology">Back</div>
-        <div class="title">Biology</div>
-    </div>
-    <div class="category-viewport" id="humanViewport">
-        <div class="back-button" id="backHuman">Back</div>
-        <div class="title">Human</div>
-    </div>
-    <div class="category-viewport" id="agricultureViewport">
-        <div class="back-button" id="backAgriculture">Back</div>
-        <div class="title">Agriculture</div>
-    </div>
-    <div class="category-viewport" id="animalViewport">
-        <div class="back-button" id="backAnimal">Back</div>
-        <div class="title">Animal</div>
-    </div>
-
+    <!-- Include necessary libraries at the top of the head for reliability -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- For drag-and-drop -->
     <script>
-        console.log("Starting script initialization...");
-
-        function createScene(viewportId, models, enableDoubleClickZoom = false) {
-            console.log(`Initializing scene for viewport: ${viewportId}`);
-            const viewport = document.getElementById(viewportId);
-            if (!viewport) {
-                console.error(`Viewport ${viewportId} not found in DOM`);
+        // Wait for DOM content and all libraries to load before initializing
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Starting script initialization after DOM and libraries loaded...");
+            
+            // Verify all libraries are loaded
+            if (typeof THREE === 'undefined') {
+                console.error("Three.js failed to load. Check the network tab or use a local copy.");
+                return;
+            }
+            if (typeof TWEEN === 'undefined') {
+                console.error("Tween.js failed to load. Check the network tab or use a local copy.");
+                return;
+            }
+            if (typeof jQuery === 'undefined') {
+                console.error("jQuery failed to load. Check the network tab or use a local copy.");
                 return;
             }
 
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ antialias: true, shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } }); // Enable shadow mapping
+            function createScene(viewportId, models, enableDoubleClickZoom = false, isCategory = false, categoryName = null) {
+                console.log(`Initializing scene for viewport: ${viewportId}, isCategory: ${isCategory}, categoryName: ${categoryName}`);
+                const viewport = document.getElementById(viewportId);
+                if (!viewport) {
+                    console.error(`Viewport ${viewportId} not found in DOM`);
+                    return null;
+                }
 
-            renderer.setSize(viewport.clientWidth, viewport.clientHeight);
-            viewport.appendChild(renderer.domElement);
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({ antialias: true, shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } });
+                
+                console.log(`Renderer initialized for ${viewportId}, clientWidth: ${viewport.clientWidth}, clientHeight: ${viewport.clientHeight}`);
+                renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+                viewport.appendChild(renderer.domElement);
 
-            // Optimized OrbitControls for better performance
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05; // Reduced damping for smoother, faster response
-            controls.minDistance = 2; // Reduced for closer view
-            controls.maxDistance = 200;
-            controls.rotateSpeed = 0.5; // Slightly faster rotation
-            controls.panSpeed = 0.5; // Slightly faster panning
-            controls.zoomSpeed = 0.5; // Slightly faster zooming
-            controls.update(); // Initial update for performance
+                const controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
+                controls.minDistance = 2;
+                controls.maxDistance = 200;
+                controls.rotateSpeed = 0.5;
+                controls.panSpeed = 0.5;
+                controls.zoomSpeed = 0.5;
+                controls.update();
+                console.log(`OrbitControls initialized for ${viewportId}`);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Bright background
-            scene.add(ambientLight);
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+                scene.add(ambientLight);
+                console.log(`Ambient light added to ${viewportId}`);
 
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7); // Bright background
-            directionalLight.position.set(5, 10, 7.5);
-            scene.add(directionalLight);
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
+                directionalLight.position.set(5, 10, 7.5);
+                scene.add(directionalLight);
+                console.log(`Directional light added to ${viewportId}`);
 
-            // Set camera position 20% closer in category viewports
-            if (viewportId !== 'mainViewport') {
-                camera.position.set(0, 5, 24); // 20% closer (30 * 0.8 = 24)
-            } else {
-                camera.position.set(0, 5, 30); // Main viewport default position
-            }
+                if (viewportId === 'mainViewport') {
+                    camera.position.set(0, 5, 30); // Main viewport default
+                } else {
+                    camera.position.set(0, 5, 24); // 20% closer for categories (as per original)
+                }
+                console.log(`Camera positioned for ${viewportId}:`, camera.position);
 
-            const loaderGLTF = new THREE.GLTFLoader();
-            const loaderOBJ = new THREE.OBJLoader();
-            const textureLoader = new THREE.TextureLoader();
+                const loaderGLTF = new THREE.GLTFLoader();
+                const loaderOBJ = new THREE.OBJLoader();
+                const textureLoader = new THREE.TextureLoader();
 
-            // Remove background mesh (no showroom meshes added)
-            console.log("No background mesh added for viewport: " + viewportId);
+                console.log("No background mesh added for viewport: " + viewportId);
 
-            function loadModel(loader, modelPath, position, scale = 1, addSpotlight = true) {
-                console.log(`Loading model from: ${modelPath}`);
-                loader.load(
-                    modelPath,
-                    function(object) {
-                        console.log(`Model loaded successfully: ${modelPath}`);
-                        let modelObject;
-                        if (object.scene) {
-                            modelObject = object.scene;
-                            // Ensure model materials receive lighting and are solid
-                            modelObject.traverse((child) => {
+                function loadModel(loader, modelPath, position, scale = 1, addSpotlight = true, isStatic = false) {
+                    console.log(`Attempting to load model from: ${modelPath}`);
+                    loader.load(
+                        modelPath,
+                        function(object) {
+                            console.log(`Model loaded successfully: ${modelPath}`);
+                            let modelObject;
+                            if (object.scene) {
+                                modelObject = object.scene;
+                                modelObject.traverse((child) => {
+                                    if (child.isMesh) {
+                                        if (!child.material || child.material.type === 'undefined' || child.material.type === null) {
+                                            console.warn(`No valid material for mesh in ${modelPath}, applying default`);
+                                            child.material = new THREE.MeshStandardMaterial({ 
+                                                color: 0xff0000, // Red for debugging visibility
+                                                transparent: false,
+                                                castShadow: true,
+                                                receiveShadow: true 
+                                            });
+                                        } else {
+                                            console.log(`Mesh material for ${modelPath}:`, child.material.type, child.material);
+                                            child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
+                                            child.material.transparent = false;
+                                            child.castShadow = true;
+                                            child.receiveShadow = true;
+                                        }
+                                    }
+                                });
+                            } else if (object.isMesh) {
+                                modelObject = object;
+                                if (!modelObject.material || modelObject.material.type === 'undefined' || modelObject.material.type === null) {
+                                    console.warn(`No valid material for object in ${modelPath}, applying default`);
+                                    modelObject.material = new THREE.MeshStandardMaterial({ 
+                                        color: 0xff0000, // Red for debugging visibility
+                                        transparent: false,
+                                        castShadow: true,
+                                        receiveShadow: true 
+                                    });
+                                } else {
+                                    console.log(`Mesh material for ${modelPath}:`, modelObject.material.type, modelObject.material);
+                                    modelObject.material = modelObject.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
+                                    modelObject.material.transparent = false;
+                                    modelObject.castShadow = true;
+                                    modelObject.receiveShadow = true;
+                                }
+                            } else {
+                                console.error(`Unexpected object type for ${modelPath}, cannot process`);
+                                return;
+                            }
+                            modelObject.position.set(position.x, position.y, position.z);
+                            modelObject.scale.set(scale, scale, scale);
+                            modelObject.userData.isZoomed = false;
+                            modelObject.userData.originalScale = scale;
+                            modelObject.userData.originalPosition = position;
+                            modelObject.userData.isStatic = isStatic; // Track if model is static (e.g., for Tracks sidebar)
+                            scene.add(modelObject);
+                            console.log(`Model ${modelPath} added to scene, position: ${position.x}, ${position.y}, ${position.z}, scale: ${scale}, isStatic: ${isStatic}`);
+
+                            if (addSpotlight) {
+                                let whiteIntensity = 23.4;
+                                let yellowIntensity = 24.8832;
+                                if (viewportId !== 'mainViewport') {
+                                    whiteIntensity = 11.7; // Half for categories
+                                    yellowIntensity = 12.4416;
+                                }
+
+                                const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1);
+                                whiteSpotlight.position.set(position.x, 20, position.z);
+                                whiteSpotlight.target = modelObject;
+                                whiteSpotlight.castShadow = true;
+                                whiteSpotlight.shadow.mapSize.width = 1024;
+                                whiteSpotlight.shadow.mapSize.height = 1024;
+                                whiteSpotlight.shadow.camera.near = 0.5;
+                                whiteSpotlight.shadow.camera.far = 50;
+                                scene.add(whiteSpotlight);
+                                scene.add(whiteSpotlight.target);
+                                console.log(`White spotlight added for ${modelPath} with intensity ${whiteIntensity}`);
+
+                                const yellowSpotlight1 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1);
+                                yellowSpotlight1.position.set(position.x, 20, position.z);
+                                yellowSpotlight1.target = modelObject;
+                                yellowSpotlight1.castShadow = true;
+                                yellowSpotlight1.shadow.mapSize.width = 1024;
+                                yellowSpotlight1.shadow.mapSize.height = 1024;
+                                yellowSpotlight1.shadow.camera.near = 0.5;
+                                yellowSpotlight1.shadow.camera.far = 50;
+                                scene.add(yellowSpotlight1);
+                                scene.add(yellowSpotlight1.target);
+                                console.log(`First yellow spotlight added for ${modelPath} with intensity ${yellowIntensity}`);
+
+                                const yellowSpotlight2 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1);
+                                yellowSpotlight2.position.set(position.x, 25, position.z + 5);
+                                yellowSpotlight2.target = modelObject;
+                                yellowSpotlight2.castShadow = true;
+                                yellowSpotlight2.shadow.mapSize.width = 1024;
+                                yellowSpotlight2.shadow.mapSize.height = 1024;
+                                yellowSpotlight2.shadow.camera.near = 0.5;
+                                yellowSpotlight2.shadow.camera.far = 50;
+                                scene.add(yellowSpotlight2);
+                                scene.add(yellowSpotlight2.target);
+                                console.log(`Second yellow spotlight added for ${modelPath} with intensity ${yellowIntensity}`);
+                            }
+                        },
+                        function(xhr) {
+                            console.log(`Progress for ${modelPath}: ${xhr.loaded / xhr.total * 100}% loaded`);
+                        },
+                        function(error) {
+                            console.error(`Error loading model: ${modelPath}`, error);
+                            console.log("Possible CORS or network issue. Consider using a local server or proxy.");
+                        }
+                    );
+                }
+
+                // Main viewport setup
+                if (viewportId === 'mainViewport') {
+                    const mainTop = document.createElement('div');
+                    mainTop.className = 'main-top';
+                    viewport.appendChild(mainTop);
+                    const mainBottom = document.createElement('div');
+                    mainBottom.className = 'main-bottom';
+                    mainBottom.innerHTML = `
+                        <p>Discover the future of education with EduTech Innovations, a leader in education technology solutions. Specializing in STEAM (Science, Technology, Engineering, Arts, and Mathematics) education, we cater to students aged 3–18 with our cutting-edge products: VinciBot, an interactive robotics platform for young learners; ClassVR, immersive virtual reality for classroom engagement; TaleBot, a storytelling robot fostering creativity; ProSet, advanced coding and engineering tools for older students; and Wizefloor, an interactive floor system for physical and cognitive development. Our products inspire curiosity, enhance learning, and prepare students for a tech-driven world—join us in shaping the next generation of innovators!</p>
+                    `;
+                    viewport.appendChild(mainBottom);
+                    console.log("Main viewport split into top (models) and bottom (info) areas");
+
+                    const stageGeometry = new THREE.PlaneGeometry(100, 100); // Large stage plane
+                    const stageMaterial = new THREE.MeshStandardMaterial({ color: 0x888888, side: THREE.DoubleSide });
+                    const stage = new THREE.Mesh(stageGeometry, stageMaterial);
+                    stage.rotation.x = Math.PI / 2; // Rotate to lie flat
+                    stage.position.set(0, 0, 0); // Center on X-axis, at ground level
+                    stage.receiveShadow = true;
+                    scene.add(stage);
+                    console.log("Stage plane added to main viewport at position 0, 0, 0");
+
+                    const minRadius = 2; // Minimum radius to fit models side by side without overlap
+                    models.forEach((model, index) => {
+                        const scale = model.scale;
+                        let modelHeight = 0;
+                        if (model.path.includes('generalized_human_body.glb') || model.path.includes('female_human_skeleton_-_zbrush_-_anatomy_study.glb')) {
+                            modelHeight = 2 * scale; // Estimated height for human models (adjust based on actual model)
+                        } else if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
+                            modelHeight = 1 * scale; // Estimated for scaled-down model (adjust)
+                        } else {
+                            modelHeight = 2 * scale; // Default height for other models (adjust based on actual model)
+                        }
+                        const position = { x: 0, y: modelHeight / 2, z: (index - 4.5) * (minRadius * 2) }; // Center on X-axis, space evenly on Z-axis
+                        console.log(`Loading model ${model.path} at position ${position.x}, ${position.y}, ${position.z} with scale ${scale}, height ${modelHeight}`);
+                        loadModel(model.loader, model.path, position, scale);
+                    });
+
+                    // Load logo.glb at center with increased lighting
+                    loaderGLTF.load(
+                        'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.glb',
+                        function(gltf) {
+                            console.log(`Logo loaded successfully: logo.glb`);
+                            const logoObject = gltf.scene;
+                            logoObject.position.set(0, 1.5, 0); // Center on X-axis, estimated height for logo (adjust based on model)
+                            logoObject.scale.set(3, 3, 3);
+                            logoObject.userData.isZoomed = false;
+                            logoObject.userData.isStatic = false;
+                            logoObject.userData.originalScale = 3;
+                            logoObject.userData.originalPosition = { x: 0, y: 1.5, z: 0 };
+                            scene.add(logoObject);
+                            console.log(`Logo added to scene at position 0, 1.5, 0 with scale 3`);
+
+                            logoObject.traverse((child) => {
                                 if (child.isMesh) {
-                                    child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
-                                    child.castShadow = true;
-                                    child.receiveShadow = true;
-                                    child.material.transparent = false; // Ensure no transparency for solidity
+                                    if (!child.material || child.material.type === 'undefined' || child.material.type === null) {
+                                        console.warn(`No valid material for logo mesh, applying default`);
+                                        child.material = new THREE.MeshStandardMaterial({ 
+                                            color: 0xff0000, // Red for debugging
+                                            transparent: false,
+                                            castShadow: true,
+                                            receiveShadow: true 
+                                        });
+                                    } else {
+                                        console.log(`Logo mesh material:`, child.material.type, child.material);
+                                        child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
+                                        child.material.transparent = false;
+                                        child.castShadow = true;
+                                        child.receiveShadow = true;
+                                    }
                                 }
                             });
-                        } else {
-                            modelObject = object;
-                            if (modelObject.isMesh) {
-                                modelObject.material = modelObject.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
-                                modelObject.castShadow = true;
-                                modelObject.receiveShadow = true;
-                                modelObject.material.transparent = false; // Ensure no transparency for solidity
-                            }
-                        }
-                        modelObject.position.set(position.x, position.y, position.z);
-                        modelObject.scale.set(scale, scale, scale);
-                        modelObject.userData.isZoomed = false; // Track zoom state (unused now, but kept for consistency)
-                        scene.add(modelObject);
 
-                        // Add white and yellow spotlights for each model (store-like effect), with uniform intensity
-                        if (addSpotlight) {
-                            const whiteIntensity = 23.4; // Match intensity of all models
-                            const yellowIntensity = 24.8832; // Match intensity of all models
-
-                            const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1); // Adjusted intensity
-                            whiteSpotlight.position.set(position.x, 20, position.z); // Higher position for dramatic effect
-                            whiteSpotlight.target = modelObject;
-                            whiteSpotlight.castShadow = true; // Enable shadows
-                            whiteSpotlight.shadow.mapSize.width = 1024; // Improve shadow quality
+                            const whiteIntensity = 93.6;
+                            const yellowIntensity = 99.5328;
+                            const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1);
+                            whiteSpotlight.position.set(0, 20, 0);
+                            whiteSpotlight.target = logoObject;
+                            whiteSpotlight.castShadow = true;
+                            whiteSpotlight.shadow.mapSize.width = 1024;
                             whiteSpotlight.shadow.mapSize.height = 1024;
                             whiteSpotlight.shadow.camera.near = 0.5;
                             whiteSpotlight.shadow.camera.far = 50;
                             scene.add(whiteSpotlight);
                             scene.add(whiteSpotlight.target);
+                            console.log(`White spotlight added for logo with intensity ${whiteIntensity}`);
 
-                            const yellowSpotlight1 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // First yellow spotlight
-                            yellowSpotlight1.position.set(position.x, 20, position.z); // Same position as white spotlight
-                            yellowSpotlight1.target = modelObject;
-                            yellowSpotlight1.castShadow = true; // Enable shadows
-                            yellowSpotlight1.shadow.mapSize.width = 1024;
-                            yellowSpotlight1.shadow.mapSize.height = 1024;
-                            yellowSpotlight1.shadow.camera.near = 0.5;
-                            yellowSpotlight1.shadow.camera.far = 50;
-                            scene.add(yellowSpotlight1);
-                            scene.add(yellowSpotlight1.target);
-
-                            const yellowSpotlight2 = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1); // Additional yellow spotlight
-                            yellowSpotlight2.position.set(position.x, 25, position.z + 5); // Slightly offset for coverage
-                            yellowSpotlight2.target = modelObject;
-                            yellowSpotlight2.castShadow = true; // Enable shadows
-                            yellowSpotlight2.shadow.mapSize.width = 1024;
-                            yellowSpotlight2.shadow.mapSize.height = 1024;
-                            yellowSpotlight2.shadow.camera.near = 0.5;
-                            yellowSpotlight2.shadow.camera.far = 50;
-                            scene.add(yellowSpotlight2);
-                            scene.add(yellowSpotlight2.target);
-
-                            console.log(`Added white and yellow spotlights to model at ${position.x}, ${position.z} with uniform intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow) for each yellow light`);
+                            const yellowSpotlight = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1);
+                            yellowSpotlight.position.set(0, 20, 0);
+                            yellowSpotlight.target = logoObject;
+                            yellowSpotlight.castShadow = true;
+                            yellowSpotlight.shadow.mapSize.width = 1024;
+                            yellowSpotlight.shadow.mapSize.height = 1024;
+                            yellowSpotlight.shadow.camera.near = 0.5;
+                            yellowSpotlight.shadow.camera.far = 50;
+                            scene.add(yellowSpotlight);
+                            scene.add(yellowSpotlight.target);
+                            console.log(`Yellow spotlight added for logo with intensity ${yellowIntensity}`);
+                        },
+                        function(xhr) {
+                            console.log(`Progress for logo.glb: ${xhr.loaded / xhr.total * 100}% loaded`);
+                        },
+                        function(error) {
+                            console.error(`Error loading logo.glb:`, error);
+                            console.log("Possible CORS or network issue. Consider using a local server or proxy.");
                         }
-                    },
-                    function(xhr) {
-                        console.log(`Progress for ${modelPath}: ${xhr.loaded / xhr.total * 100}% loaded`);
-                    },
-                    function(error) {
-                        console.error(`Error loading model: ${modelPath}`, error);
-                    }
-                );
-            }
+                    );
+                } else if (isCategory) {
+                    // Category viewport setup
+                    const leftSidebar = document.createElement('div');
+                    leftSidebar.className = 'category-left-sidebar';
+                    viewport.appendChild(leftSidebar);
+                    console.log("Category left sidebar created for " + viewportId);
 
-            // Position models in a circular layout for main viewport, or circularly for categories
-            const radius = 35; // Narrowed circle for main viewport
-            const categoryRadius = 3; // Reduced for Human and default for other categories
-            const humanRadius = 3; // Increased slightly to prevent overlap in Human
-            const agricultureRadius = 6; // Slightly increased for Agriculture
-            if (viewportId === 'mainViewport') {
-                const angleStep = (2 * Math.PI) / 10; // Angle between 10 models (9 + logo), ensuring equal and even distance
-                models.forEach((model, index) => {
-                    const angle = index * angleStep + Math.PI / 2; // Offset for visibility
-                    const x = radius * Math.cos(angle);
-                    const z = radius * Math.sin(angle);
-                    let scale = model.scale;
-                    if (model.path.includes('generalized_human_body.glb')) {
-                        scale *= 1; // Scaled down to match female_human_skeleton (scale 1)
-                    }
-                    if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
-                        scale *= 0.6; // Scale down by 40%
-                    }
-                    loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
-                });
+                    const grades = ['Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12'];
+                    grades.forEach(grade => {
+                        const button = document.createElement('div');
+                        button.className = 'grade-button';
+                        button.textContent = grade;
+                        button.addEventListener('click', () => {
+                            console.log(`${grade} button clicked in ${viewportId}`);
+                            const gradeViewport = document.createElement('div');
+                            gradeViewport.id = `${grade.toLowerCase().replace(' ', '-')}-viewport`;
+                            gradeViewport.className = 'category-viewport';
+                            gradeViewport.style.display = 'block';
+                            gradeViewport.innerHTML = `<div class="back-button" id="back-${grade.toLowerCase().replace(' ', '-')}" style="left: 10px; top: 10px;">Back</div><div class="title" style="right: 10px; top: 10px;">${grade}</div><div style="padding: 20px; color: white;">Information for ${grade} will be added later.</div>`;
+                            document.body.appendChild(gradeViewport);
+                            console.log(`Created grade viewport for ${grade}`);
 
-                // Load logo.glb at the center of the main viewport, triple size, rotating, with increased light intensity
-                loaderGLTF.load(
-                    'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.glb',
-                    function(gltf) {
-                        console.log(`Logo loaded successfully: logo.glb`);
-                        const logoObject = gltf.scene;
-                        logoObject.position.set(0, 0, 0); // Center of the main viewport
-                        logoObject.scale.set(3, 3, 3); // Reverted to triple size (removed doubled thickness)
-                        logoObject.userData.isZoomed = false; // Track zoom state
-                        logoObject.userData.isStatic = false; // Allow rotation like other models
-                        scene.add(logoObject);
+                            document.getElementById(`back-${grade.toLowerCase().replace(' ', '-')}`).addEventListener('click', () => {
+                                console.log(`Back to ${viewportId} from ${grade} clicked`);
+                                gradeViewport.style.display = 'none';
+                                gradeViewport.remove();
+                            });
+                        });
+                        leftSidebar.appendChild(button);
+                        console.log(`Added ${grade} button to left sidebar`);
+                    });
 
-                        // Revert to default solid material (no shiny effect)
-                        logoObject.traverse((child) => {
-                            if (child.isMesh) {
-                                child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
-                                child.castShadow = true;
-                                child.receiveShadow = true;
-                                child.material.transparent = false; // Ensure no transparency for solidity
+                    const topInfo = document.createElement('div');
+                    topInfo.className = 'category-top';
+                    let infoText = '';
+                    switch(categoryName) {
+                        case 'geometry':
+                            infoText = 'Geometry in STEAM education fosters spatial reasoning and problem-solving skills, crucial for engineering and design, through interactive 3D modeling and visualization for students.';
+                            break;
+                        case 'physics':
+                            infoText = 'Physics in STEAM education explores fundamental forces and motion, enhancing scientific inquiry and engineering applications through hands-on simulations and experiments.';
+                            break;
+                        case 'chemistry':
+                            infoText = 'Chemistry in STEAM education delves into molecular structures and reactions, promoting scientific discovery and technology innovation for budding scientists and engineers.';
+                            break;
+                        case 'biology':
+                            infoText = 'Biology in STEAM education examines life sciences and ecosystems, encouraging environmental awareness and technological applications for biological research and health.';
+                            break;
+                        case 'human':
+                            infoText = 'Human anatomy in STEAM education integrates biology and technology, offering insights into human systems for medical education and innovative health tech development.';
+                            break;
+                        case 'agriculture':
+                            infoText = 'Agriculture in STEAM education combines science and engineering to explore sustainable farming, equipping students with skills for modern agricultural technology and innovation.';
+                            break;
+                        case 'animal':
+                            infoText = 'Animal biology in STEAM education studies zoology and ecosystems, fostering scientific curiosity and tech-driven conservation efforts for future environmentalists.';
+                            break;
+                        default:
+                            infoText = 'This category enhances STEAM education through interactive learning and technology.';
+                    }
+                    topInfo.innerHTML = `<p>${infoText}</p>`;
+                    viewport.appendChild(topInfo);
+                    console.log(`Category top info added for ${categoryName}:`, infoText);
+
+                    const rightSidebar = document.createElement('div');
+                    rightSidebar.className = 'category-right-sidebar';
+                    rightSidebar.innerHTML = '<h3>Tracks</h3>';
+                    viewport.appendChild(rightSidebar);
+                    console.log("Category right sidebar (Tracks) created for " + viewportId);
+
+                    models.forEach(model => {
+                        const icon = document.createElement('div');
+                        icon.className = 'track-icon';
+                        icon.dataset.modelPath = model.path;
+                        icon.style.backgroundImage = `url('https://via.placeholder.com/50?text=${model.path.split('/').pop().replace('.glb', '')}')`; // Placeholder image for debugging
+                        icon.draggable = true;
+                        icon.addEventListener('dragstart', (e) => {
+                            console.log(`Drag started for model ${model.path}`);
+                            e.dataTransfer.setData('text/plain', model.path);
+                        });
+                        rightSidebar.appendChild(icon);
+                        console.log(`Added track icon for ${model.path}`);
+                    });
+
+                    const bottomArea = document.createElement('div');
+                    bottomArea.className = 'category-bottom';
+                    const dragArea = document.createElement('div');
+                    dragArea.className = 'drag-area';
+                    bottomArea.appendChild(dragArea);
+                    viewport.appendChild(bottomArea);
+                    console.log("Category bottom drag area created for " + viewportId);
+
+                    dragArea.addEventListener('dragover', (e) => {
+                        console.log(`Drag over drag area in ${viewportId}`);
+                        e.preventDefault();
+                    });
+                    dragArea.addEventListener('drop', (e) => {
+                        console.log(`Drop event in drag area of ${viewportId}`);
+                        e.preventDefault();
+                        const modelPath = e.dataTransfer.getData('text/plain');
+                        console.log(`Dropped model path: ${modelPath}`);
+                        const model = models.find(m => m.path === modelPath);
+                        if (model) {
+                            loadModel(loaderGLTF, modelPath, { x: 0, y: 0, z: 0 }, model.scale, true, false);
+                        } else {
+                            console.error(`Model not found in models list: ${modelPath}`);
+                        }
+                    });
+
+                    // Position static models in Tracks sidebar
+                    const currentRadius = (viewportId === 'humanViewport') ? 3 : (viewportId === 'agricultureViewport') ? 6 : 3;
+                    models.forEach((model, index) => {
+                        const angle = index * (2 * Math.PI) / models.length;
+                        let x = currentRadius * Math.cos(angle);
+                        let z = currentRadius * Math.sin(angle);
+                        if (viewportId === 'humanViewport') {
+                            x = 0;
+                            z = currentRadius * (index === 0 ? -1 : 1);
+                        }
+                        console.log(`Positioning static model ${model.path} at ${x}, 0, ${z} in Tracks sidebar`);
+                        loadModel(loaderGLTF, model.path, { x: x, y: 0, z: z }, model.scale, false, true);
+                    });
+                }
+
+                let isRotating = true;
+                let selectedModel = null;
+                let hoverModel = null;
+
+                const raycaster = new THREE.Raycaster();
+                const mouse = new THREE.Vector2();
+
+                function onMouseMove(event) {
+                    console.log(`Mouse move event in ${viewportId}`);
+                    try {
+                        mouse.x = ((event.clientX - viewport.getBoundingClientRect().left) / viewport.clientWidth) * 2 - 1;
+                        mouse.y = -((event.clientY - viewport.getBoundingClientRect().top) / viewport.clientHeight) * 2 + 1;
+                        raycaster.setFromCamera(mouse, camera);
+
+                        const modelObjects = scene.children.filter(child => 
+                            (child.isGroup || child.isObject3D) && !child.userData.isStatic && !child.userData.isZoomed
+                        );
+                        const intersects = raycaster.intersectObjects(modelObjects, true);
+
+                        if (intersects.length > 0) {
+                            const intersectedObject = intersects[0].object;
+                            let rootTarget = intersectedObject;
+                            while (rootTarget.parent && !rootTarget.userData.isRoot) {
+                                rootTarget = rootTarget.parent;
+                            }
+                            if (!rootTarget.userData.isRoot) rootTarget.userData.isRoot = true;
+                            hoverModel = rootTarget;
+                            controls.target.lerp(rootTarget.position, 0.1);
+                            console.log(`Hovering over model ${rootTarget.name || rootTarget.uuid} in ${viewportId}`);
+                        } else {
+                            hoverModel = null;
+                            controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1);
+                            console.log(`No hover model in ${viewportId}`);
+                        }
+                        controls.update();
+                    } catch (error) {
+                        console.error(`Error in onMouseMove for ${viewportId}:`, error);
+                    }
+                }
+
+                function onDoubleClick(event) {
+                    console.log(`Double-click event in ${viewportId}`);
+                    try {
+                        mouse.x = ((event.clientX - viewport.getBoundingClientRect().left) / viewport.clientWidth) * 2 - 1;
+                        mouse.y = -((event.clientY - viewport.getBoundingClientRect().top) / viewport.clientHeight) * 2 + 1;
+                        raycaster.setFromCamera(mouse, camera);
+
+                        const modelObjects = scene.children.filter(child => 
+                            (child.isGroup || child.isObject3D) && !child.userData.isStatic
+                        );
+                        const intersects = raycaster.intersectObjects(modelObjects, true);
+
+                        if (intersects.length > 0) {
+                            const intersectedObject = intersects[0].object;
+                            let rootTarget = intersectedObject;
+                            while (rootTarget.parent && !rootTarget.userData.isRoot) {
+                                rootTarget = rootTarget.parent;
+                            }
+                            if (!rootTarget.userData.isRoot) rootTarget.userData.isRoot = true;
+                            const targetModel = rootTarget;
+
+                            if (targetModel.userData.isZoomed) {
+                                console.log(`Zooming out model ${targetModel.name || targetModel.uuid} in ${viewportId}`);
+                                new TWEEN.Tween(targetModel.scale)
+                                    .to({ x: targetModel.userData.originalScale, y: targetModel.userData.originalScale, z: targetModel.userData.originalScale }, 500)
+                                    .easing(TWEEN.Easing.Quadratic.InOut)
+                                    .start()
+                                    .onComplete(() => {
+                                        targetModel.userData.isZoomed = false;
+                                        console.log(`Zoom out completed for ${targetModel.name || targetModel.uuid}`);
+                                    })
+                                    .onError((err) => console.error(`Tween scale error for ${targetModel.name || targetModel.uuid}:`, err));
+
+                                new TWEEN.Tween(targetModel.position)
+                                    .to({ x: targetModel.userData.originalPosition.x, y: targetModel.userData.originalPosition.y, z: targetModel.userData.originalPosition.z }, 500)
+                                    .easing(TWEEN.Easing.Quadratic.InOut)
+                                    .start()
+                                    .onError((err) => console.error(`Tween position error for ${targetModel.name || targetModel.uuid}:`, err));
+
+                                new TWEEN.Tween(camera.position)
+                                    .to({ x: 0, y: 5, z: (viewportId === 'mainViewport' ? 30 : 24) }, 500)
+                                    .easing(TWEEN.Easing.Quadratic.InOut)
+                                    .onUpdate(() => {
+                                        controls.target.set(0, 0, 0);
+                                        controls.update();
+                                        console.log(`Camera position during zoom out:`, camera.position);
+                                    })
+                                    .onError((err) => console.error(`Tween camera error for ${viewportId}:`, err))
+                                    .start();
+                            } else {
+                                console.log(`Zooming in model ${targetModel.name || targetModel.uuid} in ${viewportId}`);
+                                const zoomScale = 2;
+                                const modelPosition = targetModel.position.clone();
+                                const distance = 10;
+
+                                new TWEEN.Tween(targetModel.scale)
+                                    .to({ x: targetModel.userData.originalScale * zoomScale, y: targetModel.userData.originalScale * zoomScale, z: targetModel.userData.originalScale * zoomScale }, 500)
+                                    .easing(TWEEN.Easing.Quadratic.InOut)
+                                    .start()
+                                    .onComplete(() => {
+                                        targetModel.userData.isZoomed = true;
+                                        console.log(`Zoom in completed for ${targetModel.name || targetModel.uuid}`);
+                                    })
+                                    .onError((err) => console.error(`Tween scale error for ${targetModel.name || targetModel.uuid}:`, err));
+
+                                const targetPosition = modelPosition.clone();
+                                const cameraTarget = new THREE.Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
+                                const cameraDistance = new THREE.Vector3(targetPosition.x, targetPosition.y + 5, targetPosition.z + distance);
+
+                                new TWEEN.Tween(camera.position)
+                                    .to({ x: cameraDistance.x, y: cameraDistance.y, z: cameraDistance.z }, 500)
+                                    .easing(TWEEN.Easing.Quadratic.InOut)
+                                    .onUpdate(() => {
+                                        controls.target.copy(cameraTarget);
+                                        camera.lookAt(cameraTarget);
+                                        controls.update();
+                                        console.log(`Camera position during zoom in:`, camera.position);
+                                    })
+                                    .onError((err) => console.error(`Tween camera error for ${viewportId}:`, err))
+                                    .start();
+                            }
+                        } else {
+                            console.warn(`No model intersected on double-click in ${viewportId}`);
+                        }
+                    } catch (error) {
+                        console.error(`Error in onDoubleClick for ${viewportId}:`, error);
+                    }
+                }
+
+                if (viewportId === 'mainViewport' || viewportId.includes('Viewport')) {
+                    viewport.addEventListener('mousemove', onMouseMove);
+                    viewport.addEventListener('mouseleave', () => {
+                        console.log(`Mouse leave event in ${viewportId}`);
+                        hoverModel = null;
+                        controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1);
+                        controls.update();
+                    });
+                    if (enableDoubleClickZoom) {
+                        viewport.addEventListener('dblclick', onDoubleClick);
+                        console.log(`Double-click zoom enabled for ${viewportId}`);
+                    }
+                }
+
+                function animate() {
+                    try {
+                        requestAnimationFrame(animate);
+                        if (typeof TWEEN !== 'undefined') {
+                            TWEEN.update();
+                            console.log("Tween.js animations updated successfully");
+                        } else {
+                            console.warn("TWEEN is not defined, skipping animations.");
+                        }
+                        scene.children.forEach(child => {
+                            if (child.isGroup || child.isObject3D) {
+                                if (isRotating && !child.userData.isZoomed && !child.userData.isStatic) {
+                                    child.rotation.y += 0.01;
+                                    console.log(`Rotating model ${child.name || child.uuid} in ${viewportId}`);
+                                }
                             }
                         });
-
-                        // Add white and yellow spotlights for the logo, with doubled intensity
-                        const whiteIntensity = 93.6; // Doubled from 46.8 for increased intensity
-                        const yellowIntensity = 99.5328; // Doubled from 49.7664 for increased intensity
-
-                        const whiteSpotlight = new THREE.SpotLight(0xffffff, whiteIntensity, 30, Math.PI / 6, 0.2, 1);
-                        whiteSpotlight.position.set(0, 20, 0); // Centered, higher position
-                        whiteSpotlight.target = logoObject;
-                        whiteSpotlight.castShadow = true;
-                        whiteSpotlight.shadow.mapSize.width = 1024;
-                        whiteSpotlight.shadow.mapSize.height = 1024;
-                        whiteSpotlight.shadow.camera.near = 0.5;
-                        whiteSpotlight.shadow.camera.far = 50;
-                        scene.add(whiteSpotlight);
-                        scene.add(whiteSpotlight.target);
-
-                        const yellowSpotlight = new THREE.SpotLight(0xffff00, yellowIntensity, 30, Math.PI / 6, 0.2, 1);
-                        yellowSpotlight.position.set(0, 20, 0); // Centered, same height as white
-                        yellowSpotlight.target = logoObject;
-                        yellowSpotlight.castShadow = true;
-                        yellowSpotlight.shadow.mapSize.width = 1024;
-                        yellowSpotlight.shadow.mapSize.height = 1024;
-                        yellowSpotlight.shadow.camera.near = 0.5;
-                        yellowSpotlight.shadow.camera.far = 50;
-                        scene.add(yellowSpotlight);
-                        scene.add(yellowSpotlight.target);
-
-                        console.log(`Added white and yellow spotlights to logo at 0, 0, 0 with increased intensity ${whiteIntensity} (white) and ${yellowIntensity} (yellow)`);
-                    },
-                    function(xhr) {
-                        console.log(`Progress for logo.glb: ${xhr.loaded / xhr.total * 100}% loaded`);
-                    },
-                    function(error) {
-                        console.error(`Error loading logo.glb:`, error);
-                        console.log("Checking logo path validity...");
-                        console.log("URL used: https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/logo.glb");
-                        console.log("Possible issues: File not found (404), network error, or incorrect path.");
-                        console.log("Try verifying the file exists at the GitHub repository or use a local path, e.g., 'file:///E:/Python backups/3d converter/models/logo.glb'");
-                    }
-                );
-            } else {
-                // Circular layout for all categories with models
-                const currentRadius = (viewportId === 'humanViewport') ? humanRadius : 
-                                    (viewportId === 'agricultureViewport') ? agricultureRadius : categoryRadius;
-                const angleStep = (2 * Math.PI) / models.length; // Angle between models
-                models.forEach((model, index) => {
-                    const angle = index * angleStep;
-                    let x, z;
-                    if (viewportId === 'humanViewport') {
-                        // Position models on the same X-axis (x: 0) in Human category
-                        x = 0;
-                        z = currentRadius * (index === 0 ? -1 : 1); // Alternate z for even spacing
-                    } else {
-                        x = currentRadius * Math.cos(angle);
-                        z = currentRadius * Math.sin(angle);
-                    }
-                    let scale = model.scale;
-                    if (model.path.includes('generalized_human_body.glb')) {
-                        scale *= 1; // Scaled down to match female_human_skeleton (scale 1)
-                    }
-                    if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
-                        scale *= 0.6; // Scale down by 40%
-                    }
-                    loadModel(model.loader, model.path, { x: x, y: 0, z: z }, scale);
-                });
-            }
-
-            let isRotating = true; // Track rotation state
-            let selectedModel = null; // Track selected model for orbit restriction
-            let hoverModel = null; // Track hovered model for dynamic orbiting
-
-            // Mouse hover detection for dynamic orbiting
-            const raycaster = new THREE.Raycaster();
-            const mouse = new THREE.Vector2();
-
-            function onMouseMove(event) {
-                // Normalize mouse position to NDC (-1 to 1)
-                mouse.x = ((event.clientX - viewport.getBoundingClientRect().left) / viewport.clientWidth) * 2 - 1;
-                mouse.y = -((event.clientY - viewport.getBoundingClientRect().top) / viewport.clientHeight) * 2 + 1;
-
-                // Update raycaster
-                raycaster.setFromCamera(mouse, camera);
-
-                // Filter out static objects (e.g., lights, non-models)
-                const modelObjects = scene.children.filter(child => 
-                    (child.isGroup || child.isObject3D) && !child.userData.isStatic
-                );
-                const intersects = raycaster.intersectObjects(modelObjects, true);
-
-                if (intersects.length > 0) {
-                    const intersectedObject = intersects[0].object;
-                    let rootTarget = intersectedObject;
-                    while (rootTarget.parent && !rootTarget.userData.isRoot) {
-                        rootTarget = rootTarget.parent;
-                    }
-                    if (!rootTarget.userData.isRoot) {
-                        rootTarget.userData.isRoot = true; // Mark as root for tracking
-                    }
-                    hoverModel = rootTarget; // Set hovered model
-                    controls.target.lerp(rootTarget.position, 0.1); // Smoothly transition to orbit around hovered model
-                } else {
-                    hoverModel = null; // Reset if no model is hovered
-                    controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1); // Smoothly return to scene center
-                }
-                controls.update(); // Update controls for smooth orbiting
-            }
-
-            // Add mouse move listener only for main viewport
-            if (viewportId === 'mainViewport') {
-                viewport.addEventListener('mousemove', onMouseMove);
-                viewport.addEventListener('mouseleave', () => {
-                    hoverModel = null; // Reset on mouse leave
-                    controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1); // Smoothly return to scene center
-                    controls.update();
-                });
-            }
-
-            function animate() {
-                requestAnimationFrame(animate);
-                scene.children.forEach(child => {
-                    if (child.isGroup || child.isObject3D) {
-                        if (isRotating && !child.userData.isZoomed && !child.userData.isStatic) { // Only rotate non-static, unzoomed models
-                            child.rotation.y += 0.01; // Slow rotation for visibility
+                        if (selectedModel) {
+                            controls.target.copy(selectedModel.position);
+                            console.log(`Orbiting around selected model in ${viewportId}:`, selectedModel.position);
+                        } else if (hoverModel) {
+                            controls.target.lerp(hoverModel.position, 0.1);
+                            console.log(`Orbiting around hover model in ${viewportId}:`, hoverModel.position);
+                        } else {
+                            controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1);
+                            console.log(`Orbiting scene center in ${viewportId}`);
                         }
+                        controls.update();
+                        renderer.render(scene, camera);
+                        console.log(`Rendering frame for ${viewportId}, scene children:`, scene.children.length, "Camera position:", camera.position);
+                    } catch (error) {
+                        console.error(`Error in animate for ${viewportId}:`, error);
+                    }
+                }
+
+                animate();
+
+                window.addEventListener('resize', () => {
+                    console.log(`Resizing viewport ${viewportId}...`);
+                    try {
+                        camera.aspect = viewport.clientWidth / viewport.clientHeight;
+                        camera.updateProjectionMatrix();
+                        renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+                        controls.update();
+                        console.log(`Resize completed for ${viewportId}, new aspect: ${camera.aspect}`);
+                    } catch (error) {
+                        console.error(`Error resizing ${viewportId}:`, error);
                     }
                 });
-                if (selectedModel) {
-                    controls.target.copy(selectedModel.position); // Orbit only around selected model (manual interaction)
-                } else if (hoverModel) {
-                    controls.target.lerp(hoverModel.position, 0.1); // Dynamic orbit around hovered model
-                } else {
-                    controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1); // Default to scene center if no hover or selection
-                }
-                controls.update(); // Update controls for performance
-                renderer.render(scene, camera);
+
+                console.log(`Scene for ${viewportId} initialized successfully`);
+                return { scene, camera, renderer, controls };
             }
 
-            animate();
+            const mainModels = [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }, // Scaled down to match female_human_skeleton (scale 1)
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+            ];
 
-            // Handle window resize correctly
-            window.addEventListener('resize', () => {
-                console.log(`Resizing viewport ${viewportId}...`);
-                camera.aspect = viewport.clientWidth / viewport.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(viewport.clientWidth, viewport.clientHeight);
-                controls.update(); // Use update() for performance
+            const categoryModels = {
+                geometry: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
+                physics: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 }],
+                chemistry: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
+                biology: [
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+                ],
+                human: [
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                    { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+                ],
+                agriculture: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }],
+                animal: [{ loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }]
+            };
+
+            console.log("Initializing main viewport...");
+            try {
+                const mainScene = createScene('mainViewport', mainModels, true);
+                if (!mainScene) throw new Error("Main viewport initialization failed");
+                console.log("Main viewport initialized successfully");
+            } catch (error) {
+                console.error("Error initializing main viewport:", error);
+            }
+
+            console.log("Setting up category buttons...");
+            const categoryViewports = {
+                'geometry': 'geometryViewport',
+                'physics': 'physicsViewport',
+                'chemistry': 'chemistryViewport',
+                'biology': 'biologyViewport',
+                'human': 'humanViewport',
+                'agriculture': 'agricultureViewport',
+                'animal': 'animalViewport'
+            };
+
+            Object.entries(categoryViewports).forEach(([category, viewportId]) => {
+                document.getElementById(`btn${category.charAt(0).toUpperCase() + category.slice(1)}`).addEventListener('click', () => {
+                    console.log(`${category} button clicked`);
+                    document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+                    const categoryViewport = document.getElementById(viewportId);
+                    categoryViewport.style.display = 'flex';
+                    try {
+                        const categoryScene = createScene(viewportId, categoryModels[category], true, true, category);
+                        if (!categoryScene) throw new Error(`${category} viewport initialization failed`);
+                        console.log(`${category} viewport initialized successfully`);
+                    } catch (error) {
+                        console.error(`Error initializing ${category} viewport:`, error);
+                    }
+                });
             });
 
-            console.log(`Scene for ${viewportId} initialized successfully`);
-        }
+            console.log("Setting up back buttons...");
+            Object.values(categoryViewports).forEach(viewportId => {
+                document.getElementById(`back${viewportId.charAt(0).toUpperCase() + viewportId.slice(1, -8)}`).addEventListener('click', () => {
+                    console.log(`Back to main from ${viewportId} clicked`);
+                    document.getElementById(viewportId).style.display = 'none';
+                    document.getElementById('mainViewport').style.display = 'block';
+                });
+            });
 
-        const mainModels = [
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }, // Scaled down to match female_human_skeleton (scale 1)
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
-        ];
-
-        const categoryModels = {
-            geometry: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
-            ],
-            physics: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 }
-            ],
-            chemistry: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
-            ],
-            biology: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
-            ],
-            human: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }, // Scaled down to match female_human_skeleton (scale 1)
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
-            ],
-            agriculture: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
-            ],
-            animal: [
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
-            ]
-        };
-
-        console.log("Initializing main viewport...");
-        try {
-            createScene('mainViewport', mainModels);
-            console.log("Main viewport initialized successfully");
-        } catch (error) {
-            console.error("Error initializing main viewport:", error);
-        }
-
-        console.log("Setting up category buttons...");
-        document.getElementById('btnGeometry').addEventListener('click', () => {
-            console.log("Geometry button clicked");
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            const geometryViewport = document.getElementById('geometryViewport');
-            geometryViewport.style.display = 'flex';
-            try {
-                createScene('geometryViewport', categoryModels.geometry, false);
-                console.log("Geometry viewport initialized successfully");
-            } catch (error) {
-                console.error("Error initializing Geometry viewport:", error);
-            }
+            console.log("Script initialization completed successfully, including all libraries for animations and interactions");
         });
-
-        document.getElementById('btnPhysics').addEventListener('click', () => {
-            console.log("Physics button clicked");
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            const physicsViewport = document.getElementById('physicsViewport');
-            physicsViewport.style.display = 'flex';
-            try {
-                createScene('physicsViewport', categoryModels.physics, false);
-                console.log("Physics viewport initialized successfully");
-            } catch (error) {
-                console.error("Error initializing Physics viewport:", error);
-            }
-        });
-
-        document.getElementById('btnChemistry').addEventListener('click', () => {
-            console.log("Chemistry button clicked");
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            const chemistryViewport = document.getElementById('chemistryViewport');
-            chemistryViewport.style.display = 'flex';
-            try {
-                createScene('chemistryViewport', categoryModels.chemistry, false);
-                console.log("Chemistry viewport initialized successfully");
-            } catch (error) {
-                console.error("Error initializing Chemistry viewport:", error);
-            }
-        });
-
-        document.getElementById('btnBiology').addEventListener('click', () => {
-            console.log("Biology button clicked");
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            const biologyViewport = document.getElementById('biologyViewport');
-            biologyViewport.style.display = 'flex';
-            try {
-                createScene('biologyViewport', categoryModels.biology, false);
-                console.log("Biology viewport initialized successfully");
-            } catch (error) {
-                console.error("Error initializing Biology viewport:", error);
-            }
-        });
-
-        document.getElementById('btnHuman').addEventListener('click', () => {
-            console.log("Human button clicked");
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            const humanViewport = document.getElementById('humanViewport');
-            humanViewport.style.display = 'flex';
-            try {
-                createScene('humanViewport', categoryModels.human, false);
-                console.log("Human viewport initialized successfully");
-            } catch (error) {
-                console.error("Error initializing Human viewport:", error);
-            }
-        });
-
-        document.getElementById('btnAgriculture').addEventListener('click', () => {
-            console.log("Agriculture button clicked");
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            const agricultureViewport = document.getElementById('agricultureViewport');
-            agricultureViewport.style.display = 'flex';
-            try {
-                createScene('agricultureViewport', categoryModels.agriculture, false);
-                console.log("Agriculture viewport initialized successfully");
-            } catch (error) {
-                console.error("Error initializing Agriculture viewport:", error);
-            }
-        });
-
-        document.getElementById('btnAnimal').addEventListener('click', () => {
-            console.log("Animal button clicked");
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            const animalViewport = document.getElementById('animalViewport');
-            animalViewport.style.display = 'flex';
-            try {
-                createScene('animalViewport', categoryModels.animal, false);
-                console.log("Animal viewport initialized successfully");
-            } catch (error) {
-                console.error("Error initializing Animal viewport:", error);
-            }
-        });
-
-        console.log("Setting up back buttons...");
-        document.getElementById('backGeometry').addEventListener('click', () => {
-            console.log("Back to main from Geometry clicked");
-            document.getElementById('geometryViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('backPhysics').addEventListener('click', () => {
-            console.log("Back to main from Physics clicked");
-            document.getElementById('physicsViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('backChemistry').addEventListener('click', () => {
-            console.log("Back to main from Chemistry clicked");
-            document.getElementById('chemistryViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('backBiology').addEventListener('click', () => {
-            console.log("Back to main from Biology clicked");
-            document.getElementById('biologyViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('backHuman').addEventListener('click', () => {
-            console.log("Back to main from Human clicked");
-            document.getElementById('humanViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('backAgriculture').addEventListener('click', () => {
-            console.log("Back to main from Agriculture clicked");
-            document.getElementById('agricultureViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('backAnimal').addEventListener('click', () => {
-            console.log("Back to main from Animal clicked");
-            document.getElementById('animalViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        console.log("Script initialization completed successfully");
     </script>
 </body>
 </html>
