@@ -50,6 +50,7 @@
             width: 100%;
             height: 50%;
             position: relative;
+            margin-left: 20%; /* Move display area to the right */
         }
         .info-viewport {
             width: 100%;
@@ -64,6 +65,7 @@
             text-align: center;
             box-sizing: border-box;
             overflow-y: auto;
+            margin-left: 20%; /* Move info area to the right */
         }
         .category-viewport {
             width: 100%;
@@ -84,6 +86,10 @@
             flex-direction: column;
             align-items: center;
             padding: 10px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
         }
         .track-button {
             width: 80px;
@@ -157,6 +163,10 @@
             <div class="track-button" data-model="desert_fortress_gates.glb">Fortress</div>
         </div>
         <div class="model-viewport" id="geometryModelViewport"></div>
+        <div class="info-viewport" id="geometryInfoViewport">
+            <h2>Geometry</h2>
+            <p>Explore geometric shapes and structures in 3D.</p>
+        </div>
     </div>
     <div class="category-viewport" id="physicsViewport">
         <div class="back-button" id="backPhysics">Back</div>
@@ -166,6 +176,10 @@
             <div class="track-button" data-model="lighting_pack_-_chain_lighting.glb">Lighting</div>
         </div>
         <div class="model-viewport" id="physicsModelViewport"></div>
+        <div class="info-viewport" id="physicsInfoViewport">
+            <h2>Physics</h2>
+            <p>Discover the laws of physics through interactive 3D models.</p>
+        </div>
     </div>
     <div class="category-viewport" id="chemistryViewport">
         <div class="back-button" id="backChemistry">Back</div>
@@ -174,6 +188,10 @@
             <div class="track-button" data-model="stylized_chemistry_set.glb">Chemistry Set</div>
         </div>
         <div class="model-viewport" id="chemistryModelViewport"></div>
+        <div class="info-viewport" id="chemistryInfoViewport">
+            <h2>Chemistry</h2>
+            <p>Explore chemical reactions and molecular structures in 3D.</p>
+        </div>
     </div>
     <div class="category-viewport" id="biologyViewport">
         <div class="back-button" id="backBiology">Back</div>
@@ -183,6 +201,10 @@
             <div class="track-button" data-model="wolf.glb">Wolf</div>
         </div>
         <div class="model-viewport" id="biologyModelViewport"></div>
+        <div class="info-viewport" id="biologyInfoViewport">
+            <h2>Biology</h2>
+            <p>Learn about living organisms and their structures in 3D.</p>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
