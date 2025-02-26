@@ -14,58 +14,58 @@
             display: flex;
         }
         .sidebar {
-            width: 18%; /* Maintained as is */
-            background-color: #2c7481; /* Paradiso, solid */
+            width: 18%;
+            background-color: #2c7481;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 10px;
-            border: none; /* Remove any borders or gradients for solidity */
+            border: none;
         }
         .button {
             width: 100px;
             height: 100px;
             margin: 10px;
             border-radius: 50%;
-            background-color: #dadad8; /* Quill Gray, solid */
-            color: #000000; /* Bold black text */
+            background-color: #dadad8;
+            color: #000000;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-            border: none; /* Remove any borders for solidity */
+            border: none;
             font-weight: bold;
             font-size: 16px;
         }
         .button:hover {
-            transform: scale(1.1); /* Pop-up effect: scale up 10% */
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Enhanced shadow on hover */
-            background-color: #f47e42; /* Jaffa, solid */
-            color: #000000; /* Bold black text on hover */
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            background-color: #f47e42;
+            color: #000000;
         }
         .button:active {
-            transform: scale(0.95); /* Slight scale down on click */
+            transform: scale(0.95);
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-            background-color: #f46c27; /* Flamingo, solid */
-            color: #000000; /* Bold black text on active */
+            background-color: #f46c27;
+            color: #000000;
         }
         .viewport {
-            width: 82%; /* Maintained as is for main viewport */
+            width: 82%;
             height: 100%;
             position: relative;
         }
         .main-top {
             width: 100%;
-            height: 41%; /* Top half for models */
+            height: 41%;
             position: relative;
         }
         .main-bottom {
             width: 100%;
-            height: 41%; /* Bottom half for info */
-            background-color: #ffffff; /* White background for readability */
+            height: 41%;
+            background-color: #ffffff;
             padding: 10px;
             overflow-y: auto;
             font-size: 16px;
@@ -82,9 +82,9 @@
             background-color: #34495e;
         }
         .category-left-sidebar {
-            width: 18%; /* Match main sidebar */
+            width: 18%;
             height: 100%;
-            background-color: #2c7481; /* Paradiso, solid */
+            background-color: #2c7481;
             position: absolute;
             left: 0;
             top: 0;
@@ -96,22 +96,22 @@
             border: none;
         }
         .category-top {
-            width: 64%; /* Remaining width after left and right sidebars (82% - 18% - 0%) */
-            height: auto; /* Adjust to fit paragraph, no extra space */
+            width: 64%;
+            height: auto;
             position: absolute;
-            left: 18%; /* After left sidebar */
+            left: 18%;
             top: 0;
-            background-color: #ffffff; /* White background for readability */
+            background-color: #ffffff;
             padding: 10px;
-            font-family: "Times New Roman", Times, serif; /* TimeNewRomance approximated as Times New Roman */
+            font-family: "Times New Roman", Times, serif;
             font-size: 16px;
             color: #333;
             word-wrap: break-word;
         }
         .category-right-sidebar {
-            width: 18%; /* Match main sidebar */
+            width: 18%;
             height: 100%;
-            background-color: #2c7481; /* Paradiso, solid */
+            background-color: #2c7481;
             position: absolute;
             right: 0;
             top: 0;
@@ -123,8 +123,8 @@
             border: none;
         }
         .category-bottom {
-            width: 64%; /* Remaining width after left and right sidebars */
-            height: calc(100% - 100px); /* Adjust for top paragraph height (estimated) */
+            width: 64%;
+            height: calc(100% - 100px);
             position: absolute;
             left: 18%;
             bottom: 0;
@@ -151,44 +151,44 @@
             height: 100px;
             margin: 10px;
             border-radius: 50%;
-            background-color: #dadad8; /* Quill Gray, solid */
-            color: #000000; /* Bold black text */
+            background-color: #dadad8;
+            color: #000000;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-            border: none; /* Remove any borders for solidity */
+            border: none;
             font-weight: bold;
             font-size: 16px;
         }
         .grade-button:hover {
-            transform: scale(1.1); /* Pop-up effect: scale up 10% */
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Enhanced shadow on hover */
-            background-color: #f47e42; /* Jaffa, solid */
-            color: #000000; /* Bold black text on hover */
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            background-color: #f47e42;
+            color: #000000;
         }
         .grade-button:active {
-            transform: scale(0.95); /* Slight scale down on click */
+            transform: scale(0.95);
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-            background-color: #f46c27; /* Flamingo, solid */
-            color: #000000; /* Bold black text on active */
+            background-color: #f46c27;
+            color: #000000;
         }
         .track-icon {
             width: 50px;
             height: 50px;
             margin: 10px;
-            background-color: #dadad8; /* Quill Gray, solid */
+            background-color: #dadad8;
             border-radius: 10px;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
         }
         .track-icon:hover {
-            transform: scale(1.1); /* Pop-up effect: scale up 10% */
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5); /* Enhanced shadow on hover */
-            background-color: #f47e42; /* Jaffa, solid */
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            background-color: #f47e42;
         }
         .drag-area {
             width: 100%;
@@ -198,7 +198,7 @@
         }
         .dragged-model {
             position: absolute;
-            pointer-events: none; /* Prevent interaction with dragged model */
+            pointer-events: none;
         }
         .error-message {
             position: fixed;
@@ -519,27 +519,27 @@
                     viewport.appendChild(mainBottom);
                     console.log("Main bottom area created for info");
 
-                    const stageGeometry = new THREE.PlaneGeometry(100, 100); // Large stage plane
+                    const stageGeometry = new THREE.PlaneGeometry(100, 100);
                     const stageMaterial = new THREE.MeshStandardMaterial({ color: 0x888888, side: THREE.DoubleSide });
                     const stage = new THREE.Mesh(stageGeometry, stageMaterial);
-                    stage.rotation.x = Math.PI / 2; // Rotate to lie flat
-                    stage.position.set(0, 0, 0); // Center on X-axis, at ground level
+                    stage.rotation.x = Math.PI / 2;
+                    stage.position.set(0, 0, 0);
                     stage.receiveShadow = true;
                     scene.add(stage);
                     console.log("Stage plane added to main viewport at position 0, 0, 0");
 
-                    const minRadius = 2; // Minimum radius to fit models side by side without overlap
+                    const minRadius = 2;
                     models.forEach((model, index) => {
                         const scale = model.scale;
                         let modelHeight = 0;
                         if (model.path.includes('generalized_human_body.glb') || model.path.includes('female_human_skeleton_-_zbrush_-_anatomy_study.glb')) {
-                            modelHeight = 2 * scale; // Estimated height for human models (adjust based on actual model)
+                            modelHeight = 2 * scale;
                         } else if (model.path.includes('lighting_pack_-_chain_lighting.glb')) {
-                            modelHeight = 1 * scale; // Estimated for scaled-down model (adjust)
+                            modelHeight = 1 * scale;
                         } else {
-                            modelHeight = 2 * scale; // Default height for other models (adjust based on actual model)
+                            modelHeight = 2 * scale;
                         }
-                        const position = { x: 0, y: modelHeight / 2, z: (index - 4.5) * (minRadius * 2) }; // Center on X-axis, space evenly on Z-axis
+                        const position = { x: 0, y: modelHeight / 2, z: (index - 4.5) * (minRadius * 2) };
                         console.log(`Loading model ${model.path} at position ${position.x}, ${position.y}, ${position.z} with scale ${scale}, height ${modelHeight}`);
                         loadModel(model.loader, model.path, position, scale);
                     });
@@ -550,7 +550,7 @@
                         function(gltf) {
                             console.log(`Logo loaded successfully from GitHub: logo.glb`);
                             const logoObject = gltf.scene;
-                            logoObject.position.set(0, 1.5, 0); // Center on X-axis, estimated height for logo (adjust based on model)
+                            logoObject.position.set(0, 1.5, 0);
                             logoObject.scale.set(3, 3, 3);
                             logoObject.userData.isZoomed = false;
                             logoObject.userData.isStatic = false;
@@ -563,12 +563,7 @@
                                 if (child.isMesh) {
                                     if (!child.material || child.material.type === 'undefined' || child.material.type === null) {
                                         console.warn(`No valid material for logo mesh, applying default`);
-                                        child.material = new THREE.MeshStandardMaterial({ 
-                                            color: 0xff0000, // Red for debugging
-                                            transparent: false,
-                                            castShadow: true,
-                                            receiveShadow: true 
-                                        });
+                                        child.material = new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: false, castShadow: true, receiveShadow: true });
                                     } else {
                                         console.log(`Logo mesh material from GitHub:`, child.material.type, child.material);
                                         child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
@@ -629,12 +624,7 @@
                                         if (child.isMesh) {
                                             if (!child.material || child.material.type === 'undefined' || child.material.type === null) {
                                                 console.warn(`No valid material for logo mesh via proxy, applying default`);
-                                                child.material = new THREE.MeshStandardMaterial({ 
-                                                    color: 0xff0000, // Red for debugging
-                                                    transparent: false,
-                                                    castShadow: true,
-                                                    receiveShadow: true 
-                                                });
+                                                child.material = new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: false, castShadow: true, receiveShadow: true });
                                             } else {
                                                 console.log(`Logo mesh material via proxy:`, child.material.type, child.material);
                                                 child.material = child.material || new THREE.MeshStandardMaterial({ color: 0xffffff });
@@ -681,7 +671,6 @@
                         }
                     );
                 } else if (isCategory) {
-                    // Category viewport setup
                     const leftSidebar = document.createElement('div');
                     leftSidebar.className = 'category-left-sidebar';
                     viewport.appendChild(leftSidebar);
@@ -754,7 +743,7 @@
                         const icon = document.createElement('div');
                         icon.className = 'track-icon';
                         icon.dataset.modelPath = model.path;
-                        icon.style.backgroundImage = `url('https://via.placeholder.com/50?text=${model.path.split('/').pop().replace('.glb', '')}')`; // Placeholder image for debugging
+                        icon.style.backgroundImage = `url('https://via.placeholder.com/50?text=${model.path.split('/').pop().replace('.glb', '')}')`;
                         icon.draggable = true;
                         icon.addEventListener('dragstart', (e) => {
                             console.log(`Drag started for model ${model.path}`);
