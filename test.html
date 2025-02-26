@@ -267,7 +267,7 @@
                 if (viewportId === 'mainViewport') {
                     camera.position.set(0, 5, 30); // Main viewport default
                 } else {
-                    camera.position.set(0, 5, 25.5); // 15% closer for categories
+                    camera.position.set(0, 5, 24); // 20% closer for categories (as per original)
                 }
                 console.log(`Camera positioned for ${viewportId}:`, camera.position);
 
@@ -598,10 +598,15 @@
                         e.preventDefault();
                         const modelPath = e.dataTransfer.getData('text/plain');
                         console.log(`Dropped model path: ${modelPath}`);
-                        loadModel(loaderGLTF, modelPath, { x: 0, y: 0, z: 0 }, models.find(m => m.path === modelPath).scale, true, false);
+                        const model = models.find(m => m.path === modelPath);
+                        if (model) {
+                            loadModel(loaderGLTF, modelPath, { x: 0, y: 0, z: 0 }, model.scale, true, false);
+                        } else {
+                            console.error(`Model not found in models list: ${modelPath}`);
+                        }
                     });
 
-                    // Position models in category bottom area (for drag-and-drop display)
+                    // Position static models in Tracks sidebar
                     const currentRadius = (viewportId === 'humanViewport') ? 3 : (viewportId === 'agricultureViewport') ? 6 : 3;
                     models.forEach((model, index) => {
                         const angle = index * (2 * Math.PI) / models.length;
@@ -612,7 +617,7 @@
                             z = currentRadius * (index === 0 ? -1 : 1);
                         }
                         console.log(`Positioning static model ${model.path} at ${x}, 0, ${z} in Tracks sidebar`);
-                        loadModel(loaderGLTF, model.path, { x: x, y: 0, z: z }, model.scale, false, true); // Static in Tracks
+                        loadModel(loaderGLTF, model.path, { x: x, y: 0, z: z }, model.scale, false, true);
                     });
                 }
 
@@ -625,109 +630,123 @@
 
                 function onMouseMove(event) {
                     console.log(`Mouse move event in ${viewportId}`);
-                    mouse.x = ((event.clientX - viewport.getBoundingClientRect().left) / viewport.clientWidth) * 2 - 1;
-                    mouse.y = -((event.clientY - viewport.getBoundingClientRect().top) / viewport.clientHeight) * 2 + 1;
-                    raycaster.setFromCamera(mouse, camera);
+                    try {
+                        mouse.x = ((event.clientX - viewport.getBoundingClientRect().left) / viewport.clientWidth) * 2 - 1;
+                        mouse.y = -((event.clientY - viewport.getBoundingClientRect().top) / viewport.clientHeight) * 2 + 1;
+                        raycaster.setFromCamera(mouse, camera);
 
-                    const modelObjects = scene.children.filter(child => 
-                        (child.isGroup || child.isObject3D) && !child.userData.isStatic && !child.userData.isZoomed
-                    );
-                    const intersects = raycaster.intersectObjects(modelObjects, true);
+                        const modelObjects = scene.children.filter(child => 
+                            (child.isGroup || child.isObject3D) && !child.userData.isStatic && !child.userData.isZoomed
+                        );
+                        const intersects = raycaster.intersectObjects(modelObjects, true);
 
-                    if (intersects.length > 0) {
-                        const intersectedObject = intersects[0].object;
-                        let rootTarget = intersectedObject;
-                        while (rootTarget.parent && !rootTarget.userData.isRoot) {
-                            rootTarget = rootTarget.parent;
+                        if (intersects.length > 0) {
+                            const intersectedObject = intersects[0].object;
+                            let rootTarget = intersectedObject;
+                            while (rootTarget.parent && !rootTarget.userData.isRoot) {
+                                rootTarget = rootTarget.parent;
+                            }
+                            if (!rootTarget.userData.isRoot) rootTarget.userData.isRoot = true;
+                            hoverModel = rootTarget;
+                            controls.target.lerp(rootTarget.position, 0.1);
+                            console.log(`Hovering over model ${rootTarget.name || rootTarget.uuid} in ${viewportId}`);
+                        } else {
+                            hoverModel = null;
+                            controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1);
+                            console.log(`No hover model in ${viewportId}`);
                         }
-                        if (!rootTarget.userData.isRoot) rootTarget.userData.isRoot = true;
-                        hoverModel = rootTarget;
-                        controls.target.lerp(rootTarget.position, 0.1);
-                    } else {
-                        hoverModel = null;
-                        controls.target.lerp(new THREE.Vector3(0, 0, 0), 0.1);
+                        controls.update();
+                    } catch (error) {
+                        console.error(`Error in onMouseMove for ${viewportId}:`, error);
                     }
-                    controls.update();
-                    console.log(`Hover model in ${viewportId}:`, hoverModel ? hoverModel.name : 'None');
                 }
 
                 function onDoubleClick(event) {
                     console.log(`Double-click event in ${viewportId}`);
-                    mouse.x = ((event.clientX - viewport.getBoundingClientRect().left) / viewport.clientWidth) * 2 - 1;
-                    mouse.y = -((event.clientY - viewport.getBoundingClientRect().top) / viewport.clientHeight) * 2 + 1;
-                    raycaster.setFromCamera(mouse, camera);
+                    try {
+                        mouse.x = ((event.clientX - viewport.getBoundingClientRect().left) / viewport.clientWidth) * 2 - 1;
+                        mouse.y = -((event.clientY - viewport.getBoundingClientRect().top) / viewport.clientHeight) * 2 + 1;
+                        raycaster.setFromCamera(mouse, camera);
 
-                    const modelObjects = scene.children.filter(child => 
-                        (child.isGroup || child.isObject3D) && !child.userData.isStatic
-                    );
-                    const intersects = raycaster.intersectObjects(modelObjects, true);
+                        const modelObjects = scene.children.filter(child => 
+                            (child.isGroup || child.isObject3D) && !child.userData.isStatic
+                        );
+                        const intersects = raycaster.intersectObjects(modelObjects, true);
 
-                    if (intersects.length > 0) {
-                        const intersectedObject = intersects[0].object;
-                        let rootTarget = intersectedObject;
-                        while (rootTarget.parent && !rootTarget.userData.isRoot) {
-                            rootTarget = rootTarget.parent;
-                        }
-                        if (!rootTarget.userData.isRoot) rootTarget.userData.isRoot = true;
-                        const targetModel = rootTarget;
+                        if (intersects.length > 0) {
+                            const intersectedObject = intersects[0].object;
+                            let rootTarget = intersectedObject;
+                            while (rootTarget.parent && !rootTarget.userData.isRoot) {
+                                rootTarget = rootTarget.parent;
+                            }
+                            if (!rootTarget.userData.isRoot) rootTarget.userData.isRoot = true;
+                            const targetModel = rootTarget;
 
-                        if (targetModel.userData.isZoomed) {
-                            console.log(`Zooming out model ${targetModel.name || targetModel.uuid} in ${viewportId}`);
-                            new TWEEN.Tween(targetModel.scale)
-                                .to({ x: targetModel.userData.originalScale, y: targetModel.userData.originalScale, z: targetModel.userData.originalScale }, 500)
-                                .easing(TWEEN.Easing.Quadratic.InOut)
-                                .start()
-                                .onComplete(() => {
-                                    targetModel.userData.isZoomed = false;
-                                    console.log(`Zoom out completed for ${targetModel.name || targetModel.uuid}`);
-                                });
+                            if (targetModel.userData.isZoomed) {
+                                console.log(`Zooming out model ${targetModel.name || targetModel.uuid} in ${viewportId}`);
+                                new TWEEN.Tween(targetModel.scale)
+                                    .to({ x: targetModel.userData.originalScale, y: targetModel.userData.originalScale, z: targetModel.userData.originalScale }, 500)
+                                    .easing(TWEEN.Easing.Quadratic.InOut)
+                                    .start()
+                                    .onComplete(() => {
+                                        targetModel.userData.isZoomed = false;
+                                        console.log(`Zoom out completed for ${targetModel.name || targetModel.uuid}`);
+                                    })
+                                    .onError((err) => console.error(`Tween scale error for ${targetModel.name || targetModel.uuid}:`, err));
 
-                            new TWEEN.Tween(targetModel.position)
-                                .to({ x: targetModel.userData.originalPosition.x, y: targetModel.userData.originalPosition.y, z: targetModel.userData.originalPosition.z }, 500)
-                                .easing(TWEEN.Easing.Quadratic.InOut)
-                                .start();
+                                new TWEEN.Tween(targetModel.position)
+                                    .to({ x: targetModel.userData.originalPosition.x, y: targetModel.userData.originalPosition.y, z: targetModel.userData.originalPosition.z }, 500)
+                                    .easing(TWEEN.Easing.Quadratic.InOut)
+                                    .start()
+                                    .onError((err) => console.error(`Tween position error for ${targetModel.name || targetModel.uuid}:`, err));
 
-                            new TWEEN.Tween(camera.position)
-                                .to({ x: 0, y: 5, z: (viewportId === 'mainViewport' ? 30 : 25.5) }, 500)
-                                .easing(TWEEN.Easing.Quadratic.InOut)
-                                .onUpdate(() => {
-                                    controls.target.set(0, 0, 0);
-                                    controls.update();
-                                    console.log(`Camera position during zoom out:`, camera.position);
-                                })
-                                .start();
+                                new TWEEN.Tween(camera.position)
+                                    .to({ x: 0, y: 5, z: (viewportId === 'mainViewport' ? 30 : 24) }, 500)
+                                    .easing(TWEEN.Easing.Quadratic.InOut)
+                                    .onUpdate(() => {
+                                        controls.target.set(0, 0, 0);
+                                        controls.update();
+                                        console.log(`Camera position during zoom out:`, camera.position);
+                                    })
+                                    .onError((err) => console.error(`Tween camera error for ${viewportId}:`, err))
+                                    .start();
+                            } else {
+                                console.log(`Zooming in model ${targetModel.name || targetModel.uuid} in ${viewportId}`);
+                                const zoomScale = 2;
+                                const modelPosition = targetModel.position.clone();
+                                const distance = 10;
+
+                                new TWEEN.Tween(targetModel.scale)
+                                    .to({ x: targetModel.userData.originalScale * zoomScale, y: targetModel.userData.originalScale * zoomScale, z: targetModel.userData.originalScale * zoomScale }, 500)
+                                    .easing(TWEEN.Easing.Quadratic.InOut)
+                                    .start()
+                                    .onComplete(() => {
+                                        targetModel.userData.isZoomed = true;
+                                        console.log(`Zoom in completed for ${targetModel.name || targetModel.uuid}`);
+                                    })
+                                    .onError((err) => console.error(`Tween scale error for ${targetModel.name || targetModel.uuid}:`, err));
+
+                                const targetPosition = modelPosition.clone();
+                                const cameraTarget = new THREE.Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
+                                const cameraDistance = new THREE.Vector3(targetPosition.x, targetPosition.y + 5, targetPosition.z + distance);
+
+                                new TWEEN.Tween(camera.position)
+                                    .to({ x: cameraDistance.x, y: cameraDistance.y, z: cameraDistance.z }, 500)
+                                    .easing(TWEEN.Easing.Quadratic.InOut)
+                                    .onUpdate(() => {
+                                        controls.target.copy(cameraTarget);
+                                        camera.lookAt(cameraTarget);
+                                        controls.update();
+                                        console.log(`Camera position during zoom in:`, camera.position);
+                                    })
+                                    .onError((err) => console.error(`Tween camera error for ${viewportId}:`, err))
+                                    .start();
+                            }
                         } else {
-                            console.log(`Zooming in model ${targetModel.name || targetModel.uuid} in ${viewportId}`);
-                            const zoomScale = 2;
-                            const modelPosition = targetModel.position.clone();
-                            const distance = 10;
-
-                            new TWEEN.Tween(targetModel.scale)
-                                .to({ x: targetModel.userData.originalScale * zoomScale, y: targetModel.userData.originalScale * zoomScale, z: targetModel.userData.originalScale * zoomScale }, 500)
-                                .easing(TWEEN.Easing.Quadratic.InOut)
-                                .start()
-                                .onComplete(() => {
-                                    targetModel.userData.isZoomed = true;
-                                    console.log(`Zoom in completed for ${targetModel.name || targetModel.uuid}`);
-                                });
-
-                            const targetPosition = modelPosition.clone();
-                            const cameraTarget = new THREE.Vector3(targetPosition.x, targetPosition.y, targetPosition.z);
-                            const cameraDistance = new THREE.Vector3(targetPosition.x, targetPosition.y + 5, targetPosition.z + distance);
-
-                            new TWEEN.Tween(camera.position)
-                                .to({ x: cameraDistance.x, y: cameraDistance.y, z: cameraDistance.z }, 500)
-                                .easing(TWEEN.Easing.Quadratic.InOut)
-                                .onUpdate(() => {
-                                    controls.target.copy(cameraTarget);
-                                    camera.lookAt(cameraTarget);
-                                    controls.update();
-                                    console.log(`Camera position during zoom in:`, camera.position);
-                                })
-                                .start();
+                            console.warn(`No model intersected on double-click in ${viewportId}`);
                         }
-                    } else {
-                        console.warn(`No model intersected on double-click in ${viewportId}`);
+                    } catch (error) {
+                        console.error(`Error in onDoubleClick for ${viewportId}:`, error);
                     }
                 }
 
@@ -802,7 +821,7 @@
             const mainModels = [
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
-                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }, // Scaled down to match female_human_skeleton (scale 1)
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 0, y: 0, z: 0 }, scale: 0.6 },
                 { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 },
