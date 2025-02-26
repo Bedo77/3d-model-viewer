@@ -33,6 +33,11 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #f46c27;
+            transform: scale(1.1);
         }
         .viewport {
             width: 80%;
@@ -57,6 +62,8 @@
             align-items: center;
             padding: 20px;
             text-align: center;
+            box-sizing: border-box;
+            overflow-y: auto;
         }
         .category-viewport {
             width: 100%;
@@ -221,23 +228,22 @@
 
             // Add a stage mesh
             const stageGeometry = new THREE.PlaneGeometry(20, 10);
-            const stageMaterial = new THREE.MeshBasicMaterial({ color: 0x808080, side: THREE.DoubleSide });
+            const stageMaterial = new THREE.MeshBasicMaterial({ color: 0xf46c27, side: THREE.DoubleSide });
             const stageMesh = new THREE.Mesh(stageGeometry, stageMaterial);
             stageMesh.rotation.x = -Math.PI / 2;
             stageMesh.position.y = -1;
             scene.add(stageMesh);
 
             function animate() {
-    requestAnimationFrame(animate);
-    scene.children.forEach(child => {
-        // Only rotate models, not the stage mesh
-        if ((child.isGroup || child.isObject3D) && child !== stageMesh) {
-            child.rotation.y += 0.01;
-        }
-    });
-    controls.update();
-    renderer.render(scene, camera);
-}
+                requestAnimationFrame(animate);
+                scene.children.forEach(child => {
+                    if ((child.isGroup || child.isObject3D) && child !== stageMesh) {
+                        child.rotation.y += 0.01;
+                    }
+                });
+                controls.update();
+                renderer.render(scene, camera);
+            }
 
             animate();
 
