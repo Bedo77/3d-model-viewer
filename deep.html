@@ -10,12 +10,12 @@
             font-family: Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
-            background-color: #34495e;
+            background-color: #2c7481; /* Paradiso */
             display: flex;
         }
         .sidebar {
             width: 20%;
-            background-color: #2c3e50;
+            background-color: #dadad8; /* Quill Gray */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -27,7 +27,7 @@
             height: 100px;
             margin: 10px;
             border-radius: 50%;
-            background-color: #3498db;
+            background-color: #f47e42; /* Jaffa */
             color: white;
             display: flex;
             justify-content: center;
@@ -36,7 +36,7 @@
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
         .button:hover {
-            background-color: #f46c27;
+            background-color: #f46c27; /* Flamingo */
             transform: scale(1.1);
         }
         .viewport {
@@ -50,13 +50,12 @@
             width: 100%;
             height: 50%;
             position: relative;
-            margin-left: 20%; /* Move display area to the right */
         }
         .info-viewport {
             width: 100%;
             height: 50%;
-            background-color: #2c3e50;
-            color: white;
+            background-color: #dadad8; /* Quill Gray */
+            color: #2c7481; /* Paradiso */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -65,7 +64,6 @@
             text-align: center;
             box-sizing: border-box;
             overflow-y: auto;
-            margin-left: 20%; /* Move info area to the right */
         }
         .category-viewport {
             width: 100%;
@@ -77,11 +75,11 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background-color: #34495e;
+            background-color: #2c7481; /* Paradiso */
         }
         .tracks-sidebar {
             width: 20%;
-            background-color: #2c3e50;
+            background-color: #dadad8; /* Quill Gray */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -96,7 +94,7 @@
             height: 80px;
             margin: 10px;
             border-radius: 50%;
-            background-color: #3498db;
+            background-color: #f47e42; /* Jaffa */
             color: white;
             display: flex;
             justify-content: center;
@@ -105,7 +103,7 @@
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
         .track-button:hover {
-            background-color: #f46c27;
+            background-color: #f46c27; /* Flamingo */
             transform: scale(1.1);
         }
         .back-button {
@@ -113,7 +111,7 @@
             top: 10px;
             left: 10px;
             padding: 10px 20px;
-            background-color: #e74c3c;
+            background-color: #f46c27; /* Flamingo */
             color: white;
             cursor: pointer;
         }
@@ -132,6 +130,8 @@
         <div class="button" id="btnPhysics">Physics</div>
         <div class="button" id="btnChemistry">Chemistry</div>
         <div class="button" id="btnBiology">Biology</div>
+        <div class="button" id="btnHuman">Human</div>
+        <div class="button" id="btnAgriculture">Agriculture</div>
     </div>
     <div class="viewport">
         <div class="model-viewport" id="mainViewport"></div>
@@ -162,7 +162,7 @@
             <div class="track-button" data-model="geometry_texture_effect_spheres.glb">Sphere</div>
             <div class="track-button" data-model="desert_fortress_gates.glb">Fortress</div>
         </div>
-        <div class="model-viewport" id="geometryModelViewport"></div>
+        <div class="model-viewport" id="geometryModelViewport" style="width: 60%;"></div>
         <div class="info-viewport" id="geometryInfoViewport">
             <h2>Geometry</h2>
             <p>Explore geometric shapes and structures in 3D.</p>
@@ -175,7 +175,7 @@
             <div class="track-button" data-model="bullet_physics_animation_8_reconstruction.glb">Bullet</div>
             <div class="track-button" data-model="lighting_pack_-_chain_lighting.glb">Lighting</div>
         </div>
-        <div class="model-viewport" id="physicsModelViewport"></div>
+        <div class="model-viewport" id="physicsModelViewport" style="width: 60%;"></div>
         <div class="info-viewport" id="physicsInfoViewport">
             <h2>Physics</h2>
             <p>Discover the laws of physics through interactive 3D models.</p>
@@ -187,7 +187,7 @@
         <div class="tracks-sidebar" id="chemistryTracks">
             <div class="track-button" data-model="stylized_chemistry_set.glb">Chemistry Set</div>
         </div>
-        <div class="model-viewport" id="chemistryModelViewport"></div>
+        <div class="model-viewport" id="chemistryModelViewport" style="width: 60%;"></div>
         <div class="info-viewport" id="chemistryInfoViewport">
             <h2>Chemistry</h2>
             <p>Explore chemical reactions and molecular structures in 3D.</p>
@@ -200,10 +200,35 @@
             <div class="track-button" data-model="poison_dart_frog.glb">Frog</div>
             <div class="track-button" data-model="wolf.glb">Wolf</div>
         </div>
-        <div class="model-viewport" id="biologyModelViewport"></div>
+        <div class="model-viewport" id="biologyModelViewport" style="width: 60%;"></div>
         <div class="info-viewport" id="biologyInfoViewport">
             <h2>Biology</h2>
             <p>Learn about living organisms and their structures in 3D.</p>
+        </div>
+    </div>
+    <div class="category-viewport" id="humanViewport">
+        <div class="back-button" id="backHuman">Back</div>
+        <div class="title">Human</div>
+        <div class="tracks-sidebar" id="humanTracks">
+            <div class="track-button" data-model="generalized_human_body.glb">Human Body</div>
+            <div class="track-button" data-model="skull_keychain.glb">Skull</div>
+        </div>
+        <div class="model-viewport" id="humanModelViewport" style="width: 60%;"></div>
+        <div class="info-viewport" id="humanInfoViewport">
+            <h2>Human</h2>
+            <p>Explore the human body and anatomy in 3D.</p>
+        </div>
+    </div>
+    <div class="category-viewport" id="agricultureViewport">
+        <div class="back-button" id="backAgriculture">Back</div>
+        <div class="title">Agriculture</div>
+        <div class="tracks-sidebar" id="agricultureTracks">
+            <div class="track-button" data-model="unidentified_agriculture_vehicle.glb">Vehicle</div>
+        </div>
+        <div class="model-viewport" id="agricultureModelViewport" style="width: 60%;"></div>
+        <div class="info-viewport" id="agricultureInfoViewport">
+            <h2>Agriculture</h2>
+            <p>Discover agricultural tools and vehicles in 3D.</p>
         </div>
     </div>
 
@@ -302,6 +327,18 @@
             createScene('biologyModelViewport');
         });
 
+        document.getElementById('btnHuman').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('humanViewport').style.display = 'flex';
+            createScene('humanModelViewport');
+        });
+
+        document.getElementById('btnAgriculture').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('agricultureViewport').style.display = 'flex';
+            createScene('agricultureModelViewport');
+        });
+
         // Add event listeners for back buttons
         document.getElementById('backGeometry').addEventListener('click', () => {
             document.getElementById('geometryViewport').style.display = 'none';
@@ -320,6 +357,16 @@
 
         document.getElementById('backBiology').addEventListener('click', () => {
             document.getElementById('biologyViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backHuman').addEventListener('click', () => {
+            document.getElementById('humanViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backAgriculture').addEventListener('click', () => {
+            document.getElementById('agricultureViewport').style.display = 'none';
             document.getElementById('mainViewport').style.display = 'block';
         });
 
