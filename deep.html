@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational 3D Models</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #34495e;
+            display: flex;
+        }
+        .sidebar {
+            width: 20%;
+            background-color: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .button {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 50%;
+            background-color: #3498db;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .viewport {
+            width: 80%;
+            height: 100%;
+            position: relative;
+        }
+        .category-viewport {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #34495e;
+        }
+        .back-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            background-color: #e74c3c;
+            color: white;
+            cursor: pointer;
+        }
+        .title {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            color: white;
+        }
+        .text-popup {
+            position: absolute;
+            background-color: rgba(255, 165, 0, 0.9);
+            border: 2px solid #ff8c00;
+            border-radius: 85%;
+            padding: 15px;
+            display: none;
+            z-index: 10;
+            min-width: 180px;
+            max-width: 360px;
+            overflow: hidden;
+            text-align: center;
+            animation: popUpEffect 0.5s ease-in-out forwards;
+            font-size: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .popup-content {
+            margin-top: 3mm;
+        }
+        @keyframes popUpEffect {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="button" id="btnGeometry">Geometry</div>
+        <div class="button" id="btnPhysics">Physics</div>
+        <div class="button" id="btnChemistry">Chemistry</div>
+        <div class="button" id="btnBiology">Biology</div>
+        <div class="button" id="btnHuman">Human</div>
+        <div class="button" id="btnAgriculture">Agriculture</div>
+    </div>
+    <div class="viewport" id="mainViewport"></div>
+    <div class="category-viewport" id="geometryViewport">
+        <div class="back-button" id="backGeometry">Back</div>
+        <div class="title">Geometry</div>
+    </div>
+    <div class="category-viewport" id="physicsViewport">
+        <div class="back-button" id="backPhysics">Back</div>
+        <div class="title">Physics</div>
+    </div>
+    <div class="category-viewport" id="chemistryViewport">
+        <div class="back-button" id="backChemistry">Back</div>
+        <div class="title">Chemistry</div>
+    </div>
+    <div class="category-viewport" id="biologyViewport">
+        <div class="back-button" id="backBiology">Back</div>
+        <div class="title">Biology</div>
+    </div>
+    <div class="category-viewport" id="humanViewport">
+        <div class="back-button" id="backHuman">Back</div>
+        <div class="title">Human</div>
+    </div>
+    <div class="category-viewport" id="agricultureViewport">
+        <div class="back-button" id="backAgriculture">Back</div>
+        <div class="title">Agriculture</div>
+    </div>
+    <div class="text-popup" id="textPopup">
+        <div class="popup-content" id="popupContent"></div>
+        <button class="close-button" id="closePopup">Close Window</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+    <script>
+        function createScene(viewportId, models, enableDoubleClickZoom = false) {
+            const viewport = document.getElementById(viewportId);
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+            renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.appendChild(renderer.domElement);
+
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.1;
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 10, 7.5);
+            scene.add(directionalLight);
+
+            camera.position.set(0, 1, 20);
+
+            const loaderGLTF = new THREE.GLTFLoader();
+            const loaderOBJ = new THREE.OBJLoader();
+
+            function loadModel(loader, modelPath, position, scale = 1) {
+                loader.load(modelPath, function(object) {
+                    if (object.scene) {
+                        object.scene.position.set(position.x, position.y, position.z);
+                        object.scene.scale.set(scale, scale, scale);
+                        scene.add(object.scene);
+                    } else {
+                        object.position.set(position.x, position.y, position.z);
+                        object.scale.set(scale, scale, scale);
+                        scene.add(object);
+                    }
+                }, undefined, function(error) {
+                    console.error(`Error loading model: ${modelPath}`, error);
+                });
+            }
+
+            models.forEach(model => loadModel(model.loader, model.path, model.position, model.scale));
+
+            function animate() {
+                requestAnimationFrame(animate);
+                scene.children.forEach(child => {
+                    if (child.isGroup || child.isObject3D) {
+                        child.rotation.y += 0.01;
+                    }
+                });
+                controls.update();
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            if (enableDoubleClickZoom) {
+                viewport.addEventListener('dblclick', (event) => {
+                    const rect = renderer.domElement.getBoundingClientRect();
+                    const mouse = new THREE.Vector2(
+                        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+                        -((event.clientY - rect.top) / rect.height) * 2 + 1
+                    );
+
+                    const raycaster = new THREE.Raycaster();
+                    raycaster.setFromCamera(mouse, camera);
+
+                    const intersects = raycaster.intersectObjects(scene.children, true);
+
+                    if (intersects.length > 0) {
+                        const target = intersects[0].object;
+                        const box = new THREE.Box3().setFromObject(target);
+                        const center = box.getCenter(new THREE.Vector3());
+                        const size = box.getSize(new THREE.Vector3());
+
+                        const maxDim = Math.max(size.x, size.y, size.z);
+                        const fov = camera.fov * (Math.PI / 180);
+                        let cameraZ = Math.abs(maxDim / 2 * Math.tan(fov * 2));
+                        cameraZ *= 2.0;
+
+                        const directionVector = new THREE.Vector3().subVectors(camera.position, center).normalize();
+                        const newCameraPosition = center.clone().add(directionVector.multiplyScalar(cameraZ));
+
+                        camera.position.copy(newCameraPosition);
+                        camera.lookAt(center);
+                    }
+                });
+            }
+        }
+
+        const mainModels = [
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', position: { x: -10, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model1.glb', position: { x: -5, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.OBJLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/model3.obj', position: { x: 5, y: 0, z: 0 }, scale: 1 },
+            { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/tornado.glb', position: { x: 10, y: 0, z: 0 }, scale: 1 }
+        ];
+
+        createScene('mainViewport', mainModels);
+
+        const categoryModels = {
+            geometry: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', position: { x: -5, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', position: { x: 5, y: 0, z: 0 }, scale: 1 }
+            ],
+            physics: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', position: { x: -5, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', position: { x: 5, y: 0, z: 0 }, scale: 1 }
+            ],
+            chemistry: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+            ],
+            biology: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/poison_dart_frog.glb', position: { x: -5, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', position: { x: 5, y: 0, z: 0 }, scale: 1 }
+            ],
+            human: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', position: { x: -5, y: 0, z: 0 }, scale: 1 },
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', position: { x: 5, y: 0, z: 0 }, scale: 1 }
+            ],
+            agriculture: [
+                { loader: new THREE.GLTFLoader(), path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/unidentified_agriculture_vehicle.glb', position: { x: 0, y: 0, z: 0 }, scale: 1 }
+            ]
+        };
+
+        document.getElementById('btnGeometry').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('geometryViewport').style.display = 'flex';
+            createScene('geometryViewport', categoryModels.geometry, true);
+        });
+
+        document.getElementById('btnPhysics').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('physicsViewport').style.display = 'flex';
+            createScene('physicsViewport', categoryModels.physics, true);
+        });
+
+        document.getElementById('btnChemistry').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('chemistryViewport').style.display = 'flex';
+            createScene('chemistryViewport', categoryModels.chemistry, true);
+        });
+
+        document.getElementById('btnBiology').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('biologyViewport').style.display = 'flex';
+            createScene('biologyViewport', categoryModels.biology, true);
+        });
+
+        document.getElementById('btnHuman').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('humanViewport').style.display = 'flex';
+            createScene('humanViewport', categoryModels.human, true);
+        });
+
+        document.getElementById('btnAgriculture').addEventListener('click', () => {
+            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
+            document.getElementById('agricultureViewport').style.display = 'flex';
+            createScene('agricultureViewport', categoryModels.agriculture, true);
+        });
+
+        document.getElementById('backGeometry').addEventListener('click', () => {
+            document.getElementById('geometryViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backPhysics').addEventListener('click', () => {
+            document.getElementById('physicsViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backChemistry').addEventListener('click', () => {
+            document.getElementById('chemistryViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backBiology').addEventListener('click', () => {
+            document.getElementById('biologyViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backHuman').addEventListener('click', () => {
+            document.getElementById('humanViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('backAgriculture').addEventListener('click', () => {
+            document.getElementById('agricultureViewport').style.display = 'none';
+            document.getElementById('mainViewport').style.display = 'block';
+        });
+
+        document.getElementById('biologyViewport').addEventListener('dblclick', (event) => {
+            const textPopup = document.getElementById('textPopup');
+            const popupContent = document.getElementById('popupContent');
+            textPopup.style.display = 'block';
+
+            fetch('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/info/insect%20info.txt')
+                .then(response => response.text())
+                .then(text => {
+                    const listItems = text.split('\n').map(item => `<li>${item}</li>`).join('');
+                    popupContent.innerHTML = listItems;
+
+                    textPopup.style.left = '50%';
+                    textPopup.style.top = '50%';
+                    textPopup.style.transform = 'translate(-50%, -50%)';
+                })
+                .catch(error => console.error('Error fetching text info:', error));
+        });
+
+        document.getElementById('closePopup').addEventListener('click', () => {
+            document.getElementById('textPopup').style.display = 'none';
+        });
+    </script>
+</body>
+</html>
