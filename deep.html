@@ -122,6 +122,14 @@
             font-size: 24px;
             color: white;
         }
+        .loading-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+        }
     </style>
 </head>
 <body>
@@ -285,7 +293,10 @@
         function loadModel(modelPath, position = { x: 0, y: 0, z: 0 }, scale = 1) {
             // Clear the scene before loading a new model
             while (currentScene.children.length > 0) {
-                currentScene.remove(currentScene.children[0]);
+                const child = currentScene.children[0];
+                if (child !== currentScene.children.find(c => c.isScene)) {
+                    currentScene.remove(child);
+                }
             }
 
             const loader = new THREE.GLTFLoader();
@@ -294,6 +305,15 @@
                     object.scene.position.set(position.x, position.y, position.z);
                     object.scene.scale.set(scale, scale, scale);
                     currentScene.add(object.scene);
+
+                    // Adjust camera to fit the model
+                    const box = new THREE.Box3().setFromObject(object.scene);
+                    const size = box.getSize(new THREE.Vector3()).length();
+                    const center = box.getCenter(new THREE.Vector3());
+
+                    currentCamera.position.copy(center);
+                    currentCamera.position.z = size * 1.5; // Adjust distance based on model size
+                    currentCamera.lookAt(center);
                 }
             }, undefined, function(error) {
                 console.error(`Error loading model: ${modelPath}`, error);
