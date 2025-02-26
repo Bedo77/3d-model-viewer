@@ -200,15 +200,28 @@
             position: absolute;
             pointer-events: none; /* Prevent interaction with dragged model */
         }
+        .error-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border: 2px solid #e74c3c;
+            border-radius: 5px;
+            color: #333;
+            z-index: 1000;
+            display: none;
+        }
     </style>
-    <!-- Use static script tags with multiple CDNs and CORS support -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin="anonymous" onload="console.log('Three.js loaded')" onerror="console.error('Three.js failed to load from CDN, trying fallback'); loadFallback('https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js', 'Three.js')"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" crossorigin="anonymous" onload="console.log('OrbitControls loaded')" onerror="console.error('OrbitControls failed to load from CDN, trying fallback'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js', 'OrbitControls')"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js" crossorigin="anonymous" onload="console.log('GLTFLoader loaded')" onerror="console.error('GLTFLoader failed to load from CDN, trying fallback'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/GLTFLoader.js', 'GLTFLoader')"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js" crossorigin="anonymous" onload="console.log('OBJLoader loaded')" onerror="console.error('OBJLoader failed to load from CDN, trying fallback'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/OBJLoader.js', 'OBJLoader')"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js" crossorigin="anonymous" onload="console.log('TextureLoader loaded')" onerror="console.error('TextureLoader failed to load from CDN, trying fallback'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/TextureLoader.js', 'TextureLoader')"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.min.js" crossorigin="anonymous" onload="console.log('Tween.js loaded')" onerror="console.error('Tween.js failed to load from CDN, trying fallback'); loadFallback('https://cdn.jsdelivr.net/npm/tween.js@18.6.4/dist/tween.umd.min.js', 'Tween.js')"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous" onload="console.log('jQuery loaded')" onerror="console.error('jQuery failed to load from CDN, trying fallback'); loadFallback('https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js', 'jQuery')"></script>
+    <!-- Static script tags with multiple CDNs and CORS support -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" crossorigin="anonymous" onload="console.log('Three.js loaded')" onerror="console.error('Three.js failed to load from CDN'); loadFallback('https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js', 'Three.js')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js" crossorigin="anonymous" onload="console.log('OrbitControls loaded')" onerror="console.error('OrbitControls failed to load from CDN'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js', 'OrbitControls')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js" crossorigin="anonymous" onload="console.log('GLTFLoader loaded')" onerror="console.error('GLTFLoader failed to load from CDN'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/GLTFLoader.js', 'GLTFLoader')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js" crossorigin="anonymous" onload="console.log('OBJLoader loaded')" onerror="console.error('OBJLoader failed to load from CDN'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/OBJLoader.js', 'OBJLoader')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/TextureLoader.js" crossorigin="anonymous" onload="console.log('TextureLoader loaded')" onerror="console.error('TextureLoader failed to load from CDN'); loadFallback('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/TextureLoader.js', 'TextureLoader')"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.min.js" crossorigin="anonymous" onload="console.log('Tween.js loaded')" onerror="console.error('Tween.js failed to load from CDN'); loadFallback('https://cdn.jsdelivr.net/npm/tween.js@18.6.4/dist/tween.umd.min.js', 'Tween.js')"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous" onload="console.log('jQuery loaded')" onerror="console.error('jQuery failed to load from CDN'); loadFallback('https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js', 'jQuery')"></script>
 
     <script>
         // Function to load fallback scripts dynamically
@@ -217,15 +230,28 @@
             script.src = url;
             script.crossorigin = 'anonymous';
             script.onload = () => console.log(`${libraryName} loaded from fallback`);
-            script.onerror = () => console.error(`${libraryName} fallback failed to load`);
+            script.onerror = () => {
+                console.error(`${libraryName} fallback failed to load`);
+                showErrorMessage(`Failed to load ${libraryName}. Check your internet connection or contact support.`);
+            };
             document.head.appendChild(script);
+        }
+
+        // Function to show an error message on the page
+        function showErrorMessage(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            document.body.appendChild(errorDiv);
+            errorDiv.style.display = 'block';
+            console.error(message);
         }
 
         // Wait for DOM content and all libraries to load before initializing
         document.addEventListener('DOMContentLoaded', function() {
             console.log("Starting script initialization after DOM and libraries loaded...");
             
-            // Verify all libraries are loaded with a timeout
+            // Verify all libraries are loaded with a timeout and fallback UI
             function checkLibraries(callback) {
                 const maxRetries = 5;
                 let retries = 0;
@@ -240,7 +266,7 @@
                         setTimeout(check, 1000); // Retry every 1 second for reliability
                     } else {
                         console.error("Failed to load required libraries after retries. Check network or fallbacks.");
-                        alert("Critical libraries failed to load. Please check your internet connection or contact support.");
+                        showErrorMessage("Critical libraries failed to load. Please check your internet connection or contact support.");
                         return;
                     }
                 }
@@ -821,7 +847,7 @@
                                 z = currentRadius * (index === 0 ? -1 : 1);
                             }
                             console.log(`Positioning static model ${model.path} at ${x}, 0, ${z} in Tracks sidebar`);
-                            loadModel(loaderGLTF, model.path, { x: x, y: 0, z: z }, model.scale, false, true);
+                            loadModel(loaderGLTF, modelPath, { x: x, y: 0, z: z }, model.scale, false, true);
                         });
                     }
 
@@ -1057,6 +1083,7 @@
                     console.log("Main viewport initialized successfully");
                 } catch (error) {
                     console.error("Error initializing main viewport:", error);
+                    showErrorMessage("Failed to initialize main viewport. Check console for details.");
                 }
 
                 console.log("Setting up category buttons...");
@@ -1082,6 +1109,7 @@
                             console.log(`${category} viewport initialized successfully`);
                         } catch (error) {
                             console.error(`Error initializing ${category} viewport:`, error);
+                            showErrorMessage(`Failed to initialize ${category} viewport. Check console for details.`);
                         }
                     });
                 });
