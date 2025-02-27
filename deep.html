@@ -50,6 +50,7 @@
             width: 90%; /* Scaled down by 10% */
             height: 50%;
             position: relative;
+            margin-top: 20px; /* Add space at the top */
         }
         .info-viewport {
             width: 100%;
@@ -288,7 +289,8 @@
                 const loader = new THREE.GLTFLoader();
                 loader.load(model.path, function(object) {
                     if (object.scene) {
-                        object.scene.position.set(index * 5, 0, 0); // Adjust position to avoid overlap
+                        // Adjust position for each model
+                        object.scene.position.set(index * 5, 0, 0); // Space models along the X-axis
                         object.scene.scale.set(1, 1, 1);
                         currentScene.add(object.scene);
 
@@ -307,8 +309,13 @@
             });
         }
 
-        // Initialize main viewport
+        // Initialize main viewport and load default models
         createScene('mainViewport');
+        const defaultModels = [
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Sphere' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', name: 'Fortress' }
+        ];
+        loadModels(defaultModels, 'mainViewport');
 
         // Define models for each category
         const models = {
