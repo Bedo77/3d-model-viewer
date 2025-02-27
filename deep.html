@@ -47,10 +47,11 @@
             flex-direction: column;
         }
         .model-viewport {
-            width: 90%; /* Scaled down by 10% */
-            height: 50%;
+            width: 50%; /* Reduced to 50% of parent width */
+            height: 50%; /* Reduced to 50% of parent height */
             position: relative;
-            margin-top: 20px; /* Add space at the top */
+            margin: 20px; /* Added margins */
+            background-color: #ffffff; /* White background for visibility */
         }
         .info-viewport {
             width: 100%;
@@ -164,82 +165,6 @@
             </p>
         </div>
     </div>
-    <div class="category-viewport" id="geometryViewport">
-        <div class="back-button" id="backGeometry">Back</div>
-        <div class="title">Geometry</div>
-        <div class="tracks-sidebar" id="geometryTracks">
-            <div class="track-button" data-model="geometry_texture_effect_spheres.glb">Sphere</div>
-            <div class="track-button" data-model="desert_fortress_gates.glb">Fortress</div>
-        </div>
-        <div class="model-viewport" id="geometryModelViewport" style="width: 50%;"></div>
-        <div class="info-viewport" id="geometryInfoViewport">
-            <h2>Geometry</h2>
-            <p>Explore geometric shapes and structures in 3D.</p>
-        </div>
-    </div>
-    <div class="category-viewport" id="physicsViewport">
-        <div class="back-button" id="backPhysics">Back</div>
-        <div class="title">Physics</div>
-        <div class="tracks-sidebar" id="physicsTracks">
-            <div class="track-button" data-model="bullet_physics_animation_8_reconstruction.glb">Bullet</div>
-            <div class="track-button" data-model="lighting_pack_-_chain_lighting.glb">Lighting</div>
-        </div>
-        <div class="model-viewport" id="physicsModelViewport" style="width: 50%;"></div>
-        <div class="info-viewport" id="physicsInfoViewport">
-            <h2>Physics</h2>
-            <p>Discover the laws of physics through interactive 3D models.</p>
-        </div>
-    </div>
-    <div class="category-viewport" id="chemistryViewport">
-        <div class="back-button" id="backChemistry">Back</div>
-        <div class="title">Chemistry</div>
-        <div class="tracks-sidebar" id="chemistryTracks">
-            <div class="track-button" data-model="stylized_chemistry_set.glb">Chemistry Set</div>
-        </div>
-        <div class="model-viewport" id="chemistryModelViewport" style="width: 50%;"></div>
-        <div class="info-viewport" id="chemistryInfoViewport">
-            <h2>Chemistry</h2>
-            <p>Explore chemical reactions and molecular structures in 3D.</p>
-        </div>
-    </div>
-    <div class="category-viewport" id="biologyViewport">
-        <div class="back-button" id="backBiology">Back</div>
-        <div class="title">Biology</div>
-        <div class="tracks-sidebar" id="biologyTracks">
-            <div class="track-button" data-model="poison_dart_frog.glb">Frog</div>
-            <div class="track-button" data-model="wolf.glb">Wolf</div>
-        </div>
-        <div class="model-viewport" id="biologyModelViewport" style="width: 50%;"></div>
-        <div class="info-viewport" id="biologyInfoViewport">
-            <h2>Biology</h2>
-            <p>Learn about living organisms and their structures in 3D.</p>
-        </div>
-    </div>
-    <div class="category-viewport" id="humanViewport">
-        <div class="back-button" id="backHuman">Back</div>
-        <div class="title">Human</div>
-        <div class="tracks-sidebar" id="humanTracks">
-            <div class="track-button" data-model="generalized_human_body.glb">Human Body</div>
-            <div class="track-button" data-model="skull_keychain.glb">Skull</div>
-        </div>
-        <div class="model-viewport" id="humanModelViewport" style="width: 50%;"></div>
-        <div class="info-viewport" id="humanInfoViewport">
-            <h2>Human</h2>
-            <p>Explore the human body and anatomy in 3D.</p>
-        </div>
-    </div>
-    <div class="category-viewport" id="agricultureViewport">
-        <div class="back-button" id="backAgriculture">Back</div>
-        <div class="title">Agriculture</div>
-        <div class="tracks-sidebar" id="agricultureTracks">
-            <div class="track-button" data-model="unidentified_agriculture_vehicle.glb">Vehicle</div>
-        </div>
-        <div class="model-viewport" id="agricultureModelViewport" style="width: 50%;"></div>
-        <div class="info-viewport" id="agricultureInfoViewport">
-            <h2>Agriculture</h2>
-            <p>Discover agricultural tools and vehicles in 3D.</p>
-        </div>
-    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -285,28 +210,32 @@
 
         function loadModels(models, viewportId) {
             createScene(viewportId);
+            const boundingBox = new THREE.Box3(); // To calculate the combined bounding box
+
             models.forEach((model, index) => {
                 const loader = new THREE.GLTFLoader();
                 loader.load(model.path, function(object) {
                     if (object.scene) {
-                        // Adjust position for each model
-                        object.scene.position.set(index * 5, 0, 0); // Space models along the X-axis
+                        // Position models along the X-axis with spacing
+                        object.scene.position.set(index * 5, 0, 0);
                         object.scene.scale.set(1, 1, 1);
                         currentScene.add(object.scene);
 
-                        // Adjust camera to fit all models
-                        const box = new THREE.Box3().setFromObject(object.scene);
-                        const size = box.getSize(new THREE.Vector3()).length();
-                        const center = box.getCenter(new THREE.Vector3());
-
-                        currentCamera.position.copy(center);
-                        currentCamera.position.z = size * 1.5; // Adjust distance based on model size
-                        currentCamera.lookAt(center);
+                        // Expand the bounding box to include this model
+                        boundingBox.expandByObject(object.scene);
                     }
                 }, undefined, function(error) {
                     console.error(`Error loading model: ${model.path}`, error);
                 });
             });
+
+            // Adjust camera to fit all models
+            const size = boundingBox.getSize(new THREE.Vector3()).length();
+            const center = boundingBox.getCenter(new THREE.Vector3());
+
+            currentCamera.position.copy(center);
+            currentCamera.position.z = size * 1.5; // Adjust distance based on model size
+            currentCamera.lookAt(center);
         }
 
         // Initialize main viewport and load default models
@@ -316,100 +245,6 @@
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', name: 'Fortress' }
         ];
         loadModels(defaultModels, 'mainViewport');
-
-        // Define models for each category
-        const models = {
-            geometry: [
-                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Sphere' },
-                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', name: 'Fortress' }
-            ],
-            physics: [
-                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', name: 'Bullet' },
-                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting' }
-            ],
-            chemistry: [
-                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set' }
-            ],
-            biology: [
-                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/poison_dart_frog.glb', name: 'Frog' },
-                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', name: 'Wolf' }
-            ],
-            human: [
-                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Human Body' },
-                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', name: 'Skull' }
-            ],
-            agriculture: [
-                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/unidentified_agriculture_vehicle.glb', name: 'Vehicle' }
-            ]
-        };
-
-        // Add event listeners for category buttons
-        document.getElementById('btnGeometry').addEventListener('click', () => {
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('geometryViewport').style.display = 'flex';
-            loadModels(models.geometry, 'geometryModelViewport');
-        });
-
-        document.getElementById('btnPhysics').addEventListener('click', () => {
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('physicsViewport').style.display = 'flex';
-            loadModels(models.physics, 'physicsModelViewport');
-        });
-
-        document.getElementById('btnChemistry').addEventListener('click', () => {
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('chemistryViewport').style.display = 'flex';
-            loadModels(models.chemistry, 'chemistryModelViewport');
-        });
-
-        document.getElementById('btnBiology').addEventListener('click', () => {
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('biologyViewport').style.display = 'flex';
-            loadModels(models.biology, 'biologyModelViewport');
-        });
-
-        document.getElementById('btnHuman').addEventListener('click', () => {
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('humanViewport').style.display = 'flex';
-            loadModels(models.human, 'humanModelViewport');
-        });
-
-        document.getElementById('btnAgriculture').addEventListener('click', () => {
-            document.querySelectorAll('.category-viewport').forEach(vp => vp.style.display = 'none');
-            document.getElementById('agricultureViewport').style.display = 'flex';
-            loadModels(models.agriculture, 'agricultureModelViewport');
-        });
-
-        // Add event listeners for back buttons
-        document.getElementById('backGeometry').addEventListener('click', () => {
-            document.getElementById('geometryViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('backPhysics').addEventListener('click', () => {
-            document.getElementById('physicsViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('backChemistry').addEventListener('click', () => {
-            document.getElementById('chemistryViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('backBiology').addEventListener('click', () => {
-            document.getElementById('biologyViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('backHuman').addEventListener('click', () => {
-            document.getElementById('humanViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
-
-        document.getElementById('backAgriculture').addEventListener('click', () => {
-            document.getElementById('agricultureViewport').style.display = 'none';
-            document.getElementById('mainViewport').style.display = 'block';
-        });
     </script>
 </body>
 </html>
