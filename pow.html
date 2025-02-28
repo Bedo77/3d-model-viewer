@@ -138,7 +138,7 @@
 
         function loadModels(models, viewportId) {
             createScene(viewportId);
-            const radius = 8; // Radius for circular arrangement
+            const radius = 9; // Radius for circular arrangement
             const angleIncrement = (Math.PI * 2) / models.length; // Even spacing
 
             models.forEach((model, index) => {
@@ -180,6 +180,8 @@
 
         // Initialize main viewport and load models
         const models = [
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Generalized Human Body', scale: { x: 0.5, y: 0.5, z: 0.5 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker', scale: { x: 0.5, y: 0.5, z: 0.5 } },
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', name: 'Animal Pack', scale: { x: 0.5, y: 0.5, z: 0.5 } },
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', name: 'Insect Anatomy', scale: { x: 0.5, y: 0.5, z: 0.5 } },
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', name: 'Female Human Skeleton', scale: { x: 0.5, y: 0.5, z: 0.5 } },
