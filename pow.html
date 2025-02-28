@@ -127,7 +127,7 @@
         }
 
         function createGround() {
-            const geometry = new THREE.CircleGeometry(9, 32); // Create a circular ground
+            const geometry = new THREE.CircleGeometry(10.35, 32); // Increased radius by 15%
             const material = new THREE.MeshStandardMaterial({ color: 0xf46c27 }); // Flamingo color
             ground = new THREE.Mesh(geometry, material);
             ground.rotation.x = -Math.PI / 2; // Rotate to make it horizontal
@@ -145,7 +145,7 @@
             requestAnimationFrame(animate);
             if (currentScene) { // Ensure currentScene is defined
                 // Rotate the model group to simulate the ground rotating
-                modelGroup.rotation.y += 0.01; // Rotate the model group
+                modelGroup.rotation.y += 0.005; // Slow down the rotation
             }
             currentRenderer.render(currentScene, currentCamera);
         }
@@ -165,7 +165,24 @@
                         const z = Math.sin(angle) * radius;
 
                         object.scene.position.set(x, 0, z);
-                        object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z); // Apply specific scaling
+
+                        // Apply scaling based on model name
+                        switch (model.name) {
+                            case 'Geometry Spheres':
+                            case 'Insect Anatomy':
+                                object.scene.scale.set(2, 2, 2); // Double size
+                                break;
+                            case 'Female Human Skeleton':
+                                object.scene.scale.set(0.5, 0.5, 0.5); // Half size
+                                break;
+                            case 'Generalized Human Body':
+                            case 'Animal Pack':
+                                object.scene.scale.set(1.4, 1.4, 1.4); // 40% larger
+                                break;
+                            default:
+                                object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z); // Default scaling
+                                break;
+                        }
 
                         // Add a white spotlight for each model
                         const spotLight = new THREE.SpotLight(0xffffff);
