@@ -98,7 +98,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
-        let currentScene, currentRenderer, currentCamera, currentControls;
+        let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup;
 
         function createScene(viewportId) {
             const viewport = document.getElementById(viewportId);
@@ -121,33 +121,34 @@
 
             currentCamera.position.z = 15; // Initial camera position
 
+            createGround(); // Create the ground mesh
+            createModelGroup(); // Create the model group
             animate();
         }
 
-        
-      let ground;
+        function createGround() {
+            const geometry = new THREE.CircleGeometry(9, 32); // Create a circular ground
+            const material = new THREE.MeshStandardMaterial({ color: 0xf46c27 }); // Flamingo color
+            ground = new THREE.Mesh(geometry, material);
+            ground.rotation.x = -Math.PI / 2; // Rotate to make it horizontal
+            ground.position.y = -0.1; // Slightly below the models
+            ground.receiveShadow = true; // Allow shadows on the ground
+            currentScene.add(ground); // Add ground to the scene
+        }
 
-function createGround() {
-    const geometry = new THREE.PlaneGeometry(50, 50); // Create a large plane
-    const material = new THREE.MeshStandardMaterial({ color: 0xf46c27 }); // Flamingo color
-    ground = new THREE.Mesh(geometry, material);
-    ground.rotation.x = -Math.PI / 2; // Rotate to make it horizontal
-    ground.position.y = -0.1; // Slightly below the models
-    ground.receiveShadow = true; // Allow shadows on the ground
-    currentScene.add(ground); // Add ground to the scene
-}
+        function createModelGroup() {
+            modelGroup = new THREE.Group(); // Create a group for the models
+            currentScene.add(modelGroup); // Add the model group to the scene
+        }
 
-function animate() {
-    requestAnimationFrame(animate);
-    if (currentScene) { // Ensure currentScene is defined
-        // Rotate the ground mesh
-        ground.rotation.y += 0.01; // Rotate the ground for showroom effect
-    }
-    currentRenderer.render(currentScene, currentCamera);
-}
-
-// Call createGround function to add the ground mesh
-createGround();
+        function animate() {
+            requestAnimationFrame(animate);
+            if (currentScene) { // Ensure currentScene is defined
+                // Rotate the model group to simulate the ground rotating
+                modelGroup.rotation.y += 0.01; // Rotate the model group
+            }
+            currentRenderer.render(currentScene, currentCamera);
+        }
 
         function loadModels(models, viewportId) {
             createScene(viewportId);
@@ -174,7 +175,7 @@ createGround();
                         currentScene.add(spotLight);
                         currentScene.add(spotLight.target); // Add target for spotlight
 
-                        currentScene.add(object.scene);
+                        modelGroup.add(object.scene); // Add the model to the model group
                     } else {
                         console.error(`Failed to load model: ${model.name}`);
                     }
