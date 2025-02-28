@@ -129,7 +129,7 @@
             if (currentScene) { // Ensure currentScene is defined
                 currentScene.children.forEach(child => {
                     if (child.isMesh) {
-                        child.rotation.y += 0.01; // Rotate each mesh for a stage effect
+                        child.rotation.y += 0.01; // Rotate each mesh
                     }
                 });
             }
@@ -138,7 +138,7 @@
 
         function loadModels(models, viewportId) {
             createScene(viewportId);
-            const radius = 9; // Increased radius for better spacing
+            const radius = 8; // Radius for circular arrangement
             const angleIncrement = (Math.PI * 2) / models.length; // Even spacing
 
             models.forEach((model, index) => {
@@ -180,14 +180,12 @@
 
         // Initialize main viewport and load models
         const models = [
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Human Body', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', name: 'Skull Keychain', scale: { x: 0.5, y: 0.5, z: 0.5 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', name: 'Animal Pack', scale: { x: 0.5, y: 0.5, z: 0.5 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', name: 'Insect Anatomy', scale: { x: 0.5, y: 0.5, z: 0.5 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', name: 'Female Human Skeleton', scale: { x: 0.5, y: 0.5, z: 0.5 } },
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Geometry Spheres', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack', scale: { x: 0.12, y: 0.12, z: 0.12 } }, // Further scale down
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set', scale: { x: 0.12, y: 0.12, z: 0.12 } }, // Further scale down
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', name: 'Wolf', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', name: 'Insect', scale: { x: 0.5, y: 0.5, z: 0.5 } }
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack', scale: { x: 0.1, y: 0.1, z: 0.1 } }, // Scaled down
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set', scale: { x: 0.4, y: 0.4, z: 0.4 } } // Scaled down
         ];
 
         loadModels(models, 'mainViewport');
