@@ -124,24 +124,30 @@
             animate();
         }
 
-        function animate() {
+        
+      let ground;
+
+function createGround() {
+    const geometry = new THREE.PlaneGeometry(50, 50); // Create a large plane
+    const material = new THREE.MeshStandardMaterial({ color: 0xf46c27 }); // Flamingo color
+    ground = new THREE.Mesh(geometry, material);
+    ground.rotation.x = -Math.PI / 2; // Rotate to make it horizontal
+    ground.position.y = -0.1; // Slightly below the models
+    ground.receiveShadow = true; // Allow shadows on the ground
+    currentScene.add(ground); // Add ground to the scene
+}
+
+function animate() {
     requestAnimationFrame(animate);
     if (currentScene) { // Ensure currentScene is defined
-        currentScene.children.forEach(child => {
-            if (child.isMesh) {
-                child.rotation.z += 0.01; // Rotate each mesh
-            } else if (child.isGroup) {
-                // If child is a group, traverse its children
-                child.traverse((mesh) => {
-                    if (mesh.isMesh) {
-                        mesh.rotation.z += 0.01; // Rotate each mesh within the group
-                    }
-                });
-            }
-        });
+        // Rotate the ground mesh
+        ground.rotation.y += 0.01; // Rotate the ground for showroom effect
     }
     currentRenderer.render(currentScene, currentCamera);
 }
+
+// Call createGround function to add the ground mesh
+createGround();
 
         function loadModels(models, viewportId) {
             createScene(viewportId);
