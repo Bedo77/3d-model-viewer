@@ -48,12 +48,15 @@
             background-color: #2c7481; /* Paradiso */
         }
         .model-viewport {
-            width: calc(50% - 2mm); /* Subtract 1mm from each side */
-            height: calc(50% - 2mm); /* Subtract 1mm from each side */
+            width: 50%; /* Initial width */
+            height: 50%; /* Initial height */
             position: absolute;
-            top: 1mm;
-            left: 1mm;
+            top: 20px; /* Initial position */
+            left: 20px; /* Initial position */
             background-color: #ffffff; /* White background for visibility */
+            cursor: move; /* Indicate draggable area */
+            resize: both; /* Enable resizing */
+            overflow: auto; /* Required for resizing */
         }
         .info-viewport {
             width: 100%;
@@ -179,6 +182,34 @@
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', name: 'Fortress' }
         ];
         loadModels(defaultModels, 'mainViewport');
+
+        // Enable dragging and resizing of the model-viewport
+        const modelViewport = document.getElementById('mainViewport');
+
+        // Dragging functionality
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        modelViewport.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            offsetX = e.clientX - modelViewport.offsetLeft;
+            offsetY = e.clientY - modelViewport.offsetTop;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                modelViewport.style.left = `${e.clientX - offsetX}px`;
+                modelViewport.style.top = `${e.clientY - offsetY}px`;
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Resizing functionality
+        modelViewport.style.resize = 'both'; // Enable resizing
+        modelViewport.style.overflow = 'auto'; // Required for resizing
     </script>
 </body>
 </html>
