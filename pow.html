@@ -98,7 +98,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
-        let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup;
+        let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup, textMesh;
 
         function createScene(viewportId) {
             const viewport = document.getElementById(viewportId);
@@ -153,7 +153,7 @@
             // Add company name text
             const loader = new THREE.FontLoader();
             loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
-                const textGeometry = new THREE.TextGeometry('Smartistic-Lab Studio', {
+                const textGeometry = new THREE.TextGeometry('Smartistic-Lab\nStudio', {
                     font: font,
                     size: 1,
                     height: 0.1,
@@ -165,18 +165,26 @@
                     bevelSegments: 5
                 });
                 const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-                const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                textMesh = new THREE.Mesh(textGeometry, textMaterial);
                 textMesh.position.set(-5, 0.1, 0); // Adjust position as needed
                 textMesh.rotation.x = -Math.PI / 2; // Rotate to lay flat on the ground
+                textMesh.rotation.z = Math.PI / 4; // Slightly face the camera
                 currentScene.add(textMesh);
 
-                // Add a white spotlight for the text
-                const textLight = new THREE.SpotLight(0xffffff, 0.5);
-                textLight.position.set(0, 5, 0);
-                textLight.target = textMesh;
-                textLight.castShadow = true;
-                currentScene.add(textLight);
-                currentScene.add(textLight.target);
+                // Add spotlights with changing colors for the text
+                const colors = [0x2c7481, 0xdadad8, 0xf47e42, 0xf46c27]; // Paradiso, Quill Gray, Jaffa, Flamingo
+                let colorIndex = 0;
+                const spotLight = new THREE.SpotLight(colors[colorIndex], 0.5);
+                spotLight.position.set(0, 5, 0);
+                spotLight.target = textMesh;
+                spotLight.castShadow = true;
+                currentScene.add(spotLight);
+                currentScene.add(spotLight.target);
+
+                setInterval(() => {
+                    colorIndex = (colorIndex + 1) % colors.length;
+                    spotLight.color.setHex(colors[colorIndex]);
+                }, 500); // Change color every 0.5 second
             });
         }
 
