@@ -135,34 +135,31 @@
 
         function loadModels(models, viewportId) {
             createScene(viewportId);
-            const scaleFactor = 1.5; // Set identical scale for all models
-            const positions = [
-                { x: -10, y: 0, z: 0 },
-                { x: -5, y: 0, z: 0 },
-                { x: 0, y: 0, z: 0 },
-                { x: 5, y: 0, z: 0 },
-                { x: 10, y: 0, z: 0 }
-            ];
+            const scaleFactor = 0.5; // Scale down for better visibility
+            const radius = 10; // Radius for circular arrangement
 
             models.forEach((model, index) => {
                 const loader = new THREE.GLTFLoader();
                 loader.load(model.path, function(object) {
                     if (object.scene) {
-                        // Position models in a fixed arrangement
-                        object.scene.position.set(positions[index].x, positions[index].y, positions[index].z);
+                        // Position models in a circular arrangement
+                        const angle = (index / models.length) * Math.PI * 2;
+                        const x = Math.cos(angle) * radius;
+                        const z = Math.sin(angle) * radius;
+
+                        object.scene.position.set(x, 0, z);
                         object.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
-                        // Apply materials and lighting
+                        // Apply original materials
                         object.scene.traverse(function(child) {
                             if (child.isMesh) {
-                                child.material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+                                child.material = child.material; // Retain original material
                             }
                         });
 
                         currentScene.add(object.scene);
                     }
                 }, function(xhr) {
-                    // Show loading progress
                     console.log((xhr.loaded / xhr.total * 100) + '% loaded');
                 }, function(error) {
                     console.error(`Error loading model: ${model.path}`, error);
@@ -171,7 +168,7 @@
             });
 
             // Adjust camera position
-            currentCamera.position.z = 20; // Set a fixed distance from the models
+            currentCamera.position.z = 15; // Set a fixed distance from the models
             currentCamera.lookAt(0, 0, 0); // Look at the center
         }
 
@@ -183,10 +180,9 @@
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', name: 'Physics Animation' },
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack' },
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/poison_dart_frog.glb', name: 'Poison Dart Frog' },
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', name: 'Wolf' },
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', name: 'Pine Tree' }
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', name: 'Insect' }
         ];
 
         loadModels(models, 'mainViewport');
