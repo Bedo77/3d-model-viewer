@@ -113,10 +113,10 @@
             currentControls.enableDamping = true;
             currentControls.dampingFactor = 0.1;
 
-            // Reduced light intensity and changed light color
-            const ambientLight = new THREE.AmbientLight(0x404040, 0.3); // Grey color and reduced intensity
+            // Reduced light intensity by 50%
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.15); // Grey color and reduced intensity
             currentScene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffa500, 0.5); // Orange color and reduced intensity
+            const directionalLight = new THREE.DirectionalLight(0xffa500, 0.25); // Orange color and reduced intensity
             directionalLight.position.set(5, 10, 7.5);
             currentScene.add(directionalLight);
 
