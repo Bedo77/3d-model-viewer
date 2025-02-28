@@ -135,27 +135,28 @@
 
         function loadModels(models, viewportId) {
             createScene(viewportId);
-            const scaleFactor = 0.5; // Scale down for better visibility
             const radius = 10; // Radius for circular arrangement
+            const angleIncrement = (Math.PI * 2) / models.length; // Even spacing
 
             models.forEach((model, index) => {
                 const loader = new THREE.GLTFLoader();
                 loader.load(model.path, function(object) {
                     if (object.scene) {
                         // Position models in a circular arrangement
-                        const angle = (index / models.length) * Math.PI * 2;
+                        const angle = angleIncrement * index;
                         const x = Math.cos(angle) * radius;
                         const z = Math.sin(angle) * radius;
 
                         object.scene.position.set(x, 0, z);
-                        object.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
+                        object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z); // Apply specific scaling
 
-                        // Apply original materials
-                        object.scene.traverse(function(child) {
-                            if (child.isMesh) {
-                                child.material = child.material; // Retain original material
-                            }
-                        });
+                        // Add a white spotlight for each model
+                        const spotLight = new THREE.SpotLight(0xffffff);
+                        spotLight.position.set(x, 10, z);
+                        spotLight.target = object.scene; // Aim at the model
+                        spotLight.castShadow = true;
+                        currentScene.add(spotLight);
+                        currentScene.add(spotLight.target); // Add target for spotlight
 
                         currentScene.add(object.scene);
                     }
@@ -172,17 +173,16 @@
             currentCamera.lookAt(0, 0, 0); // Look at the center
         }
 
-        // Initialize main viewport and load default models
+        // Initialize main viewport and load models
         const models = [
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Human Body' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', name: 'Skull Keychain' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Geometry Spheres' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', name: 'Physics Animation' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', name: 'Wolf' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', name: 'Insect' }
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Human Body', scale: { x: 1, y: 1, z: 1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', name: 'Skull Keychain', scale: { x: 1, y: 1, z: 1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Geometry Spheres', scale: { x: 1, y: 1, z: 1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack', scale: { x: 0.3, y: 0.3, z: 0.3 } }, // 70% scale down
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set', scale: { x: 1, y: 1, z: 1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', name: 'Wolf', scale: { x: 1, y: 1, z: 1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker', scale: { x: 1, y: 1, z: 1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/insect.glb', name: 'Insect', scale: { x: 1, y: 1, z: 1 } }
         ];
 
         loadModels(models, 'mainViewport');
