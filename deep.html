@@ -46,12 +46,6 @@
             display: flex;
             flex-direction: column;
         }
-        .model-viewport {
-            width: 85%; /* Full width of main-content */
-            height: 50%; /* Half of main-content height */
-            background-color: #ffffff; /* White background */
-             margin: 0.5
-        }
         .info-viewport {
             width: 85%; /* Full width of main-content */
             height: 50%; /* Half of main-content height */
@@ -66,6 +60,12 @@
             box-sizing: border-box;
             overflow-y: auto;
         }
+        .model-viewport {
+            width: 85%; /* Full width of main-content */
+            height: 50%; /* Half of main-content height */
+            background-color: #ffffff; /* White background */
+            margin: 0.5mm; /* Small margin */
+        }
     </style>
 </head>
 <body>
@@ -78,7 +78,6 @@
         <div class="button" id="btnAgriculture">Agriculture</div>
     </div>
     <div class="main-content">
-        <div class="model-viewport" id="mainViewport"></div>
         <div class="info-viewport">
             <h2>About Us</h2>
             <p>
@@ -98,6 +97,7 @@
                 making it more engaging, interactive, and effective. Join us in shaping the future of education!
             </p>
         </div>
+        <div class="model-viewport" id="mainViewport"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -147,16 +147,31 @@
                 const loader = new THREE.GLTFLoader();
                 loader.load(model.path, function(object) {
                     if (object.scene) {
-                        // Position models along the X-axis with spacing
-                        object.scene.position.set(index * 5, 0, 0);
-                        object.scene.scale.set(1, 1, 1);
+                        // Position models in a 3D arrangement
+                        object.scene.position.set(index * 5, Math.sin(index) * 3, Math.cos(index) * 3);
+
+                        // Scale models dynamically based on size
+                        const scaleFactor = 1 / boundingBox.getSize(new THREE.Vector3()).length();
+                        object.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+                        // Apply materials and lighting
+                        object.scene.traverse(function(child) {
+                            if (child.isMesh) {
+                                child.material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+                            }
+                        });
+
                         currentScene.add(object.scene);
 
                         // Expand the bounding box to include this model
                         boundingBox.expandByObject(object.scene);
                     }
-                }, undefined, function(error) {
+                }, function(xhr) {
+                    // Show loading progress
+                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                }, function(error) {
                     console.error(`Error loading model: ${model.path}`, error);
+                    alert(`Failed to load model: ${model.name}`);
                 });
             });
 
