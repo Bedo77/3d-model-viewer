@@ -104,6 +104,7 @@
             const viewport = document.getElementById(viewportId);
             currentScene = new THREE.Scene();
             currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            currentCamera.rotation.x += THREE.Math.degToRad(1); // Move camera 1 degree up
             currentRenderer = new THREE.WebGLRenderer({ antialias: true });
 
             currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
@@ -120,7 +121,7 @@
             directionalLight.position.set(5, 10, 7.5);
             currentScene.add(directionalLight);
 
-            currentCamera.position.set(0, 5, 15); // Lifted camera position
+            currentCamera.position.set(0, 6, 20); // Adjusted camera position
 
             createGround(); // Create the ground mesh
             createModelGroup(); // Create the model group
@@ -153,7 +154,7 @@
             // Add company name text
             const loader = new THREE.FontLoader();
             loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
-                const textGeometry = new THREE.TextGeometry('Smartistic-Lab\nStudio', {
+                const textGeometry = new THREE.TextGeometry('Smartistic-Lab\n        Studio', {
                     font: font,
                     size: 1,
                     height: 0.1,
@@ -166,7 +167,7 @@
                 });
                 const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
                 textMesh = new THREE.Mesh(textGeometry, textMaterial);
-                textMesh.position.set(-5, 0.1, 0); // Adjust position as needed
+                textMesh.position.set(-3, 0.1, 0); // Adjust position to center the text
                 textMesh.rotation.x = -Math.PI / 2; // Rotate to lay flat on the ground
                 textMesh.rotation.z = Math.PI / 4; // Slightly face the camera
                 currentScene.add(textMesh);
@@ -257,7 +258,7 @@
             });
 
             // Adjust camera position
-            currentCamera.position.set(0, 5, 15); // Lifted camera position
+            currentCamera.position.set(0, 6, 20); // Adjusted camera position
             currentCamera.lookAt(0, 0, 0); // Look at the center
         }
 
