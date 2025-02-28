@@ -113,10 +113,10 @@
             currentControls.enableDamping = true;
             currentControls.dampingFactor = 0.1;
 
-            // Reduced light intensity by 50%
+            // Reduced light intensity by 50% and changed light color
             const ambientLight = new THREE.AmbientLight(0x404040, 0.15); // Grey color and reduced intensity
             currentScene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffa500, 0.25); // Orange color and reduced intensity
+            const directionalLight = new THREE.DirectionalLight(0x2c7481, 0.25); // Paradiso color and reduced intensity
             directionalLight.position.set(5, 10, 7.5);
             currentScene.add(directionalLight);
 
@@ -139,7 +139,7 @@
 
             const material = new THREE.MeshStandardMaterial({
                 map: texture,
-                color: 0xf76a27, // Warmer Flamingo color
+                color: 0x000000, // Slight dark black color to absorb some light
                 roughness: 0.7, // Increase roughness for less reflectivity
                 metalness: 0.1, // Reduce metalness for a warmer feel
             });
@@ -199,8 +199,8 @@
                                 break;
                         }
 
-                        // Add a white spotlight for each model
-                        const spotLight = new THREE.SpotLight(0xffffff);
+                        // Add a spotlight for each model with specific colors
+                        const spotLight = new THREE.SpotLight(model.color);
                         spotLight.position.set(x, 5, z); // Height for better visibility
                         spotLight.target = object.scene; // Aim at the model
                         spotLight.castShadow = true;
@@ -226,14 +226,14 @@
 
         // Initialize main viewport and load models
         const models = [
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Generalized Human Body', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', name: 'Animal Pack', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', name: 'Insect Anatomy', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', name: 'Female Human Skeleton', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Geometry Spheres', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack', scale: { x: 0.1, y: 0.1, z: 0.1 } }, // Scaled down
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set', scale: { x: 0.4, y: 0.4, z: 0.4 } } // Scaled down
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Generalized Human Body', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 }, // Paradiso
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', name: 'Animal Pack', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }, // Jaffa
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', name: 'Insect Anatomy', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf46c27 }, // Flamingo
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', name: 'Female Human Skeleton', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 }, // Paradiso
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Geometry Spheres', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack', scale: { x: 0.1, y: 0.1, z: 0.1 }, color: 0xf47e42 }, // Jaffa
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set', scale: { x: 0.4, y: 0.4, z: 0.4 }, color: 0xf46c27 } // Flamingo
         ];
 
         loadModels(models, 'mainViewport');
