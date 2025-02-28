@@ -59,15 +59,12 @@
             text-align: center;
             box-sizing: border-box;
             overflow-y: auto;
-            transform: translateX(-20px); /* Move slightly to the left */
         }
         .model-viewport {
             width: 85%; /* Full width of main-content */
             height: 50%; /* Half of main-content height */
             background-color: #ffffff; /* White background */
-            transform: translateX(-20px); /* Move slightly to the left */
-            margin-bottom: 2.5mm; /* Small bottom margin */
-            border-radius: 50px; 
+            transform: translateX(-10px); /* Move slightly to the left */
         }
     </style>
 </head>
@@ -84,9 +81,18 @@
         <div class="info-viewport">
             <h2>About Us</h2>
             <p>
-                Welcome to <strong>Smartistic-Lab Studio</strong>, a leading company in educational technology. 
+                Welcome to <strong>EduTech Innovations</strong>, a leading company in educational technology. 
                 We specialize in creating cutting-edge products designed to inspire and educate learners of all ages, 
-                from 3 to 18 years old. 
+                from 3 to 18 years old. Our diverse range of products includes:
+            </p>
+            <ul>
+                <li><strong>VinciBot</strong>: A programmable robot that introduces kids to coding and robotics.</li>
+                <li><strong>ClassVR</strong>: Immersive virtual reality experiences for interactive learning.</li>
+                <li><strong>TaleBot</strong>: A storytelling robot that encourages creativity and language skills.</li>
+                <li><strong>ProSet</strong>: Advanced STEM kits for hands-on learning and experimentation.</li>
+                <li><strong>Wizefloor</strong>: An interactive floor projection system for collaborative learning.</li>
+            </ul>
+            <p>
                 Our mission is to transform education by integrating technology into the learning process, 
                 making it more engaging, interactive, and effective. Join us in shaping the future of education!
             </p>
@@ -98,119 +104,70 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
-        let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup;
+        let currentScene, currentRenderer, currentCamera, currentControls;
 
         function createScene(viewportId) {
             const viewport = document.getElementById(viewportId);
-            currentScene = new THREE.Scene();
-            currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
-            currentRenderer = new THREE.WebGLRenderer({ antialias: true });
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
 
-            currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
-            viewport.appendChild(currentRenderer.domElement);
+            renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.appendChild(renderer.domElement);
 
-            currentControls = new THREE.OrbitControls(currentCamera, currentRenderer.domElement);
-            currentControls.enableDamping = true;
-            currentControls.dampingFactor = 0.1;
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.1;
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
-            currentScene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
             directionalLight.position.set(5, 10, 7.5);
-            currentScene.add(directionalLight);
+            scene.add(directionalLight);
 
-            currentCamera.position.set(0, 5, 15); // Lifted camera position
-
-            createGround(); // Create the ground mesh
-            createModelGroup(); // Create the model group
-            animate();
-        }
-
-      function createGround() {
-    const geometry = new THREE.CircleGeometry(10.35, 32); // Increased radius
-    const textureLoader = new THREE.TextureLoader();
-    const texture = textureLoader.load('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/Logo.png', function(texture) {
-        // Adjust texture scaling
-        texture.repeat.set(0.3, 0.3); // Further reduce stretchiness
-        texture.wrapS = THREE.RepeatWrapping; // Repeat texture horizontally
-        texture.wrapT = THREE.RepeatWrapping; // Repeat texture vertically
-    });
-
-    const material = new THREE.MeshStandardMaterial({
-        map: texture,
-        color: 0xf76a27, // Warmer Flamingo color
-        roughness: 0.7, // Increase roughness for less reflectivity
-        metalness: 0.1, // Reduce metalness for a warmer feel
-    });
-
-    ground = new THREE.Mesh(geometry, material);
-    ground.rotation.x = -Math.PI / 2; // Rotate to make it horizontal
-    ground.position.y = -0.1; // Slightly below the models
-    ground.receiveShadow = true; // Allow shadows on the ground
-    currentScene.add(ground); // Add ground to the scene
-}
-
-        function createModelGroup() {
-            modelGroup = new THREE.Group(); // Create a group for the models
-            currentScene.add(modelGroup); // Add the model group to the scene
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            if (currentScene) { // Ensure currentScene is defined
-                // Rotate the model group to simulate the ground rotating
-                modelGroup.rotation.y += 0.005; // Slow down the rotation
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
             }
-            currentRenderer.render(currentScene, currentCamera);
+
+            animate();
+
+            currentScene = scene;
+            currentRenderer = renderer;
+            currentCamera = camera;
+            currentControls = controls;
         }
 
         function loadModels(models, viewportId) {
             createScene(viewportId);
-            const radius = 9; // Radius for circular arrangement
-            const angleIncrement = (Math.PI * 2) / models.length; // Even spacing
+            const boundingBox = new THREE.Box3(); // To calculate the combined bounding box
 
             models.forEach((model, index) => {
                 const loader = new THREE.GLTFLoader();
                 loader.load(model.path, function(object) {
                     if (object.scene) {
-                        // Position models in a circular arrangement
-                        const angle = angleIncrement * index;
-                        const x = Math.cos(angle) * radius;
-                        const z = Math.sin(angle) * radius;
+                        // Position models in a 3D arrangement
+                        object.scene.position.set(index * 5, Math.sin(index) * 3, Math.cos(index) * 3);
 
-                        object.scene.position.set(x, 0, z);
+                        // Scale models dynamically based on size
+                        const scaleFactor = 1 / boundingBox.getSize(new THREE.Vector3()).length();
+                        object.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
-                        // Apply scaling based on model name
-                        switch (model.name) {
-                            case 'Geometry Spheres':
-                            case 'Insect Anatomy':
-                                object.scene.scale.set(2, 2, 2); // Double size
-                                break;
-                            case 'Female Human Skeleton':
-                                object.scene.scale.set(0.2, 0.2, 0.2); // 60% smaller
-                                break;
-                            case 'Generalized Human Body':
-                            case 'Animal Pack':
-                                object.scene.scale.set(1.4, 1.4, 1.4); // 40% larger
-                                break;
-                            default:
-                                object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z); // Default scaling
-                                break;
-                        }
+                        // Apply materials and lighting
+                        object.scene.traverse(function(child) {
+                            if (child.isMesh) {
+                                child.material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+                            }
+                        });
 
-                        // Add a white spotlight for each model
-                        const spotLight = new THREE.SpotLight(0xffffff);
-                        spotLight.position.set(x, 5, z); // Height for better visibility
-                        spotLight.target = object.scene; // Aim at the model
-                        spotLight.castShadow = true;
-                        currentScene.add(spotLight);
-                        currentScene.add(spotLight.target); // Add target for spotlight
+                        currentScene.add(object.scene);
 
-                        modelGroup.add(object.scene); // Add the model to the model group
-                    } else {
-                        console.error(`Failed to load model: ${model.name}`);
+                        // Expand the bounding box to include this model
+                        boundingBox.expandByObject(object.scene);
                     }
                 }, function(xhr) {
+                    // Show loading progress
                     console.log((xhr.loaded / xhr.total * 100) + '% loaded');
                 }, function(error) {
                     console.error(`Error loading model: ${model.path}`, error);
@@ -218,24 +175,22 @@
                 });
             });
 
-            // Adjust camera position
-            currentCamera.position.set(0, 5, 15); // Lifted camera position
-            currentCamera.lookAt(0, 0, 0); // Look at the center
+            // Adjust camera to fit all models
+            const size = boundingBox.getSize(new THREE.Vector3()).length();
+            const center = boundingBox.getCenter(new THREE.Vector3());
+
+            currentCamera.position.copy(center);
+            currentCamera.position.z = size * 2; // Adjust distance based on model size
+            currentCamera.lookAt(center);
         }
 
-        // Initialize main viewport and load models
-        const models = [
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Generalized Human Body', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', name: 'Animal Pack', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', name: 'Insect Anatomy', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', name: 'Female Human Skeleton', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Geometry Spheres', scale: { x: 0.5, y: 0.5, z: 0.5 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack', scale: { x: 0.1, y: 0.1, z: 0.1 } }, // Scaled down
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set', scale: { x: 0.4, y: 0.4, z: 0.4 } } // Scaled down
+        // Initialize main viewport and load default models
+        createScene('mainViewport');
+        const defaultModels = [
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Sphere' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', name: 'Fortress' }
         ];
-
-        loadModels(models, 'mainViewport');
+        loadModels(defaultModels, 'mainViewport');
     </script>
 </body>
 </html>
