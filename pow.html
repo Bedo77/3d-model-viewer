@@ -127,8 +127,10 @@
         }
 
         function createGround() {
-            const geometry = new THREE.CircleGeometry(10.35, 32); // Increased radius by 15%
-            const material = new THREE.MeshStandardMaterial({ color: 0xd95f25 }); // Darker color for the ground
+            const geometry = new THREE.CircleGeometry(10.35, 32); // Increased radius
+            const textureLoader = new THREE.TextureLoader();
+            const texture = textureLoader.load('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/Logo.png'); // Load the logo texture
+            const material = new THREE.MeshStandardMaterial({ map: texture }); // Use the texture for the ground
             ground = new THREE.Mesh(geometry, material);
             ground.rotation.x = -Math.PI / 2; // Rotate to make it horizontal
             ground.position.y = -0.1; // Slightly below the models
@@ -173,7 +175,7 @@
                                 object.scene.scale.set(2, 2, 2); // Double size
                                 break;
                             case 'Female Human Skeleton':
-                                object.scene.scale.set(0.3, 0.3, 0.3); // 70% smaller
+                                object.scene.scale.set(0.2, 0.2, 0.2); // 60% smaller
                                 break;
                             case 'Generalized Human Body':
                             case 'Animal Pack':
