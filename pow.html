@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational 3D Models</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #2c7481; /* Paradiso */
+            display: flex;
+        }
+        .sidebar {
+            width: 20%; /* Sidebar width */
+            height: 100%; /* Full height */
+            background-color: #dadad8; /* Quill Gray */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .button {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 50%;
+            background-color: #f47e42; /* Jaffa */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #f46c27; /* Flamingo */
+            transform: scale(1.1);
+        }
+        .main-content {
+            width: 80%; /* Remaining width */
+            height: 100%; /* Full height */
+            display: flex;
+            flex-direction: column;
+        }
+        .info-viewport {
+            width: 85%; /* Full width of main-content */
+            height: 50%; /* Half of main-content height */
+            background-color: #dadad8; /* Quill Gray */
+            color: #2c7481; /* Paradiso */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            box-sizing: border-box;
+            overflow-y: auto;
+            transform: translateX(-20px); /* Move slightly to the left */
+        }
+        .model-viewport {
+            width: 85%; /* Full width of main-content */
+            height: 50%; /* Half of main-content height */
+            background-color: #ffffff; /* White background */
+            transform: translateX(-20px); /* Move slightly to the left */
+            margin-bottom: 2.5mm; /* Small bottom margin */
+            border-radius: 50px; 
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="button" id="btnGeometry">Geometry</div>
+        <div class="button" id="btnPhysics">Physics</div>
+        <div class="button" id="btnChemistry">Chemistry</div>
+        <div class="button" id="btnBiology">Biology</div>
+        <div class="button" id="btnHuman">Human</div>
+        <div class="button" id="btnAgriculture">Agriculture</div>
+    </div>
+    <div class="main-content">
+        <div class="info-viewport">
+            <h2>About Us</h2>
+            <p>
+                Welcome to <strong>Smartistic-Lab Studio</strong>, a leading company in educational technology. 
+                We specialize in creating cutting-edge products designed to inspire and educate learners of all ages, 
+                from 3 to 18 years old. 
+                Our mission is to transform education by integrating technology into the learning process, 
+                making it more engaging, interactive, and effective. Join us in shaping the future of education!
+            </p>
+        </div>
+        <div class="model-viewport" id="mainViewport"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        let currentScene, currentRenderer, currentCamera, currentControls;
+
+        function createScene(viewportId) {
+            const viewport = document.getElementById(viewportId);
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+            renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.appendChild(renderer.domElement);
+
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.1;
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 10, 7.5);
+            scene.add(directionalLight);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            currentScene = scene;
+            currentRenderer = renderer;
+            currentCamera = camera;
+            currentControls = controls;
+        }
+
+        function loadModels(models, viewportId) {
+            createScene(viewportId);
+            const scaleFactor = 1.5; // Set identical scale for all models
+            const positions = [
+                { x: -10, y: 0, z: 0 },
+                { x: -5, y: 0, z: 0 },
+                { x: 0, y: 0, z: 0 },
+                { x: 5, y: 0, z: 0 },
+                { x: 10, y: 0, z: 0 }
+            ];
+
+            models.forEach((model, index) => {
+                const loader = new THREE.GLTFLoader();
+                loader.load(model.path, function(object) {
+                    if (object.scene) {
+                        // Position models in a fixed arrangement
+                        object.scene.position.set(positions[index].x, positions[index].y, positions[index].z);
+                        object.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+                        // Apply materials and lighting
+                        object.scene.traverse(function(child) {
+                            if (child.isMesh) {
+                                child.material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+                            }
+                        });
+
+                        currentScene.add(object.scene);
+                    }
+                }, function(xhr) {
+                    // Show loading progress
+                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                }, function(error) {
+                    console.error(`Error loading model: ${model.path}`, error);
+                    alert(`Failed to load model: ${model.name}`);
+                });
+            });
+
+            // Adjust camera position
+            currentCamera.position.z = 20; // Set a fixed distance from the models
+            currentCamera.lookAt(0, 0, 0); // Look at the center
+        }
+
+        // Initialize main viewport and load default models
+        const models = [
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Human Body' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/skull_keychain.glb', name: 'Skull Keychain' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Geometry Spheres' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', name: 'Physics Animation' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/poison_dart_frog.glb', name: 'Poison Dart Frog' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/wolf.glb', name: 'Wolf' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/snow_pine_tree_and_bush_pack_lowpoly.glb', name: 'Pine Tree' }
+        ];
+
+        loadModels(models, 'mainViewport');
+    </script>
+</body>
+</html>
