@@ -126,19 +126,19 @@
             animate();
         }
 
-        function createGround() {
+      function createGround() {
     const geometry = new THREE.CircleGeometry(10.35, 32); // Increased radius
     const textureLoader = new THREE.TextureLoader();
     const texture = textureLoader.load('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/Logo.png', function(texture) {
         // Adjust texture scaling
-        texture.repeat.set(0.5, 0.5); // Reduce stretchiness
+        texture.repeat.set(0.3, 0.3); // Further reduce stretchiness
         texture.wrapS = THREE.RepeatWrapping; // Repeat texture horizontally
         texture.wrapT = THREE.RepeatWrapping; // Repeat texture vertically
     });
 
     const material = new THREE.MeshStandardMaterial({
         map: texture,
-        color: 0xf46c27, // Flamingo color overlay
+        color: 0xf76a27, // Warmer Flamingo color
         roughness: 0.7, // Increase roughness for less reflectivity
         metalness: 0.1, // Reduce metalness for a warmer feel
     });
