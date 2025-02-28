@@ -149,6 +149,35 @@
             ground.position.y = -0.1; // Slightly below the models
             ground.receiveShadow = true; // Allow shadows on the ground
             currentScene.add(ground); // Add ground to the scene
+
+            // Add company name text
+            const loader = new THREE.FontLoader();
+            loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+                const textGeometry = new THREE.TextGeometry('Smartistic-Lab Studio', {
+                    font: font,
+                    size: 1,
+                    height: 0.1,
+                    curveSegments: 12,
+                    bevelEnabled: true,
+                    bevelThickness: 0.03,
+                    bevelSize: 0.02,
+                    bevelOffset: 0,
+                    bevelSegments: 5
+                });
+                const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+                const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                textMesh.position.set(-5, 0.1, 0); // Adjust position as needed
+                textMesh.rotation.x = -Math.PI / 2; // Rotate to lay flat on the ground
+                currentScene.add(textMesh);
+
+                // Add a white spotlight for the text
+                const textLight = new THREE.SpotLight(0xffffff, 0.5);
+                textLight.position.set(0, 5, 0);
+                textLight.target = textMesh;
+                textLight.castShadow = true;
+                currentScene.add(textLight);
+                currentScene.add(textLight.target);
+            });
         }
 
         function createModelGroup() {
