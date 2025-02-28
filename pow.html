@@ -129,12 +129,12 @@
     if (currentScene) { // Ensure currentScene is defined
         currentScene.children.forEach(child => {
             if (child.isMesh) {
-                child.rotation.y += 0.01; // Rotate each mesh
+                child.rotation.x += 0.01; // Rotate each mesh
             } else if (child.isGroup) {
                 // If child is a group, traverse its children
                 child.traverse((mesh) => {
                     if (mesh.isMesh) {
-                        mesh.rotation.y += 0.01; // Rotate each mesh within the group
+                        mesh.rotation.x += 0.01; // Rotate each mesh within the group
                     }
                 });
             }
