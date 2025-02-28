@@ -122,6 +122,11 @@
             function animate() {
                 requestAnimationFrame(animate);
                 controls.update();
+                currentScene.children.forEach(child => {
+                    if (child.isMesh) {
+                        child.rotation.y += 0.01; // Rotate each mesh for effect
+                    }
+                });
                 renderer.render(scene, camera);
             }
 
