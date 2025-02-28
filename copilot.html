@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational 3D Models</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #2c7481; /* Paradiso */
+            display: flex;
+        }
+        .sidebar {
+            width: 20%; /* Sidebar width */
+            height: 100%; /* Full height */
+            background-color: #dadad8; /* Quill Gray */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .button {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 50%;
+            background-color: #f47e42; /* Jaffa */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #f46c27; /* Flamingo */
+            transform: scale(1.1);
+        }
+        .main-content {
+            width: 80%; /* Remaining width */
+            height: 100%; /* Full height */
+            display: flex;
+            flex-direction: column;
+        }
+        .info-viewport {
+            width: 85%; /* Full width of main-content */
+            height: 50%; /* Half of main-content height */
+            background-color: #dadad8; /* Quill Gray */
+            color: #2c7481; /* Paradiso */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .model-viewport {
+            width: 85%; /* Full width of main-content */
+            height: 50%; /* Half of main-content height */
+            background-color: #ffffff; /* White background */
+            margin-top: 0.5mm; /* Small top margin */
+            margin-right: 5mm; /* Increased right margin to move left */
+            margin-bottom: 0.5mm; /* Small bottom margin */
+            margin-left: 1mm; /* Small left margin */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="button" id="btnGeometry">Geometry</div>
+        <div class="button" id="btnPhysics">Physics</div>
+        <div class="button" id="btnChemistry">Chemistry</div>
+        <div class="button" id="btnBiology">Biology</div>
+        <div class="button" id="btnHuman">Human</div>
+        <div class="button" id="btnAgriculture">Agriculture</div>
+    </div>
+    <div class="main-content">
+        <div class="info-viewport">
+            <h2>About Us</h2>
+            <p>
+                Welcome to <strong>EduTech Innovations</strong>, a leading company in educational technology. 
+                We specialize in creating cutting-edge products designed to inspire and educate learners of all ages, 
+                from 3 to 18 years old. Our diverse range of products includes:
+            </p>
+            <ul>
+                <li><strong>VinciBot</strong>: A programmable robot that introduces kids to coding and robotics.</li>
+                <li><strong>ClassVR</strong>: Immersive virtual reality experiences for interactive learning.</li>
+                <li><strong>TaleBot</strong>: A storytelling robot that encourages creativity and language skills.</li>
+                <li><strong>ProSet</strong>: Advanced STEM kits for hands-on learning and experimentation.</li>
+                <li><strong>Wizefloor</strong>: An interactive floor projection system for collaborative learning.</li>
+            </ul>
+            <p>
+                Our mission is to transform education by integrating technology into the learning process, 
+                making it more engaging, interactive, and effective. Join us in shaping the future of education!
+            </p>
+        </div>
+        <div class="model-viewport" id="mainViewport"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        let currentScene, currentRenderer, currentCamera, currentControls;
+
+        function createScene(viewportId) {
+            const viewport = document.getElementById(viewportId);
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
+
+            renderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.appendChild(renderer.domElement);
+
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.1;
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 10, 7.5);
+            scene.add(directionalLight);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                controls.update();
+                renderer.render(scene, camera);
+            }
+
+            animate();
+
+            currentScene = scene;
+            currentRenderer = renderer;
+            currentCamera = camera;
+            currentControls = controls;
+        }
+
+        function loadModels(models, viewportId) {
+            createScene(viewportId);
+            const boundingBox = new THREE.Box3(); // To calculate the combined bounding box
+
+            models.forEach((model, index) => {
+                const loader = new THREE.GLTFLoader();
+                loader.load(model.path, function(object) {
+                    if (object.scene) {
+                        // Position models in a 3D arrangement
+                        object.scene.position.set(index * 5, Math.sin(index) * 3, Math.cos(index) * 3);
+
+                        // Scale models dynamically based on size
+                        const scaleFactor = 1 / boundingBox.getSize(new THREE.Vector3()).length();
+                        object.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+                        // Apply materials and lighting
+                        object.scene.traverse(function(child) {
+                            if (child.isMesh) {
+                                child.material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+                            }
+                        });
+
+                        currentScene.add(object.scene);
+
+                        // Expand the bounding box to include this model
+                        boundingBox.expandByObject(object.scene);
+                    }
+                }, function(xhr) {
+                    // Show loading progress
+                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                }, function(error) {
+                    console.error(`Error loading model: ${model.path}`, error);
+                    alert(`Failed to load model: ${model.name}`);
+                });
+            });
+
+            // Adjust camera to fit all models
+            const size = boundingBox.getSize(new THREE.Vector3()).length();
+            const center = boundingBox.getCenter(new THREE.Vector3());
+
+            currentCamera.position.copy(center);
+            currentCamera.position.z = size * 2; // Adjust distance based on model size
+            currentCamera.lookAt(center);
+        }
+
+        // Initialize main viewport and load default models
+        createScene('mainViewport');
+        const defaultModels = [
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Sphere' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/desert_fortress_gates.glb', name: 'Fortress' }
+        ];
+        loadModels(defaultModels, 'mainViewport');
+    </script>
+</body>
+</html>
