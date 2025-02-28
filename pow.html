@@ -102,40 +102,38 @@
 
         function createScene(viewportId) {
             const viewport = document.getElementById(viewportId);
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ antialias: true });
+            currentScene = new THREE.Scene();
+            currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            currentRenderer = new THREE.WebGLRenderer({ antialias: true });
 
-            renderer.setSize(viewport.clientWidth, viewport.clientHeight);
-            viewport.appendChild(renderer.domElement);
+            currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.appendChild(currentRenderer.domElement);
 
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.1;
+            currentControls = new THREE.OrbitControls(currentCamera, currentRenderer.domElement);
+            currentControls.enableDamping = true;
+            currentControls.dampingFactor = 0.1;
 
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-            scene.add(ambientLight);
+            currentScene.add(ambientLight);
             const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
             directionalLight.position.set(5, 10, 7.5);
-            scene.add(directionalLight);
+            currentScene.add(directionalLight);
 
-            function animate() {
-                requestAnimationFrame(animate);
-                controls.update();
-                currentScene.children.forEach(child => {
-                    if (child.isMesh) {
-                        child.rotation.y += 0.01; // Rotate each mesh for effect
-                    }
-                });
-                renderer.render(scene, camera);
-            }
+            currentCamera.position.z = 15; // Initial camera position
 
             animate();
+        }
 
-            currentScene = scene;
-            currentRenderer = renderer;
-            currentCamera = camera;
-            currentControls = controls;
+        function animate() {
+            requestAnimationFrame(animate);
+            if (currentScene) { // Check if currentScene is defined
+                currentScene.children.forEach(child => {
+                    if (child.isMesh) {
+                        child.rotation.y += 0.01; // Rotate each mesh
+                    }
+                });
+            }
+            currentRenderer.render(currentScene, currentCamera);
         }
 
         function loadModels(models, viewportId) {
@@ -157,7 +155,7 @@
 
                         // Add a white spotlight for each model
                         const spotLight = new THREE.SpotLight(0xffffff);
-                        spotLight.position.set(x, 10, z);
+                        spotLight.position.set(x, 5, z); // Adjusted height for better visibility
                         spotLight.target = object.scene; // Aim at the model
                         spotLight.castShadow = true;
                         currentScene.add(spotLight);
