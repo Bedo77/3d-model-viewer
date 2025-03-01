@@ -23,7 +23,7 @@ if (!navigator.xr || !navigator.xr.isSessionSupported) {
         });
 
         const arToolkitContext = new THREEx.ArToolkitContext({
-            cameraParametersUrl: 'https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/data/camera_para.dat',
+            cameraParametersUrl: 'https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@master/data/data/camera_para.dat',
             detectionMode: 'mono',
         });
 
@@ -45,7 +45,7 @@ if (!navigator.xr || !navigator.xr.isSessionSupported) {
 
         const markerControls = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
             type: 'pattern',
-            patternUrl: 'https://raw.githubusercontent.com/AR-js-org/AR.js/master/data/data/hiro.patt',
+            patternUrl: 'https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@master/data/data/hiro.patt',
         });
 
         // Position the model relative to the marker
