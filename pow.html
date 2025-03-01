@@ -228,15 +228,18 @@
 
                         object.scene.position.set(x, 0, z);
 
-                        // Apply scaling based on model name
+                        // Apply scaling and position adjustments based on model name
                         switch (model.name) {
                             case 'Geometry Spheres':
+                                object.scene.scale.set(2, 2, 2); // Double size
+                                break;
                             case 'Insect Anatomy':
                                 object.scene.scale.set(2, 2, 2); // Double size
+                                object.scene.position.y = 0.01; // Lifted up by 1cm
                                 break;
                             case 'Female Human Skeleton':
                                 object.scene.scale.set(0.105, 0.105, 0.105); // Scaled up by 5% (from 0.1 to 0.105)
-                                object.scene.position.y = 0.05; // Lifted up slightly to ensure bottom touches the surface
+                                object.scene.position.y = 0.02; // Lifted up by 2cm
                                 break;
                             case 'Generalized Human Body':
                             case 'Animal Pack':
