@@ -49,8 +49,8 @@
         .info-viewport {
             width: 85%; /* Full width of main-content */
             height: 50%; /* Half of main-content height */
-            background-color: #5C4033; /* 
-            color: #2c7481; /* Paradiso */
+            background-color: #3E2723; /* Darker brown */
+            color: white; /* Snow White font color */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -60,6 +60,7 @@
             box-sizing: border-box;
             overflow-y: auto;
             transform: translateX(-20px); /* Move slightly to the left */
+            font-family: 'Snow White', Arial, sans-serif; /* Snow White font */
         }
         .model-viewport {
             width: 85%; /* Full width of main-content */
@@ -70,6 +71,8 @@
             border-radius: 50px; 
         }
     </style>
+    <!-- Load Snow White font -->
+    <link href="https://fonts.cdnfonts.com/css/snow-white" rel="stylesheet">
 </head>
 <body>
     <div class="sidebar">
@@ -82,7 +85,7 @@
     </div>
     <div class="main-content">
         <div class="info-viewport">
-            <h2>About Us</h2>
+            <h2>Welcome to Smartistic-Lab Studio</h2>
             <p>
                 Welcome to <strong>Smartistic-Lab Studio</strong>, a leading company in educational technology. 
                 We specialize in creating cutting-edge products designed to inspire and educate learners of all ages, 
@@ -156,7 +159,7 @@
             loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
                 const textGeometry = new THREE.TextGeometry('Smartistic-Lab\n        Studio', {
                     font: font,
-                    size: 2,
+                    size: 1.8, // Decreased text size by 1 degree
                     height: 0.1,
                     curveSegments: 12,
                     bevelEnabled: true,
@@ -167,7 +170,7 @@
                 });
                 const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
                 textMesh = new THREE.Mesh(textGeometry, textMaterial);
-                textMesh.position.set(-3, 0.1, 0); // Adjust position to center the text
+                textMesh.position.set(-3.5, 0.1, 0); // Adjusted position to center the text
                 textMesh.rotation.x = -Math.PI / 2; // Rotate to lay flat on the ground
                 textMesh.rotation.z = Math.PI / 4; // Slightly face the camera
                 currentScene.add(textMesh);
