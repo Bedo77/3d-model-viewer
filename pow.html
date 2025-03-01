@@ -159,7 +159,7 @@
             loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
                 const textGeometry = new THREE.TextGeometry('Smartistic-Lab\n        Studio', {
                     font: font,
-                    size: 1.8, // Decreased text size by 1 degree
+                    size: 1.35, // Reduced size by 25% (from 1.8 to 1.35)
                     height: 0.1,
                     curveSegments: 12,
                     bevelEnabled: true,
@@ -170,7 +170,7 @@
                 });
                 const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
                 textMesh = new THREE.Mesh(textGeometry, textMaterial);
-                textMesh.position.set(-3.5, 0.1, 0); // Adjusted position to center the text
+                textMesh.position.set(-4.5, -0.2, 0); // Moved 1cm left (from -3.5 to -4.5) and 2cm down (from 0.1 to -0.2)
                 textMesh.rotation.x = -Math.PI / 2; // Rotate to lay flat on the ground
                 textMesh.rotation.z = Math.PI / 4; // Slightly face the camera
                 currentScene.add(textMesh);
@@ -229,7 +229,7 @@
                                 object.scene.scale.set(2, 2, 2); // Double size
                                 break;
                             case 'Female Human Skeleton':
-                                object.scene.scale.set(0.5, 0.5, 0.5); // Match Generalized Human Body size
+                                object.scene.scale.set(0.1, 0.1, 0.1); // Scaled down by 80% (from 0.5 to 0.1)
                                 break;
                             case 'Generalized Human Body':
                             case 'Animal Pack':
@@ -271,7 +271,7 @@
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', name: 'Animal Pack', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }, // Jaffa
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', name: 'Insect Anatomy', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf46c27 }, // Flamingo
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', name: 'Female Human Skeleton', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 }, // Paradiso
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', name: 'Female Human Skeleton', scale: { x: 0.1, y: 0.1, z: 0.1 }, color: 0x2c7481 }, // Paradiso (scaled down by 80%)
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Geometry Spheres', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack', scale: { x: 0.1, y: 0.1, z: 0.1 }, color: 0xf47e42 }, // Jaffa
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set', scale: { x: 0.4, y: 0.4, z: 0.4 }, color: 0xf46c27 } // Flamingo
