@@ -13,106 +13,22 @@
             background-color: #f46c27;
             display: flex;
         }
-        .sidebar {
-            width: 20%;
-            height: 100%;
-            background-color: #2c7481;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-        }
-        .button {
-            width: 100px;
-            height: 100px;
-            margin: 10px;
-            border-radius: 50%;
-            background-color: #f47e42;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-        .button:hover {
-            background-color: #f46c27;
-            transform: scale(1.1);
-        }
         .main-content {
-            width: 60%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        .info-viewport {
             width: 100%;
-            height: 50%;
-            background-color: #1A0E0D;
-            color: #FFFFFF;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-            box-sizing: border-box;
-            overflow-y: auto;
-            font-family: 'TimesNewRomance', serif;
-        }
-        .models-tracks {
-            width: 20%;
             height: 100%;
-            background-color: #2c7481;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
         }
         .model-viewport {
             width: 100%;
-            height: 50%;
+            height: 100%;
             background-color: #ffffff;
-            margin-bottom: 2.5mm;
-            border-radius: 50px;
-        }
-        .loading-indicator {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0,0,0,0.7);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            z-index: 1000;
-            display: none;
         }
     </style>
-    <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
 <body>
-    <div class="loading-indicator" id="loadingIndicator">Loading models...</div>
-    <div class="sidebar">
-        <div class="button" id="btnGrade1">Grade 1</div>
-        <div class="button" id="btnGrade2">Grade 2</div>
-        <div class="button" id="btnGrade3">Grade 3</div>
-    </div>
     <div class="main-content">
-        <div class="info-viewport">
-            <h2>Welcome to the Physics Section</h2>
-            <p>
-                Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
-                Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
-                Dive into the world of physics and discover the laws that govern our reality!
-            </p>
-        </div>
         <div class="model-viewport" id="mainViewport"></div>
-    </div>
-    <div class="models-tracks">
-        <h3 style="color: white;">Model Tracks</h3>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -120,7 +36,6 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
         let currentScene, currentRenderer, currentCamera, currentControls, modelGroup;
-        const loadingIndicator = document.getElementById('loadingIndicator');
 
         function createScene(viewportId) {
             const viewport = document.getElementById(viewportId);
@@ -136,13 +51,12 @@
             currentControls.enableDamping = true;
             currentControls.dampingFactor = 0.1;
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Brighter ambient light
+            // Add ambient light
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
             currentScene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5); // Brighter directional light
-            directionalLight.position.set(5, 10, 7.5);
-            currentScene.add(directionalLight);
 
-            currentCamera.position.set(0, 5, 10); // Closer camera position
+            // Position the camera
+            currentCamera.position.set(0, 5, 10);
             currentCamera.lookAt(0, 0, 0);
 
             createModelGroup();
@@ -168,13 +82,9 @@
             }
         }
 
-        function loadModels(models, viewportId) {
-            loadingIndicator.style.display = 'block';
-            if (currentRenderer && currentRenderer.domElement && currentRenderer.domElement.parentNode) {
-                currentRenderer.domElement.parentNode.removeChild(currentRenderer.domElement);
-            }
-
-            createScene(viewportId);
+        function loadModels(models) {
+            console.log('Starting to load models...');
+            createScene('mainViewport');
             clearModels();
 
             let loadedCount = 0;
@@ -189,6 +99,8 @@
                     function (object) {
                         loadedCount++;
                         console.log(`Successfully loaded: ${model.name}`);
+
+                        // Position the model in a circular arrangement
                         const angle = angleIncrement * index;
                         const x = Math.cos(angle) * radius;
                         const z = Math.sin(angle) * radius;
@@ -197,19 +109,25 @@
                         object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z);
                         modelGroup.add(object.scene);
 
+                        // Add a spotlight directed at the model
+                        const spotlight = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 4, 0.5);
+                        spotlight.position.set(x, 5, z); // Position the spotlight above the model
+                        spotlight.target = object.scene; // Direct the spotlight at the model
+                        currentScene.add(spotlight);
+                        currentScene.add(spotlight.target);
+
                         if (loadedCount === totalModels) {
                             console.log('All models loaded successfully');
-                            loadingIndicator.style.display = 'none';
                         }
                     },
                     function (xhr) {
-                        console.log(`${model.name}: ${(xhr.loaded / xhr.total * 100)}% loaded`);
+                        console.log(`${model.name}: ${(xhr.loaded / xhr.total * 100).toFixed(2)}% loaded`);
                     },
                     function (error) {
                         console.error(`Error loading model: ${model.path}`, error);
                         loadedCount++;
                         if (loadedCount === totalModels) {
-                            loadingIndicator.style.display = 'none';
+                            console.log('All models processed (some may have failed).');
                         }
                     }
                 );
@@ -217,25 +135,16 @@
         }
 
         const allModels = [
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-arcade_machine.glb', name: 'Grade 1 Arcade Machine', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-time_machine.glb', name: 'Grade 1 Time Machine', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-forces_on_a_rotating_man.glb', name: 'Grade 2 Forces on a Rotating Man', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-machinery_-_single_pashe_dc_motor.glb', name: 'Grade 2 Single Phase DC Motor', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagneticwave.glb', name: 'Grade 3 Electromagnetic Wave', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagnetic_portal.glb', name: 'Grade 3 Electromagnetic Portal', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 }
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-arcade_machine.glb', name: 'Grade 1 Arcade Machine', scale: { x: 1, y: 1, z: 1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-time_machine.glb', name: 'Grade 1 Time Machine', scale: { x: 1, y: 1, z: 1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-forces_on_a_rotating_man.glb', name: 'Grade 2 Forces on a Rotating Man', scale: { x: 1, y: 1, z: 1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-machinery_-_single_pashe_dc_motor.glb', name: 'Grade 2 Single Phase DC Motor', scale: { x: 1, y: 1, z: 1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagneticwave.glb', name: 'Grade 3 Electromagnetic Wave', scale: { x: 1, y: 1, z: 1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagnetic_portal.glb', name: 'Grade 3 Electromagnetic Portal', scale: { x: 1, y: 1, z: 1 } }
         ];
 
-        document.getElementById('btnGrade1').addEventListener('click', () => {
-            loadModels(allModels.slice(0, 2), 'mainViewport');
-        });
-        document.getElementById('btnGrade2').addEventListener('click', () => {
-            loadModels(allModels.slice(2, 4), 'mainViewport');
-        });
-        document.getElementById('btnGrade3').addEventListener('click', () => {
-            loadModels(allModels.slice(4, 6), 'mainViewport');
-        });
-
-        loadModels([], 'mainViewport');
+        // Load all models when the page loads
+        loadModels(allModels);
     </script>
 </body>
 </html>
