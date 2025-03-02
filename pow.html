@@ -137,7 +137,93 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
-        // JavaScript code provided above
+        // Initialize Three.js scene
+        let currentScene, currentRenderer, currentCamera, currentControls, modelGroup;
+
+        function createScene(viewportId) {
+            const viewport = document.getElementById(viewportId);
+
+            // Initialize the scene, camera, and renderer
+            currentScene = new THREE.Scene();
+            currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            currentRenderer = new THREE.WebGLRenderer({ antialias: true });
+
+            currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.appendChild(currentRenderer.domElement);
+
+            // Add OrbitControls for camera interaction
+            currentControls = new THREE.OrbitControls(currentCamera, currentRenderer.domElement);
+            currentControls.enableDamping = true;
+            currentControls.dampingFactor = 0.1;
+
+            // Add lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.5); // Soft white light
+            currentScene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            directionalLight.position.set(5, 10, 7.5);
+            currentScene.add(directionalLight);
+
+            // Set camera position
+            currentCamera.position.set(0, 10, 15);
+            currentCamera.lookAt(0, 0, 0);
+
+            // Create a group for the models
+            modelGroup = new THREE.Group();
+            currentScene.add(modelGroup);
+
+            // Start the animation loop
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Update controls
+            currentControls.update();
+
+            // Render the scene
+            currentRenderer.render(currentScene, currentCamera);
+        }
+
+        function loadModels(models) {
+            const loader = new THREE.GLTFLoader();
+
+            models.forEach((model, index) => {
+                loader.load(model.path, (gltf) => {
+                    const modelScene = gltf.scene;
+
+                    // Position models in a circular arrangement
+                    const radius = 10;
+                    const angle = (Math.PI * 2 * index) / models.length;
+                    modelScene.position.set(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+
+                    // Scale the model
+                    modelScene.scale.set(model.scale.x, model.scale.y, model.scale.z);
+
+                    // Add the model to the group
+                    modelGroup.add(modelScene);
+                }, undefined, (error) => {
+                    console.error(`Error loading model: ${model.path}`, error);
+                });
+            });
+        }
+
+        // Initialize the scene and load models
+        createScene('mainViewport');
+
+        const models = [
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', scale: { x: 0.5, y: 0.5, z: 0.5 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', scale: { x: 0.5, y: 0.5, z: 0.5 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', scale: { x: 0.5, y: 0.5, z: 0.5 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', scale: { x: 0.5, y: 0.5, z: 0.5 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', scale: { x: 0.105, y: 0.105, z: 0.105 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', scale: { x: 0.5, y: 0.5, z: 0.5 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', scale: { x: 0.1, y: 0.1, z: 0.1 } },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', scale: { x: 0.4, y: 0.4, z: 0.4 } }
+        ];
+
+        loadModels(models);
     </script>
 </body>
 </html>
