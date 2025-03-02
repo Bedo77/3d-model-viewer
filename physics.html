@@ -10,19 +10,21 @@
             font-family: Arial, sans-serif;
             height: 100vh;
             display: flex;
+            background-color: #f46c27; /* flamingo */
         }
-        .left-sidebar {
-            width: 20%; /* Sidebar for grades */
+        .sidebar {
+            width: 20%; /* Sidebar width */
             height: 100%; /* Full height */
             background-color: #2c7481; /* Paradiso */
             display: flex;
             flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
             padding: 10px;
-            box-sizing: border-box;
         }
-        .grade-button {
+        .button {
             width: 100%;
-            height: 50px;
+            height: 70px;
             margin: 10px 0;
             border-radius: 5px;
             background-color: #f47e42; /* Jaffa */
@@ -31,13 +33,14 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: transform 0.3s ease, background-color 0.3s ease;
         }
-        .grade-button:hover {
+        .button:hover {
             background-color: #f46c27; /* Flamingo */
+            transform: scale(1.05);
         }
         .main-content {
-            width: 60%; /* Main content area */
+            width: 60%; /* Remaining width */
             height: 100%; /* Full height */
             display: flex;
             flex-direction: column;
@@ -54,23 +57,26 @@
             padding: 20px;
             text-align: center;
             box-sizing: border-box;
+            overflow-y: auto;
+            font-family: 'TimesNewRomance', serif; /* TimesNewRomance font */
         }
         .model-viewport {
             width: 100%; /* Full width of main-content */
             height: 50%; /* Half of main-content height */
-            background-color: #f0f0f0; /* Light gray for better visibility */
+            background-color: #ffffff; /* White background */
             margin-bottom: 2.5mm; /* Small bottom margin */
             border-radius: 5px; 
             position: relative;
         }
-        .right-sidebar {
-            width: 20%; /* Sidebar for models */
+        .models-tracks {
+            width: 20%; /* Right sidebar width */
             height: 100%; /* Full height */
             background-color: #2c7481; /* Paradiso */
             display: flex;
             flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
             padding: 10px;
-            box-sizing: border-box;
             overflow-y: auto;
         }
         .model-icon {
@@ -104,7 +110,7 @@
             padding: 0 20px;
             box-sizing: border-box;
         }
-        .button {
+        .home-back-button {
             margin-left: 10px;
             padding: 10px 15px;
             color: white;
@@ -113,31 +119,31 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        .button:hover {
+        .home-back-button:hover {
             background-color: #f46c27; /* Flamingo */
         }
     </style>
+    <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
 <body>
-    <div class="left-sidebar">
-        <div class="grade-button" id="btnGrade1">Grade 1</div>
-        <div class="grade-button" id="btnGrade2">Grade 2</div>
-        <div class="grade-button" id="btnGrade3">Grade 3</div>
+    <div class="sidebar">
+        <div class="button" id="btnGrade1">Grade 1</div>
+        <div class="button" id="btnGrade2">Grade 2</div>
+        <div class="button" id="btnGrade3">Grade 3</div>
     </div>
     <div class="main-content">
         <div class="info-viewport" id="infoViewport">
-            <h2>Select a Grade</h2>
-            <p>Click on a grade button to see the models.</p>
+            <h2>Select a Grade to See Models</h2>
+            <p>Choose a grade from the left sidebar to explore relevant 3D models.</p>
         </div>
-        <div class="model-viewport" id="mainViewport" droppable="true"></div>
+        <div class="model-viewport" id="mainViewport"></div>
     </div>
-    <div class="right-sidebar">
+    <div class="models-tracks" id="trackModels">
         <h3 style="color: white;">Model Tracks</h3>
-        <div id="trackModels"></div>
     </div>
     <div class="top-bar">
-        <button class="button" id="btnHome">Home</button>
-        <button class="button" id="btnBack">Back</button>
+        <button class="home-back-button" id="btnHome">Home</button>
+        <button class="home-back-button" id="btnBack">Back</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -168,13 +174,9 @@
             currentCamera.position.set(0, 2, 10);
             currentCamera.lookAt(0, 0, 0);
 
-            createModelGroup();
-            animate();
-        }
-
-        function createModelGroup() {
             modelGroup = new THREE.Group();
             currentScene.add(modelGroup);
+            animate();
         }
 
         function animate() {
@@ -229,13 +231,15 @@
             }
         };
 
+        // Home button functionality
         document.getElementById('btnHome').addEventListener('click', () => {
             window.location.href = "path/to/main/physics/page.html"; // Update this to your main page
         });
 
+        // Back button functionality
         document.getElementById('btnBack').addEventListener('click', () => {
-            console.log("Back button functionality here");
-            // Implement back button functionality as needed
+            console.log("Back button clicked");
+            // Implement back navigation if applicable
         });
 
         function updateInfoViewport(title, description) {
