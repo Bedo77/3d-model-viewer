@@ -9,24 +9,21 @@
             margin: 0;
             font-family: Arial, sans-serif;
             height: 100vh;
-            overflow: hidden;
-            background-color: #f46c27; /* flamingo */
             display: flex;
         }
-        .sidebar {
-            width: 20%; /* Sidebar width */
+        .left-sidebar {
+            width: 20%; /* Sidebar for grades */
             height: 100%; /* Full height */
             background-color: #2c7481; /* Paradiso */
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
             padding: 10px;
+            box-sizing: border-box;
         }
-        .button {
-            width: 100px;
+        .grade-button {
+            width: 100%;
             height: 50px;
-            margin: 10px;
+            margin: 10px 0;
             border-radius: 5px;
             background-color: #f47e42; /* Jaffa */
             color: white;
@@ -34,14 +31,13 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            transition: transform 0.3s ease, background-color 0.3s ease;
+            transition: background-color 0.3s ease;
         }
-        .button:hover {
+        .grade-button:hover {
             background-color: #f46c27; /* Flamingo */
-            transform: scale(1.1);
         }
         .main-content {
-            width: 60%; /* Remaining width */
+            width: 60%; /* Main content area */
             height: 100%; /* Full height */
             display: flex;
             flex-direction: column;
@@ -59,26 +55,24 @@
             text-align: center;
             box-sizing: border-box;
             overflow-y: auto;
-            font-family: 'TimesNewRomance', serif; /* TimesNewRomance font */
-        }
-        .models-tracks {
-            width: 20%; /* Right sidebar width */
-            height: 100%; /* Full height */
-            background-color: #2c7481; /* Paradiso */
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            padding: 10px;
-            overflow-y: auto;
         }
         .model-viewport {
             width: 100%; /* Full width of main-content */
             height: 50%; /* Half of main-content height */
             background-color: #f0f0f0; /* Light gray for better visibility */
             margin-bottom: 2.5mm; /* Small bottom margin */
-            border-radius: 50px; 
+            border-radius: 5px; 
             position: relative;
+        }
+        .right-sidebar {
+            width: 20%; /* Sidebar for models */
+            height: 100%; /* Full height */
+            background-color: #2c7481; /* Paradiso */
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
         }
         .model-icon {
             width: 80px;
@@ -111,38 +105,50 @@
             padding: 0 20px;
             box-sizing: border-box;
         }
+        .button {
+            margin-left: 10px;
+            padding: 10px 15px;
+            color: white;
+            background-color: #f47e42; /* Jaffa */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #f46c27; /* Flamingo */
+        }
     </style>
-    <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
 <body>
-    <div class="top-bar">
-        <button class="button" id="btnHome">Home</button>
-        <button class="button" id="btnBack">Back</button>
-    </div>
-    <div class="sidebar">
-        <h3 style="color: white;">Model Tracks</h3>
-        <div id="trackModels"></div>
+    <div class="left-sidebar">
+        <div class="grade-button" id="btnGrade1">Grade 1</div>
+        <div class="grade-button" id="btnGrade2">Grade 2</div>
+        <div class="grade-button" id="btnGrade3">Grade 3</div>
     </div>
     <div class="main-content">
         <div class="info-viewport" id="infoViewport">
             <h2>Welcome to the Physics Section</h2>
-            <p>
-                Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
-                Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
-                Dive into the world of physics and discover the laws that govern our reality!
-            </p>
+            <p>Select a grade to explore relevant models.</p>
         </div>
-        <div class="model-viewport" id="mainViewport" droppable="true"></div>
+        <div class="model-viewport" id="mainViewport"></div>
+    </div>
+    <div class="right-sidebar">
+        <h3 style="color: white;">Model Tracks</h3>
+        <div id="trackModels"></div>
+    </div>
+    <div class="top-bar">
+        <button class="button" id="btnHome">Home</button>
+        <button class="button" id="btnBack">Back</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
-        let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup, textMesh;
+        let currentScene, currentRenderer, currentCamera, currentControls, modelGroup;
 
-        function createScene(viewportId) {
-            const viewport = document.getElementById(viewportId);
+        function createScene() {
+            const viewport = document.getElementById('mainViewport');
             currentScene = new THREE.Scene();
             currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
             currentRenderer = new THREE.WebGLRenderer({ antialias: true });
@@ -154,62 +160,17 @@
             currentControls.enableDamping = true;
             currentControls.dampingFactor = 0.1;
 
-            const ambientLight = new THREE.AmbientLight(0x404040, 0.15);
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
             currentScene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0x2c7481, 0.25);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
             directionalLight.position.set(5, 10, 7.5);
             currentScene.add(directionalLight);
 
-            currentCamera.position.set(0, 10, 15);
-            currentCamera.lookAt(0, 2, 0);
+            currentCamera.position.set(0, 2, 10);
+            currentCamera.lookAt(0, 0, 0);
 
-            createGround();
             createModelGroup();
             animate();
-        }
-
-        function createGround() {
-            const geometry = new THREE.CircleGeometry(10.35, 32);
-            const textureLoader = new THREE.TextureLoader();
-            const texture = textureLoader.load('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/Logo.png', function(texture) {
-                texture.repeat.set(0.3, 0.3);
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-            });
-
-            const material = new THREE.MeshStandardMaterial({
-                map: texture,
-                color: 0x000000,
-                roughness: 0.7,
-                metalness: 0.1,
-            });
-
-            ground = new THREE.Mesh(geometry, material);
-            ground.rotation.x = -Math.PI / 2;
-            ground.position.y = -0.1;
-            ground.receiveShadow = true;
-            currentScene.add(ground);
-
-            const loader = new THREE.FontLoader();
-            loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
-                const textGeometry = new THREE.TextGeometry('Smartistic-Lab\n        Studio', {
-                    font: font,
-                    size: 1.35,
-                    height: 0.1,
-                    curveSegments: 12,
-                    bevelEnabled: true,
-                    bevelThickness: 0.03,
-                    bevelSize: 0.02,
-                    bevelOffset: 0,
-                    bevelSegments: 5
-                });
-                const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-                textMesh = new THREE.Mesh(textGeometry, textMaterial);
-                textMesh.position.set(-4.5, -0.1, 0);
-                textMesh.rotation.x = -Math.PI / 2;
-                textMesh.rotation.z = Math.PI / 4;
-                currentScene.add(textMesh);
-            });
         }
 
         function createModelGroup() {
@@ -230,11 +191,7 @@
             models.forEach(model => {
                 const loader = new THREE.GLTFLoader();
                 loader.load(model.path, function(object) {
-                    if (object.scene) {
-                        modelGroup.add(object.scene);
-                    } else {
-                        console.error(`Failed to load model: ${model.name}`);
-                    }
+                    modelGroup.add(object.scene);
                 }, function(xhr) {
                     console.log(`${model.name}: ${(xhr.loaded / xhr.total) * 100}% loaded`);
                 }, function(error) {
@@ -332,6 +289,7 @@
         });
 
         // Initialize default view (Grade 1)
+        createScene();
         updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
         loadModels(gradeContent.grade1.models);
         displayModelIcons(gradeContent.grade1.models);
