@@ -12,6 +12,30 @@
             overflow: hidden;
             background-color: #f46c27; /* flamingo */
             display: flex;
+            flex-direction: column;
+        }
+        .top-bar {
+            width: 100%;
+            height: 50px;
+            background-color: #2c7481; /* Paradiso */
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        .top-bar button {
+            background-color: #f47e42; /* Jaffa */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .top-bar button:hover {
+            background-color: #f46c27; /* Flamingo */
         }
         .sidebar {
             width: 20%; /* Sidebar width */
@@ -22,6 +46,10 @@
             justify-content: center;
             align-items: center;
             padding: 10px;
+            transition: transform 0.3s ease;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
         }
         .button {
             width: 100px;
@@ -41,7 +69,7 @@
             transform: scale(1.1);
         }
         .main-content {
-            width: 60%; /* Remaining width */
+            width: 80%; /* Remaining width */
             height: 100%; /* Full height */
             display: flex;
             flex-direction: column;
@@ -78,12 +106,31 @@
             margin-bottom: 2.5mm; /* Small bottom margin */
             border-radius: 50px; 
         }
+        .back-button {
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            background-color: #f47e42; /* Jaffa */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #f46c27; /* Flamingo */
+        }
     </style>
     <!-- Load TimesNewRomance font -->
     <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
 <body>
-    <div class="sidebar">
+    <div class="top-bar">
+        <button id="btnHome">Home</button>
+        <button id="btnPhysicsSection">Physics Section</button>
+    </div>
+    <div class="sidebar" id="sidebar">
         <div class="button" id="btnGrade1">Grade 1</div>
         <div class="button" id="btnGrade2">Grade 2</div>
         <div class="button" id="btnGrade3">Grade 3</div>
@@ -297,13 +344,26 @@
             modelsTracks.innerHTML = content;
         }
 
+        // Function to show the main page
+        function showMainPage() {
+            updateInfoViewport("Welcome to the Physics Section", `
+                Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
+                Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
+                Dive into the world of physics and discover the laws that govern our reality!
+            `);
+            document.getElementById('sidebar').classList.remove('hidden');
+            document.getElementById('mainViewport').innerHTML = ''; // Clear the model viewport
+            document.getElementById('modelsTracks').innerHTML = '<h3 style="color: white;">Model Tracks</h3>'; // Reset tracks area
+            document.querySelector('.back-button')?.remove(); // Remove back button if it exists
+        }
+
         // Grade-specific content
         const gradeContent = {
             grade1: {
                 title: "Grade 1: Simple Machines",
                 description: "Exploration of how simple machines work and how they make work easier.",
                 models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lever_and_pulley_set.glb', name: 'Lever and Pulley Set', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 }, // Paradiso
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/lever_and_pulley_set.glb', name: 'Lever and Pulley Set', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 }, // Paradiso
                 ],
                 tracksContent: "<p>Explore the mechanics of levers and pulleys.</p>"
             },
@@ -311,7 +371,7 @@
                 title: "Grade 2: Forces and Motion",
                 description: "Experimenting with different forces and observing their effects on motion.",
                 models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/force_simulator.glb', name: 'Force Simulator', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/force_simulator.glb', name: 'Force Simulator', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
                 ],
                 tracksContent: "<p>Learn about forces and their impact on motion.</p>"
             },
@@ -319,7 +379,7 @@
                 title: "Grade 3: Electromagnetism",
                 description: "Exploring the principles of electromagnetism and its applications.",
                 models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/em_field_viewer.glb', name: 'EM Field Viewer', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }, // Jaffa
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/em_field_viewer.glb', name: 'EM Field Viewer', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }, // Jaffa
                 ],
                 tracksContent: "<p>Discover the world of electromagnetism.</p>"
             }
@@ -330,24 +390,48 @@
             updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
             loadModels(gradeContent.grade1.models, 'mainViewport');
             updateModelsTracks(gradeContent.grade1.tracksContent);
+            document.getElementById('sidebar').classList.add('hidden');
+            addBackButton();
         });
 
         document.getElementById('btnGrade2').addEventListener('click', () => {
             updateInfoViewport(gradeContent.grade2.title, gradeContent.grade2.description);
             loadModels(gradeContent.grade2.models, 'mainViewport');
             updateModelsTracks(gradeContent.grade2.tracksContent);
+            document.getElementById('sidebar').classList.add('hidden');
+            addBackButton();
         });
 
         document.getElementById('btnGrade3').addEventListener('click', () => {
             updateInfoViewport(gradeContent.grade3.title, gradeContent.grade3.description);
             loadModels(gradeContent.grade3.models, 'mainViewport');
             updateModelsTracks(gradeContent.grade3.tracksContent);
+            document.getElementById('sidebar').classList.add('hidden');
+            addBackButton();
         });
 
-        // Initialize default view (Grade 1)
-        updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
-        loadModels(gradeContent.grade1.models, 'mainViewport');
-        updateModelsTracks(gradeContent.grade1.tracksContent);
+        // Event listeners for top bar buttons
+        document.getElementById('btnHome').addEventListener('click', () => {
+            showMainPage();
+        });
+
+        document.getElementById('btnPhysicsSection').addEventListener('click', () => {
+            showMainPage();
+        });
+
+        // Function to add back button
+        function addBackButton() {
+            const backButton = document.createElement('button');
+            backButton.className = 'back-button';
+            backButton.innerText = 'Back to Main Section';
+            backButton.addEventListener('click', () => {
+                showMainPage();
+            });
+            document.body.appendChild(backButton);
+        }
+
+        // Initialize default view (main page)
+        showMainPage();
     </script>
 </body>
 </html>
