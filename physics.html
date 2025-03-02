@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Physics Educational 3D Models</title>
+    <title>Grade 1: Simple Machines</title>
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             height: 100vh;
-            display: flex;
             background-color: #f46c27; /* flamingo */
+            display: flex;
         }
         .sidebar {
             width: 20%; /* Sidebar width */
@@ -58,7 +58,6 @@
             text-align: center;
             box-sizing: border-box;
             overflow-y: auto;
-            font-family: 'TimesNewRomance', serif; /* TimesNewRomance font */
         }
         .model-viewport {
             width: 100%; /* Full width of main-content */
@@ -77,7 +76,6 @@
             justify-content: flex-start;
             align-items: center;
             padding: 10px;
-            overflow-y: auto;
         }
         .model-icon {
             width: 80px;
@@ -123,175 +121,32 @@
             background-color: #f46c27; /* Flamingo */
         }
     </style>
-    <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
 <body>
     <div class="sidebar">
-        <div class="button" id="btnGrade1">Grade 1</div>
-        <div class="button" id="btnGrade2">Grade 2</div>
-        <div class="button" id="btnGrade3">Grade 3</div>
+        <div class="button" onclick="location.href='grade1.html'">Grade 1</div>
+        <div class="button" onclick="location.href='grade2.html'">Grade 2</div>
+        <div class="button" onclick="location.href='grade3.html'">Grade 3</div>
     </div>
     <div class="main-content">
-        <div class="info-viewport" id="infoViewport">
-            <h2>Select a Grade to See Models</h2>
-            <p>Choose a grade from the left sidebar to explore relevant 3D models.</p>
+        <div class="info-viewport">
+            <h2>Grade 1: Simple Machines</h2>
+            <p>Exploration of how simple machines work and how they make work easier.</p>
         </div>
-        <div class="model-viewport" id="mainViewport"></div>
+        <div class="model-viewport" id="mainViewport">
+            <h3>Models for Grade 1:</h3>
+            <div class="model-icon"><img src="arcade_machine.png" alt="Arcade Machine" /></div>
+            <div class="model-icon"><img src="time_machine.png" alt="Time Machine" /></div>
+        </div>
     </div>
-    <div class="models-tracks" id="trackModels">
+    <div class="models-tracks">
         <h3 style="color: white;">Model Tracks</h3>
+        <div class="model-icon"><img src="arcade_machine.png" alt="Arcade Machine" /></div>
+        <div class="model-icon"><img src="time_machine.png" alt="Time Machine" /></div>
     </div>
     <div class="top-bar">
-        <button class="home-back-button" id="btnHome">Home</button>
-        <button class="home-back-button" id="btnBack">Back</button>
+        <button class="home-back-button" onclick="location.href='index.html'">Home</button>
+        <button class="home-back-button" onclick="history.back()">Back</button>
     </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-    <script>
-        let currentScene, currentRenderer, currentCamera, currentControls, modelGroup;
-
-        function createScene() {
-            const viewport = document.getElementById('mainViewport');
-            currentScene = new THREE.Scene();
-            currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
-            currentRenderer = new THREE.WebGLRenderer({ antialias: true });
-
-            currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
-            viewport.appendChild(currentRenderer.domElement);
-
-            currentControls = new THREE.OrbitControls(currentCamera, currentRenderer.domElement);
-            currentControls.enableDamping = true;
-            currentControls.dampingFactor = 0.1;
-
-            const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
-            currentScene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-            directionalLight.position.set(5, 10, 7.5);
-            currentScene.add(directionalLight);
-
-            currentCamera.position.set(0, 2, 10);
-            currentCamera.lookAt(0, 0, 0);
-
-            modelGroup = new THREE.Group();
-            currentScene.add(modelGroup);
-            animate();
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            currentRenderer.render(currentScene, currentCamera);
-        }
-
-        function loadModels(models) {
-            clearModels();
-            models.forEach(model => {
-                const loader = new THREE.GLTFLoader();
-                loader.load(model.path, function(object) {
-                    modelGroup.add(object.scene);
-                }, function(xhr) {
-                    console.log(`${model.name}: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-                }, function(error) {
-                    console.error(`Error loading model: ${model.path}`, error);
-                });
-            });
-        }
-
-        function clearModels() {
-            while (modelGroup.children.length) {
-                modelGroup.remove(modelGroup.children[0]);
-            }
-        }
-
-        const gradeContent = {
-            grade1: {
-                title: "Grade 1: Simple Machines",
-                description: "Exploration of how simple machines work and how they make work easier.",
-                models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20one%20arcade_machine.glb', name: 'Arcade Machine' },
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20one%20time_machine.glb', name: 'Time Machine' },
-                ]
-            },
-            grade2: {
-                title: "Grade 2: Forces and Motion",
-                description: "Experimenting with different forces and observing their effects on motion.",
-                models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20two%20forces_on_a_rotating_man.glb', name: 'Forces on a Rotating Man' },
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20two%20machinery_-_single_pashe_dc_motor.glb', name: 'Single Phase DC Motor' },
-                ]
-            },
-            grade3: {
-                title: "Grade 3: Electromagnetism",
-                description: "Exploring the principles of electromagnetism and its applications.",
-                models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20three%20electromagnetic_portal.glb', name: 'Electromagnetic Portal' },
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20three%20electromagneticwave.glb', name: 'Electromagnetic Wave' },
-                ]
-            }
-        };
-
-        // Home button functionality
-        document.getElementById('btnHome').addEventListener('click', () => {
-            window.location.href = "path/to/main/physics/page.html"; // Update this to your main page
-        });
-
-        // Back button functionality
-        document.getElementById('btnBack').addEventListener('click', () => {
-            console.log("Back button clicked");
-            // Implement back navigation if applicable
-        });
-
-        function updateInfoViewport(title, description) {
-            const infoViewport = document.getElementById('infoViewport');
-            infoViewport.innerHTML = `
-                <h2>${title}</h2>
-                <p>${description}</p>
-            `;
-        }
-
-        function displayModelIcons(models) {
-            const trackModels = document.getElementById('trackModels');
-            trackModels.innerHTML = ''; // Clear previous icons
-            models.forEach(model => {
-                const iconDiv = document.createElement('div');
-                iconDiv.className = 'model-icon';
-                iconDiv.setAttribute('draggable', 'true');
-                iconDiv.dataset.model = model.name;
-                iconDiv.innerHTML = `<img src="path/to/icon.png" alt="${model.name}" />`; // Replace with actual icon path
-
-                iconDiv.addEventListener('dragstart', (e) => {
-                    e.dataTransfer.setData('text/plain', model.path); // Drag model path
-                });
-
-                trackModels.appendChild(iconDiv);
-            });
-        }
-
-        // Event listeners for grade buttons
-        document.getElementById('btnGrade1').addEventListener('click', () => {
-            updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
-            loadModels(gradeContent.grade1.models);
-            displayModelIcons(gradeContent.grade1.models);
-        });
-
-        document.getElementById('btnGrade2').addEventListener('click', () => {
-            updateInfoViewport(gradeContent.grade2.title, gradeContent.grade2.description);
-            loadModels(gradeContent.grade2.models);
-            displayModelIcons(gradeContent.grade2.models);
-        });
-
-        document.getElementById('btnGrade3').addEventListener('click', () => {
-            updateInfoViewport(gradeContent.grade3.title, gradeContent.grade3.description);
-            loadModels(gradeContent.grade3.models);
-            displayModelIcons(gradeContent.grade3.models);
-        });
-
-        // Initialize default view (Grade 1)
-        createScene();
-        updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
-        loadModels(gradeContent.grade1.models);
-        displayModelIcons(gradeContent.grade1.models);
-    </script>
 </body>
 </html>
