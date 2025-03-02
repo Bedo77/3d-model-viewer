@@ -277,6 +277,7 @@
             const angleIncrement = (Math.PI * 2) / models.length; // Even spacing
 
             models.forEach((model, index) => {
+                console.log(`Loading model from: ${model.path}`); // Debugging statement
                 const loader = new THREE.GLTFLoader();
                 loader.load(model.path, function(object) {
                     if (object.scene) {
