@@ -123,7 +123,7 @@
             currentControls.dampingFactor = 0.1;
 
             // Add ambient light
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Increased intensity
             currentScene.add(ambientLight);
 
             // Add a stage (flat plane) underneath the models
@@ -134,8 +134,8 @@
             stage.position.y = -1; // Position slightly below the models
             currentScene.add(stage);
 
-            // Position the camera
-            currentCamera.position.set(0, 5, 10);
+            // Position the camera higher for a top-down view
+            currentCamera.position.set(0, 15, 15); // Higher and angled
             currentCamera.lookAt(0, 0, 0);
 
             createModelGroup();
@@ -161,7 +161,7 @@
 
             let loadedCount = 0;
             const totalModels = models.length;
-            const radius = 5; // Radius of the circle
+            const radius = 7; // Increased radius for better spacing
             const angleIncrement = (Math.PI * 2) / totalModels;
 
             models.forEach((model, index) => {
@@ -172,32 +172,32 @@
                         loadedCount++;
                         console.log(`Successfully loaded: ${model.name}`);
 
-                        // Scale down the model by 80%
-                        object.scene.scale.set(0.8, 0.8, 0.8);
+                        // Scale down the model slightly
+                        object.scene.scale.set(0.7, 0.7, 0.7);
 
                         // Position the model in a circular arrangement
                         const angle = angleIncrement * index;
                         const x = Math.cos(angle) * radius;
                         const z = Math.sin(angle) * radius;
 
-                        object.scene.position.set(x, 0, z);
+                        object.scene.position.set(x, 0, z); // All models on the same X-axis (y = 0)
                         modelGroup.add(object.scene);
 
                         // Add multiple lights for each model
-                        const spotlight1 = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 4, 0.5);
-                        spotlight1.position.set(x, 5, z); // Above the model
+                        const spotlight1 = new THREE.SpotLight(0xffffff, 2, 100, Math.PI / 4, 0.5); // Increased intensity
+                        spotlight1.position.set(x, 10, z); // Above the model
                         spotlight1.target = object.scene;
                         currentScene.add(spotlight1);
                         currentScene.add(spotlight1.target);
 
-                        const spotlight2 = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 4, 0.5);
-                        spotlight2.position.set(x + 2, 5, z + 2); // Offset for additional light
+                        const spotlight2 = new THREE.SpotLight(0xffffff, 2, 100, Math.PI / 4, 0.5); // Increased intensity
+                        spotlight2.position.set(x + 3, 10, z + 3); // Offset for additional light
                         spotlight2.target = object.scene;
                         currentScene.add(spotlight2);
                         currentScene.add(spotlight2.target);
 
-                        const pointLight = new THREE.PointLight(0xffffff, 1, 50);
-                        pointLight.position.set(x, 3, z); // Close to the model
+                        const pointLight = new THREE.PointLight(0xffffff, 2, 50); // Increased intensity
+                        pointLight.position.set(x, 5, z); // Close to the model
                         currentScene.add(pointLight);
 
                         if (loadedCount === totalModels) {
