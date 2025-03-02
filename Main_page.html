@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smartistic-Lab Studio</title>
+    <title>Educational 3D Models</title>
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
-            background-color: #f46c27;
+            background-color: #f46c27; /* flamingo */
             display: flex;
         }
         .sidebar {
-            width: 20%;
-            height: 100%;
-            background-color: #2c7481;
+            width: 15%; /* Sidebar width */
+            height: 100%; /* Full height */
+            background-color: #2c7481; /* Paradiso */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -28,7 +28,7 @@
             height: 100px;
             margin: 10px;
             border-radius: 50%;
-            background-color: #f47e42;
+            background-color: #f47e42; /* Jaffa */
             color: white;
             display: flex;
             justify-content: center;
@@ -37,20 +37,20 @@
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
         .button:hover {
-            background-color: #f46c27;
+            background-color: #f46c27; /* Flamingo */
             transform: scale(1.1);
         }
         .main-content {
-            width: 60%;
-            height: 100%;
+            width: 80%; /* Remaining width */
+            height: 100%; /* Full height */
             display: flex;
             flex-direction: column;
         }
         .info-viewport {
-            width: 100%;
-            height: 50%;
-            background-color: #1A0E0D;
-            color: #FFFFFF;
+            width: 85%; /* Full width of main-content */
+            height: 50%; /* Half of main-content height */
+            background-color: #1A0E0D; /* Darker brown */
+            color: #FFFFFF; /* Regular white color */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -59,98 +59,52 @@
             text-align: center;
             box-sizing: border-box;
             overflow-y: auto;
-            font-family: 'TimesNewRomance', serif;
-        }
-        .models-tracks {
-            width: 20%;
-            height: 100%;
-            background-color: #2c7481;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 10px;
-            overflow-y: auto;
+            transform: translateX(-20px); /* Move slightly to the left */
+            font-family: 'TimesNewRomance', serif; /* TimesNewRomance font */
         }
         .model-viewport {
-            width: 100%;
-            height: 50%;
-            background-color: #ffffff;
-            margin-bottom: 2.5mm;
-            border-radius: 50px;
-        }
-        .home-button {
-            width: 100px;
-            height: 40px;
-            margin: 10px;
-            background-color: #f47e42;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .home-button:hover {
-            background-color: #f46c27;
+            width: 85%; /* Full width of main-content */
+            height: 50%; /* Half of main-content height */
+            background-color: #ffffff; /* White background */
+            transform: translateX(-20px); /* Move slightly to the left */
+            margin-bottom: 2.5mm; /* Small bottom margin */
+            border-radius: 50px; 
         }
     </style>
+    <!-- Load TimesNewRomance font -->
     <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
 <body>
     <div class="sidebar">
-        <div class="home-button" id="btnHome">Home</div>
-        <div class="button" id="btnGrade1">Grade 1</div>
-        <div class="button" id="btnGrade2">Grade 2</div>
-        <div class="button" id="btnGrade3">Grade 3</div>
+        <div class="button" id="btnGeometry">Geometry</div>
+        <div class="button" id="btnPhysics">Physics</div>
+        <div class="button" id="btnChemistry">Chemistry</div>
+        <div class="button" id="btnBiology">Biology</div>
+        <div class="button" id="btnAstronomy">Astronomy</div>
+        <div class="button" id="btnEcology">Ecology</div>
+        <div class="button" id="btnRobotics">Robotics</div>
+        <div class="button" id="btnMathematics">Mathematics</div>
+        <div class="button" id="btnGeology">Geology</div>
     </div>
     <div class="main-content">
-        <div class="info-viewport" id="infoViewport">
+        <div class="info-viewport">
             <h2>Welcome to Smartistic-Lab Studio</h2>
             <p>
-                Welcome to the <strong>Smartistic-Lab Studio</strong>. Here, we explore various subjects through interactive 3D models and simulations.
-                Choose a subject to get started!
+                Welcome to <strong>Smartistic-Lab Studio</strong>, a leading company in educational technology. 
+                We specialize in creating cutting-edge products designed to inspire and educate learners of all ages, 
+                from 3 to 18 years old. 
+                Our mission is to transform education by integrating technology into the learning process, 
+                making it more engaging, interactive, and effective. Join us in shaping the future of education!
             </p>
         </div>
         <div class="model-viewport" id="mainViewport"></div>
-    </div>
-    <div class="models-tracks">
-        <h3 style="color: white;">Model Tracks</h3>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
-        let currentScene, currentRenderer, currentCamera, currentControls, modelGroup;
-
-        // Define grade-specific content
-        const gradeContent = {
-            grade1: {
-                title: "Grade 1: Simple Machines",
-                description: "Exploration of how simple machines work and how they make work easier.",
-                models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-arcade_machine.glb', name: 'Grade One Arcade Machine', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 },
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-time_machine.glb', name: 'Grade One Time Machine', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }
-                ]
-            },
-            grade2: {
-                title: "Grade 2: Forces and Motion",
-                description: "Experimenting with different forces and observing their effects on motion.",
-                models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-forces_on_a_rotating_man.glb', name: 'Forces on a Rotating Man', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 },
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-machinery_-_single_pashe_dc_motor.glb', name: 'Single Phase DC Motor', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf46c27 }
-                ]
-            },
-            grade3: {
-                title: "Grade 3: Electromagnetism",
-                description: "Exploring the principles of electromagnetism and its applications.",
-                models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagneticwave.glb', name: 'Electromagnetic Wave', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 },
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagnetic_portal.glb', name: 'Electromagnetic Portal', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }
-                ]
-            }
-        };
+        let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup, textMesh;
 
         // Function to create a new scene
         function createScene(viewportId) {
@@ -167,179 +121,188 @@
             currentControls.enableDamping = true;
             currentControls.dampingFactor = 0.1;
 
-            // Add ambient light
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Increased intensity
+            // Reduced light intensity by 50% and changed light color
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.15); // Grey color and reduced intensity
             currentScene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0x2c7481, 0.25); // Paradiso color and reduced intensity
+            directionalLight.position.set(5, 10, 7.5);
+            currentScene.add(directionalLight);
 
-            // Add a stage (flat plane) underneath the models
-            const stageGeometry = new THREE.PlaneGeometry(20, 20);
-            const stageMaterial = new THREE.MeshStandardMaterial({ color: 0x808080, side: THREE.DoubleSide });
-            const stage = new THREE.Mesh(stageGeometry, stageMaterial);
-            stage.rotation.x = -Math.PI / 2; // Rotate to be horizontal
-            stage.position.y = -1; // Position slightly below the models
-            currentScene.add(stage);
+            currentCamera.position.set(0, 10, 15); // Lifted the camera up by 2 degrees and brought it closer
+            currentCamera.lookAt(0, 2, 0); // Adjusted focus point slightly higher
 
-            // Position the camera higher for a top-down view
-            currentCamera.position.set(0, 15, 15); // Higher and angled
-            currentCamera.lookAt(0, 0, 0);
-
-            createModelGroup();
+            createGround(); // Create the ground mesh
+            createModelGroup(); // Create the model group
             animate();
+        }
+
+        // Function to create the ground
+        function createGround() {
+            const geometry = new THREE.CircleGeometry(10.35, 32); // Increased radius
+            const textureLoader = new THREE.TextureLoader();
+            const texture = textureLoader.load('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/Logo.png', function(texture) {
+                // Adjust texture scaling
+                texture.repeat.set(0.3, 0.3); // Further reduce stretchiness
+                texture.wrapS = THREE.RepeatWrapping; // Repeat texture horizontally
+                texture.wrapT = THREE.RepeatWrapping; // Repeat texture vertically
+            });
+
+            const material = new THREE.MeshStandardMaterial({
+                map: texture,
+                color: 0x000000, // Slight dark black color to absorb some light
+                roughness: 0.7, // Increase roughness for less reflectivity
+                metalness: 0.1, // Reduce metalness for a warmer feel
+            });
+
+            ground = new THREE.Mesh(geometry, material);
+            ground.rotation.x = -Math.PI / 2; // Rotate to make it horizontal
+            ground.position.y = -0.1; // Slightly below the models
+            ground.receiveShadow = true; // Allow shadows on the ground
+            currentScene.add(ground); // Add ground to the scene
+
+            // Add company name text
+            const loader = new THREE.FontLoader();
+            loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+                const textGeometry = new THREE.TextGeometry('Smartistic-Lab\n        Studio', {
+                    font: font,
+                    size: 1.35, // Reduced size by 25% (from 1.8 to 1.35)
+                    height: 0.1,
+                    curveSegments: 12,
+                    bevelEnabled: true,
+                    bevelThickness: 0.03,
+                    bevelSize: 0.02,
+                    bevelOffset: 0,
+                    bevelSegments: 5
+                });
+                const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+                textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                textMesh.position.set(-4.5, -0.1, 0); // Moved 1cm left (from -3.5 to -4.5) and 1cm down (from 0.1 to -0.1)
+                textMesh.rotation.x = -Math.PI / 2; // Rotate to lay flat on the ground
+                textMesh.rotation.z = Math.PI / 4; // Slightly face the camera
+                currentScene.add(textMesh);
+
+                // Add spotlights with changing colors for the text
+                const colors = [0x2c7481, 0xdadad8, 0xf47e42, 0xf46c27]; // Paradiso, Quill Gray, Jaffa, Flamingo
+                let colorIndex = 0;
+                const spotLight = new THREE.SpotLight(colors[colorIndex], 0.5);
+                spotLight.position.set(0, 5, 0);
+                spotLight.target = textMesh;
+                spotLight.castShadow = true;
+                currentScene.add(spotLight);
+                currentScene.add(spotLight.target);
+
+                setInterval(() => {
+                    colorIndex = (colorIndex + 1) % colors.length;
+                    spotLight.color.setHex(colors[colorIndex]);
+                }, 500); // Change color every 0.5 second
+            });
         }
 
         // Function to create a model group
         function createModelGroup() {
-            modelGroup = new THREE.Group();
-            currentScene.add(modelGroup);
+            modelGroup = new THREE.Group(); // Create a group for the models
+            currentScene.add(modelGroup); // Add the model group to the scene
         }
 
         // Animation loop
         function animate() {
             requestAnimationFrame(animate);
-            if (currentScene && modelGroup) {
-                modelGroup.rotation.y += 0.005;
-                currentRenderer.render(currentScene, currentCamera);
+            if (currentScene) { // Ensure currentScene is defined
+                // Rotate the model group to simulate the ground rotating
+                modelGroup.rotation.y += 0.005; // Slow down the rotation
             }
-        }
-
-        // Function to calculate dynamic scaling for models
-        function calculateScale(object) {
-            const box = new THREE.Box3().setFromObject(object);
-            const size = new THREE.Vector3();
-            box.getSize(size);
-
-            // Determine the maximum dimension of the model
-            const maxDimension = Math.max(size.x, size.y, size.z);
-
-            // Define a target size for the models (adjust as needed)
-            const targetSize = 5; // Models will be scaled to fit within this size
-
-            // Calculate the scale factor
-            const scaleFactor = targetSize / maxDimension;
-
-            return scaleFactor;
+            currentRenderer.render(currentScene, currentCamera);
         }
 
         // Function to load models into the viewport
-        function loadModels(models) {
-            console.log('Starting to load models...');
-            createScene('mainViewport');
-
-            let loadedCount = 0;
-            const totalModels = models.length;
-            const radius = 7; // Increased radius for better spacing
-            const angleIncrement = (Math.PI * 2) / totalModels;
+        function loadModels(models, viewportId) {
+            createScene(viewportId);
+            const radius = 9; // Radius for circular arrangement
+            const angleIncrement = (Math.PI * 2) / models.length; // Even spacing
 
             models.forEach((model, index) => {
                 const loader = new THREE.GLTFLoader();
-                loader.load(
-                    model.path,
-                    function (object) {
-                        loadedCount++;
-                        console.log(`Successfully loaded: ${model.name}`);
-
-                        // Calculate dynamic scale for the model
-                        const scaleFactor = calculateScale(object.scene);
-                        object.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
-
-                        // Position the model in a circular arrangement
+                loader.load(model.path, function(object) {
+                    if (object.scene) {
+                        // Position models in a circular arrangement
                         const angle = angleIncrement * index;
                         const x = Math.cos(angle) * radius;
                         const z = Math.sin(angle) * radius;
 
-                        object.scene.position.set(x, 0, z); // All models on the same X-axis (y = 0)
-                        modelGroup.add(object.scene);
+                        object.scene.position.set(x, 0, z);
 
-                        // Add multiple lights for each model
-                        const spotlight1 = new THREE.SpotLight(0xffffff, 2, 100, Math.PI / 4, 0.5); // Increased intensity
-                        spotlight1.position.set(x, 10, z); // Above the model
-                        spotlight1.target = object.scene;
-                        currentScene.add(spotlight1);
-                        currentScene.add(spotlight1.target);
-
-                        const spotlight2 = new THREE.SpotLight(0xffffff, 2, 100, Math.PI / 4, 0.5); // Increased intensity
-                        spotlight2.position.set(x + 3, 10, z + 3); // Offset for additional light
-                        spotlight2.target = object.scene;
-                        currentScene.add(spotlight2);
-                        currentScene.add(spotlight2.target);
-
-                        const pointLight = new THREE.PointLight(0xffffff, 2, 50); // Increased intensity
-                        pointLight.position.set(x, 5, z); // Close to the model
-                        currentScene.add(pointLight);
-
-                        if (loadedCount === totalModels) {
-                            console.log('All models loaded successfully');
+                        // Apply scaling and position adjustments based on model name
+                        switch (model.name) {
+                            case 'Geometry Spheres':
+                                object.scene.scale.set(2, 2, 2); // Double size
+                                break;
+                            case 'Insect Anatomy':
+                                object.scene.scale.set(2, 2, 2); // Double size
+                                object.scene.position.y = 0.5; // Lifted up on Y-axis by 0.5 units (adjust as needed)
+                                break;
+                            case 'Female Human Skeleton':
+                                object.scene.scale.set(0.105, 0.105, 0.105); // Scaled up by 5% (from 0.1 to 0.105)
+                                object.scene.position.y = 1.0; // Lifted up on Y-axis by 1.0 units (adjust as needed)
+                                break;
+                            case 'Generalized Human Body':
+                            case 'Animal Pack':
+                                object.scene.scale.set(0.5, 0.5, 0.5); // Default scaling
+                                break;
+                            default:
+                                object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z); // Default scaling
+                                break;
                         }
-                    },
-                    function (xhr) {
-                        console.log(`${model.name}: ${(xhr.loaded / xhr.total * 100).toFixed(2)}% loaded`);
-                    },
-                    function (error) {
-                        console.error(`Error loading model: ${model.path}`, error);
-                        loadedCount++;
-                        if (loadedCount === totalModels) {
-                            console.log('All models processed (some may have failed).');
-                        }
+
+                        // Add a spotlight for each model with specific colors
+                        const spotLight = new THREE.SpotLight(model.color);
+                        spotLight.position.set(x, 5, z); // Height for better visibility
+                        spotLight.target = object.scene; // Aim at the model
+                        spotLight.castShadow = true;
+                        currentScene.add(spotLight);
+                        currentScene.add(spotLight.target); // Add target for spotlight
+
+                        modelGroup.add(object.scene); // Add the model to the model group
+                    } else {
+                        console.error(`Failed to load model: ${model.name}`);
                     }
-                );
+                }, function(xhr) {
+                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                }, function(error) {
+                    console.error(`Error loading model: ${model.path}`, error);
+                    alert(`Failed to load model: ${model.name}`);
+                });
             });
+
+            // Adjust camera position
+            currentCamera.position.set(0, 10, 15); // Lifted the camera up by 2 degrees and brought it closer
+            currentCamera.lookAt(0, 2, 0); // Adjusted focus point slightly higher
         }
 
-        // Function to update the info area with grade-specific content or default content
-        function updateInfoArea(grade) {
-            const infoViewport = document.getElementById('infoViewport');
-            if (grade === 'main') {
-                // Default content for the main page
-                infoViewport.innerHTML = `
-                    <h2>Welcome to Smartistic-Lab Studio</h2>
-                    <p>
-                        Welcome to the <strong>Smartistic-Lab Studio</strong>. Here, we explore various subjects through interactive 3D models and simulations.
-                        Choose a subject to get started!
-                    </p>
-                `;
-            } else {
-                // Grade-specific content
-                infoViewport.innerHTML = `
-                    <h2>${gradeContent[grade].title}</h2>
-                    <p>${gradeContent[grade].description}</p>
-                `;
-            }
+        // Function to load the Physics page dynamically
+        async function loadPhysicsPage() {
+            const response = await fetch('physics_test.html');
+            const html = await response.text();
+            document.getElementById('mainViewport').innerHTML = html;
         }
 
-        // Event listeners for grade buttons
-        document.getElementById('btnGrade1').addEventListener('click', () => {
-            loadModels(gradeContent.grade1.models);
-            updateInfoArea('grade1');
+        // Event listener for the Physics button
+        document.getElementById('btnPhysics').addEventListener('click', () => {
+            loadPhysicsPage();
         });
 
-        document.getElementById('btnGrade2').addEventListener('click', () => {
-            loadModels(gradeContent.grade2.models);
-            updateInfoArea('grade2');
-        });
-
-        document.getElementById('btnGrade3').addEventListener('click', () => {
-            loadModels(gradeContent.grade3.models);
-            updateInfoArea('grade3');
-        });
-
-        // Home button to return to the main page
-        document.getElementById('btnHome').addEventListener('click', () => {
-            const allModels = [
-                ...gradeContent.grade1.models,
-                ...gradeContent.grade2.models,
-                ...gradeContent.grade3.models
-            ];
-            loadModels(allModels);
-            updateInfoArea('main'); // Reset info area to default content
-        });
-
-        // Load all models on the main page initially
-        const allModels = [
-            ...gradeContent.grade1.models,
-            ...gradeContent.grade2.models,
-            ...gradeContent.grade3.models
+        // Initialize main viewport and load models
+        const models = [
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Generalized Human Body', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 }, // Paradiso
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', name: 'Animal Pack', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }, // Jaffa
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', name: 'Insect Anatomy', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf46c27 }, // Flamingo
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', name: 'Female Human Skeleton', scale: { x: 0.105, y: 0.105, z: 0.105 }, color: 0x2c7481 }, // Paradiso (scaled up by 5%)
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Geometry Spheres', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack', scale: { x: 0.1, y: 0.1, z: 0.1 }, color: 0xf47e42 }, // Jaffa
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set', scale: { x: 0.4, y: 0.4, z: 0.4 }, color: 0xf46c27 } // Flamingo
         ];
-        loadModels(allModels);
+
+        loadModels(models, 'mainViewport');
     </script>
 </body>
 </html>
