@@ -108,6 +108,7 @@
     <script>
         let currentScene, currentRenderer, currentCamera, currentControls, modelGroup;
 
+        // Function to create a new scene
         function createScene(viewportId) {
             const viewport = document.getElementById(viewportId);
             currentScene = new THREE.Scene();
@@ -142,11 +143,13 @@
             animate();
         }
 
+        // Function to create a model group
         function createModelGroup() {
             modelGroup = new THREE.Group();
             currentScene.add(modelGroup);
         }
 
+        // Animation loop
         function animate() {
             requestAnimationFrame(animate);
             if (currentScene && modelGroup) {
@@ -155,6 +158,7 @@
             }
         }
 
+        // Function to calculate dynamic scaling for models
         function calculateScale(object) {
             const box = new THREE.Box3().setFromObject(object);
             const size = new THREE.Vector3();
@@ -172,6 +176,7 @@
             return scaleFactor;
         }
 
+        // Function to load models into the viewport
         function loadModels(models) {
             console.log('Starting to load models...');
             createScene('mainViewport');
@@ -236,17 +241,37 @@
             });
         }
 
-        const allModels = [
+        // Define models for each grade
+        const grade1Models = [
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-arcade_machine.glb', name: 'Grade 1 Arcade Machine' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-time_machine.glb', name: 'Grade 1 Time Machine' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-forces_on_a_rotating_man.glb', name: 'Grade 2 Forces on a Rotating Man' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-machinery_-_single_pashe_dc_motor.glb', name: 'Grade 2 Single Phase DC Motor' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagneticwave.glb', name: 'Grade 3 Electromagnetic Wave' },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagnetic_portal.glb', name: 'Grade 3 Electromagnetic Portal' }
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-time_machine.glb', name: 'Grade 1 Time Machine' }
         ];
 
-        // Load all models when the page loads
-        loadModels(allModels);
+        const grade2Models = [
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-forces_on_a_rotating_man.glb', name: 'Grade 2 Forces on a Rotating Man' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-machinery_-_single_pashe_dc_motor.glb', name: 'Grade 2 Single Phase DC Motor' }
+        ];
+
+        const grade3Models = [
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagnetic_portal.glb', name: 'Grade 3 Electromagnetic Portal' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagneticwave.glb', name: 'Grade 3 Electromagnetic Wave' }
+        ];
+
+        // Event listeners for grade buttons
+        document.getElementById('btnGrade1').addEventListener('click', () => {
+            loadModels(grade1Models);
+        });
+
+        document.getElementById('btnGrade2').addEventListener('click', () => {
+            loadModels(grade2Models);
+        });
+
+        document.getElementById('btnGrade3').addEventListener('click', () => {
+            loadModels(grade3Models);
+        });
+
+        // Load initial models (Grade 1 by default)
+        loadModels(grade1Models);
     </script>
 </body>
 </html>
