@@ -248,8 +248,22 @@
             currentRenderer.render(currentScene, currentCamera);
         }
 
+        function clearModels() {
+            // Remove all existing models from the group
+            while(modelGroup.children.length > 0){ 
+                modelGroup.remove(modelGroup.children[0]); 
+            }
+        }
+
         function loadModels(models, viewportId) {
+            // Clear the renderer if it exists
+            if (currentRenderer && currentRenderer.domElement && currentRenderer.domElement.parentNode) {
+                currentRenderer.domElement.parentNode.removeChild(currentRenderer.domElement);
+            }
+            
             createScene(viewportId);
+            clearModels();
+            
             const radius = 9; // Radius for circular arrangement
             const angleIncrement = (Math.PI * 2) / models.length; // Even spacing
 
@@ -262,22 +276,7 @@
                         const z = Math.sin(angle) * radius;
 
                         object.scene.position.set(x, 0, z);
-
-                        switch (model.name) {
-                            case 'Lever and Pulley Set':
-                                object.scene.scale.set(2, 2, 2); // Double size
-                                break;
-                            case 'Force Simulator':
-                                object.scene.scale.set(2, 2, 2); // Double size
-                                object.scene.position.y = 0.5; // Lifted up on Y-axis by 0.5 units
-                                break;
-                            case 'EM Field Viewer':
-                                object.scene.scale.set(2, 2, 2); // Double size
-                                break;
-                            default:
-                                object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z); // Default scaling
-                                break;
-                        }
+                        object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z);
 
                         const spotLight = new THREE.SpotLight(model.color);
                         spotLight.position.set(x, 5, z); // Height for better visibility
@@ -302,29 +301,88 @@
             currentCamera.lookAt(0, 2, 0); // Adjusted focus point slightly higher
         }
 
+        function updateInfoViewport(title, description) {
+            const infoViewport = document.querySelector('.info-viewport');
+            infoViewport.innerHTML = `
+                <h2>${title}</h2>
+                <p>${description}</p>
+            `;
+        }
+
         const gradeContent = {
             grade1: {
-                title: "Grade 1: Simple Machines",
-                description: "Exploration of how simple machines work and how they make work easier.",
+                title: "Grade 1: Simple Machines and Time",
+                description: "Exploration of arcade machines and the concept of time through interactive 3D models.",
                 models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/lever_and_pulley_set.glb', name: 'Lever and Pulley Set', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 }, // Paradiso
+                    { 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/grade_one_arcade_machine.glb', 
+                        name: 'Arcade Machine', 
+                        scale: { x: 1, y: 1, z: 1 }, 
+                        color: 0x2c7481 // Paradiso
+                    },
+                    { 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/grade_one_time_machine.glb', 
+                        name: 'Time Machine', 
+                        scale: { x: 1, y: 1, z: 1 }, 
+                        color: 0xf47e42 // Jaffa
+                    }
+                ]
+            },
+            grade2: {
+                title: "Grade 2: Forces and Machinery",
+                description: "Study of rotational forces and electric motors through interactive 3D models.",
+                models: [
+                    { 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/grade_two_forces_on_a_rotating_man.glb', 
+                        name: 'Forces on a Rotating Man', 
+                        scale: { x: 1, y: 1, z: 1 }, 
+                        color: 0x2c7481 // Paradiso
+                    },
+                    { 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/grade_two_machinery_-_single_pashe_dc_motor.glb', 
+                        name: 'Single Phase DC Motor', 
+                        scale: { x: 1, y: 1, z: 1 }, 
+                        color: 0xf47e42 // Jaffa
+                    }
+                ]
+            },
+            grade3: {
+                title: "Grade 3: Electromagnetism",
+                description: "Exploration of electromagnetic waves and portals through interactive 3D models.",
+                models: [
+                    { 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/grade_three_electromagneticwave.glb', 
+                        name: 'Electromagnetic Wave', 
+                        scale: { x: 1, y: 1, z: 1 }, 
+                        color: 0x2c7481 // Paradiso
+                    },
+                    { 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/grade_three_electromagnetic_portal.glb', 
+                        name: 'Electromagnetic Portal', 
+                        scale: { x: 1, y: 1, z: 1 }, 
+                        color: 0xf47e42 // Jaffa
+                    }
                 ]
             }
         };
 
+        // Event listeners for grade buttons
         document.getElementById('btnGrade1').addEventListener('click', () => {
-            window.location.href = 'grade1.html';
+            updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
+            loadModels(gradeContent.grade1.models, 'mainViewport');
         });
 
         document.getElementById('btnGrade2').addEventListener('click', () => {
-            // Add similar code for Grade 2
+            updateInfoViewport(gradeContent.grade2.title, gradeContent.grade2.description);
+            loadModels(gradeContent.grade2.models, 'mainViewport');
         });
 
         document.getElementById('btnGrade3').addEventListener('click', () => {
-            // Add similar code for Grade 3
+            updateInfoViewport(gradeContent.grade3.title, gradeContent.grade3.description);
+            loadModels(gradeContent.grade3.models, 'mainViewport');
         });
 
-        // Initialize main viewport and load default models
+        // Initialize main viewport with empty models
         loadModels([], 'mainViewport');
     </script>
 </body>
