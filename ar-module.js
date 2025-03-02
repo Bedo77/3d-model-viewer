@@ -23,7 +23,7 @@ if (!navigator.xr || !navigator.xr.isSessionSupported) {
         });
 
         const arToolkitContext = new THREEx.ArToolkitContext({
-            cameraParametersUrl: 'https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@master/data/data/camera_para.dat',
+            cameraParametersUrl: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Resources/camera_para.dat', // Updated path
             detectionMode: 'mono',
         });
 
@@ -45,7 +45,7 @@ if (!navigator.xr || !navigator.xr.isSessionSupported) {
 
         const markerControls = new THREEx.ArMarkerControls(arToolkitContext, markerRoot, {
             type: 'pattern',
-            patternUrl: 'https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@master/data/data/hiro.patt',
+            patternUrl: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Resources/hiro.patt', // Updated path
         });
 
         // Position the model relative to the marker
