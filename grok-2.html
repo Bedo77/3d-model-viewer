@@ -10,21 +10,13 @@
             font-family: Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
-            background-color: #f46c27;
-            display: flex;
-        }
-        .main-page, .grade-page {
-            width: 100%;
-            height: 100%;
-            display: none;
-        }
-        .main-page.active, .grade-page.active {
+            background-color: #f46c27; /* Flamingo */
             display: flex;
         }
         .sidebar {
             width: 20%;
             height: 100%;
-            background-color: #2c7481;
+            background-color: #2c7481; /* Paradiso */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -36,7 +28,7 @@
             height: 100px;
             margin: 10px;
             border-radius: 50%;
-            background-color: #f47e42;
+            background-color: #f47e42; /* Jaffa */
             color: white;
             display: flex;
             justify-content: center;
@@ -45,7 +37,7 @@
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
         .button:hover {
-            background-color: #f46c27;
+            background-color: #f46c27; /* Flamingo */
             transform: scale(1.1);
         }
         .main-content {
@@ -57,7 +49,7 @@
         .info-viewport {
             width: 100%;
             height: 50%;
-            background-color: #1A0E0D;
+            background-color: #1A0E0D; /* Darker brown */
             color: #FFFFFF;
             display: flex;
             flex-direction: column;
@@ -69,24 +61,34 @@
             overflow-y: auto;
             font-family: 'TimesNewRomance', serif;
         }
-        .model-viewport, .grade-viewport {
-            width: 100%;
-            height: 50%;
-            background-color: #ffffff;
-            border-radius: 50px;
-        }
-        .grade-viewport {
-            height: 70%;
-        }
         .models-tracks {
             width: 20%;
             height: 100%;
-            background-color: #2c7481;
+            background-color: #2c7481; /* Paradiso */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 10px;
+        }
+        .model-viewport {
+            width: 100%;
+            height: 50%;
+            background-color: #ffffff;
+            margin-bottom: 2.5mm;
+            border-radius: 50px;
+        }
+        .grade-page {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f46c27;
+        }
+        .grade-page.active {
+            display: flex;
         }
         .back-button {
             width: 100px;
@@ -119,18 +121,21 @@
 <body>
     <div class="loading-indicator" id="loadingIndicator">Loading models...</div>
     
-    <!-- Main Page -->
-    <div class="main-page active" id="mainPage">
+    <!-- Main Page (Original Layout) -->
+    <div class="main-page" id="mainPage">
         <div class="sidebar">
             <div class="button" id="btnPhysics">Physics Section</div>
+            <div class="button" id="btnGrade1">Grade 1</div>
+            <div class="button" id="btnGrade2">Grade 2</div>
+            <div class="button" id="btnGrade3">Grade 3</div>
         </div>
         <div class="main-content">
             <div class="info-viewport">
-                <h2>Welcome to Smartistic-Lab Studio</h2>
+                <h2>Welcome to the Physics Section</h2>
                 <p>
-                    Welcome to <strong>Smartistic-Lab Studio</strong>. Select the Physics Section to explore 
-                    interactive 3D models and simulations designed to make learning physics engaging and intuitive 
-                    for students of all ages.
+                    Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
+                    Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
+                    Dive into the world of physics and discover the laws that govern our reality!
                 </p>
             </div>
             <div class="model-viewport" id="mainViewport"></div>
@@ -140,49 +145,41 @@
         </div>
     </div>
 
-    <!-- Physics Page -->
-    <div class="main-page" id="physicsPage">
+    <!-- Grade Pages -->
+    <div class="grade-page" id="grade1Page">
         <div class="sidebar">
-            <div class="button" id="btnGrade1">Grade 1</div>
-            <div class="button" id="btnGrade2">Grade 2</div>
-            <div class="button" id="btnGrade3">Grade 3</div>
-            <div class="button" id="btnBack">Back</div>
+            <div class="button" id="btnBack1">Back</div>
         </div>
         <div class="main-content">
-            <div class="info-viewport">
-                <h2>Welcome to the Physics Section</h2>
-                <p>
-                    Here, we explore the fundamental principles of the universe, from motion and forces to 
-                    energy and matter. Select a grade to view its interactive 3D models.
-                </p>
-            </div>
-            <div class="model-viewport" id="physicsViewport"></div>
+            <div class="info-viewport" id="grade1Info"></div>
+            <div class="model-viewport" id="grade1Viewport"></div>
         </div>
         <div class="models-tracks">
             <h3 style="color: white;">Model Tracks</h3>
         </div>
     </div>
-
-    <!-- Grade Pages -->
-    <div class="grade-page" id="grade1Page">
-        <div class="main-content">
-            <div class="info-viewport" id="grade1Info"></div>
-            <div class="grade-viewport" id="grade1Viewport"></div>
-            <button class="back-button" onclick="showPhysicsPage()">Back to Physics</button>
-        </div>
-    </div>
     <div class="grade-page" id="grade2Page">
+        <div class="sidebar">
+            <div class="button" id="btnBack2">Back</div>
+        </div>
         <div class="main-content">
             <div class="info-viewport" id="grade2Info"></div>
-            <div class="grade-viewport" id="grade2Viewport"></div>
-            <button class="back-button" onclick="showPhysicsPage()">Back to Physics</button>
+            <div class="model-viewport" id="grade2Viewport"></div>
+        </div>
+        <div class="models-tracks">
+            <h3 style="color: white;">Model Tracks</h3>
         </div>
     </div>
     <div class="grade-page" id="grade3Page">
+        <div class="sidebar">
+            <div class="button" id="btnBack3">Back</div>
+        </div>
         <div class="main-content">
             <div class="info-viewport" id="grade3Info"></div>
-            <div class="grade-viewport" id="grade3Viewport"></div>
-            <button class="back-button" onclick="showPhysicsPage()">Back to Physics</button>
+            <div class="model-viewport" id="grade3Viewport"></div>
+        </div>
+        <div class="models-tracks">
+            <h3 style="color: white;">Model Tracks</h3>
         </div>
     </div>
 
@@ -194,42 +191,36 @@
         const loadingIndicator = document.getElementById('loadingIndicator');
 
         function createScene(viewportId) {
-            try {
-                const viewport = document.getElementById(viewportId);
-                if (!viewport) throw new Error(`Viewport ${viewportId} not found`);
-                
-                currentScene = new THREE.Scene();
-                currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
-                currentRenderer = new THREE.WebGLRenderer({ antialias: true });
+            const viewport = document.getElementById(viewportId);
+            if (!viewport) return;
 
-                currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
-                viewport.innerHTML = ''; // Clear previous content
-                viewport.appendChild(currentRenderer.domElement);
+            currentScene = new THREE.Scene();
+            currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            currentRenderer = new THREE.WebGLRenderer({ antialias: true });
 
-                currentControls = new THREE.OrbitControls(currentCamera, currentRenderer.domElement);
-                currentControls.enableDamping = true;
-                currentControls.dampingFactor = 0.1;
+            currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.innerHTML = '';
+            viewport.appendChild(currentRenderer.domElement);
 
-                const ambientLight = new THREE.AmbientLight(0x404040, 0.15);
-                currentScene.add(ambientLight);
-                const directionalLight = new THREE.DirectionalLight(0x2c7481, 0.25);
-                directionalLight.position.set(5, 10, 7.5);
-                currentScene.add(directionalLight);
+            currentControls = new THREE.OrbitControls(currentCamera, currentRenderer.domElement);
+            currentControls.enableDamping = true;
+            currentControls.dampingFactor = 0.1;
 
-                currentCamera.position.set(0, 10, 15);
-                currentCamera.lookAt(0, 2, 0);
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.15);
+            currentScene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0x2c7481, 0.25);
+            directionalLight.position.set(5, 10, 7.5);
+            currentScene.add(directionalLight);
 
-                createGround();
-                createModelGroup();
-                animate();
-            } catch (error) {
-                console.error('Error creating scene:', error);
-                loadingIndicator.style.display = 'none';
-            }
+            currentCamera.position.set(0, 10, 15);
+            currentCamera.lookAt(0, 2, 0);
+
+            createGround();
+            createModelGroup();
+            animate();
         }
 
         function createGround() {
-            // [Previous createGround function remains unchanged]
             const geometry = new THREE.CircleGeometry(10.35, 32);
             const textureLoader = new THREE.TextureLoader();
             const texture = textureLoader.load('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/Logo.png', function(texture) {
@@ -267,67 +258,62 @@
 
         function clearModels() {
             if (modelGroup) {
-                while(modelGroup.children.length > 0){ 
-                    modelGroup.remove(modelGroup.children[0]); 
+                while(modelGroup.children.length > 0) {
+                    modelGroup.remove(modelGroup.children[0]);
                 }
             }
         }
 
         function loadModels(models, viewportId) {
-            try {
-                loadingIndicator.style.display = 'block';
-                if (currentRenderer && currentRenderer.domElement && currentRenderer.domElement.parentNode) {
-                    currentRenderer.domElement.parentNode.removeChild(currentRenderer.domElement);
-                }
-                
-                createScene(viewportId);
-                clearModels();
-                
-                if (!models || models.length === 0) {
-                    loadingIndicator.style.display = 'none';
-                    return;
-                }
-
-                let loadedCount = 0;
-                const totalModels = models.length;
-                const radius = 9;
-                const angleIncrement = (Math.PI * 2) / totalModels;
-
-                models.forEach((model, index) => {
-                    const loader = new THREE.GLTFLoader();
-                    loader.load(model.path, function(object) {
-                        loadedCount++;
-                        const angle = angleIncrement * index;
-                        const x = Math.cos(angle) * radius;
-                        const z = Math.sin(angle) * radius;
-
-                        object.scene.position.set(x, 0, z);
-                        object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z);
-
-                        const spotLight = new THREE.SpotLight(model.color);
-                        spotLight.position.set(x, 5, z);
-                        spotLight.target = object.scene;
-                        spotLight.castShadow = true;
-                        currentScene.add(spotLight);
-                        currentScene.add(spotLight.target);
-
-                        modelGroup.add(object.scene);
-
-                        if (loadedCount === totalModels) {
-                            loadingIndicator.style.display = 'none';
-                        }
-                    }, undefined, function(error) {
-                        console.error(`Error loading model ${model.path}:`, error);
-                        loadedCount++;
-                        if (loadedCount === totalModels) {
-                            loadingIndicator.style.display = 'none';
-                        }
-                    });
-                });
-            } catch (error) {
-                console.error('Error loading models:', error);
-                loadingIndicator.style.display = 'none';
+            loadingIndicator.style.display = 'block';
+            if (currentRenderer && currentRenderer.domElement && currentRenderer.domElement.parentNode) {
+                currentRenderer.domElement.parentNode.removeChild(currentRenderer.domElement);
             }
+
+            createScene(viewportId);
+            clearModels();
+
+            if (!models || models.length === 0) {
+                loadingIndicator.style.display = 'none';
+                return;
+            }
+
+            let loadedCount = 0;
+            const totalModels = models.length;
+            const radius = 9;
+            const angleIncrement = (Math.PI * 2) / totalModels;
+
+            models.forEach((model, index) => {
+                const loader = new THREE.GLTFLoader();
+                loader.load(model.path, function(object) {
+                    loadedCount++;
+                    const angle = angleIncrement * index;
+                    const x = Math.cos(angle) * radius;
+                    const z = Math.sin(angle) * radius;
+
+                    object.scene.position.set(x, 0, z);
+                    object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z);
+
+                    const spotLight = new THREE.SpotLight(model.color);
+                    spotLight.position.set(x, 5, z);
+                    spotLight.target = object.scene;
+                    spotLight.castShadow = true;
+                    currentScene.add(spotLight);
+                    currentScene.add(spotLight.target);
+
+                    modelGroup.add(object.scene);
+
+                    if (loadedCount === totalModels) {
+                        loadingIndicator.style.display = 'none';
+                    }
+                }, undefined, function(error) {
+                    console.error(`Error loading model ${model.path}:`, error);
+                    loadedCount++;
+                    if (loadedCount === totalModels) {
+                        loadingIndicator.style.display = 'none';
+                    }
+                });
+            });
         }
 
         function updateInfoViewport(title, description, viewportId) {
@@ -368,7 +354,8 @@
         };
 
         function showPage(pageId) {
-            document.querySelectorAll('.main-page, .grade-page').forEach(page => {
+            document.getElementById('mainPage').style.display = 'none';
+            document.querySelectorAll('.grade-page').forEach(page => {
                 page.classList.remove('active');
             });
             const page = document.getElementById(pageId);
@@ -377,9 +364,12 @@
             }
         }
 
-        function showPhysicsPage() {
-            showPage('physicsPage');
-            loadModels([], 'physicsViewport');
+        function showMainPage() {
+            document.getElementById('mainPage').style.display = 'flex';
+            document.querySelectorAll('.grade-page').forEach(page => {
+                page.classList.remove('active');
+            });
+            loadModels([], 'mainViewport');
         }
 
         function showGradePage(grade) {
@@ -389,20 +379,18 @@
         }
 
         // Event listeners
-        document.getElementById('btnPhysics').addEventListener('click', showPhysicsPage);
-        document.getElementById('btnBack').addEventListener('click', () => showPage('mainPage'));
+        document.getElementById('btnPhysics').addEventListener('click', () => {
+            // No action needed, just keep the main page
+        });
         document.getElementById('btnGrade1').addEventListener('click', () => showGradePage('grade1'));
         document.getElementById('btnGrade2').addEventListener('click', () => showGradePage('grade2'));
         document.getElementById('btnGrade3').addEventListener('click', () => showGradePage('grade3'));
+        document.getElementById('btnBack1').addEventListener('click', showMainPage);
+        document.getElementById('btnBack2').addEventListener('click', showMainPage);
+        document.getElementById('btnBack3').addEventListener('click', showMainPage);
 
         // Initialize
-        try {
-            showPage('mainPage');
-            loadModels([], 'mainViewport');
-        } catch (error) {
-            console.error('Initialization error:', error);
-            document.body.innerHTML = '<h1>Error loading page. Please refresh.</h1>';
-        }
+        loadModels([], 'mainViewport');
     </script>
 </body>
 </html>
