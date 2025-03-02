@@ -9,7 +9,7 @@
     </style>
     <!-- Load TimesNewRomance font -->
     <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
-    <!-- Load AFRAME and THREE.js -->
+    <!-- Load AFRAME (includes THREE.js) -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
 </head>
 <body>
@@ -35,11 +35,11 @@
         </div>
     </div>
 
-    <!-- Load THREE.js and OrbitControls -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- Load OrbitControls and GLTFLoader from A-Frame's THREE.js -->
     <script>
+        // Use THREE.js from A-Frame
+        const THREE = AFRAME.THREE;
+
         // Your existing script for loading models and initializing the scene
         let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup, textMesh;
 
@@ -108,4 +108,56 @@
                     bevelOffset: 0,
                     bevelSegments: 5
                 });
-                const textMaterial = new THREE.Mesh
+                const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+                textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                textMesh.position.set(-4.5, -0.1, 0); // Moved 1cm left (from -3.5 to -4.5) and 1cm down (from 0.1 to -0.1)
+                textMesh.rotation.x = -Math.PI / 2; // Rotate to lay flat on the ground
+                textMesh.rotation.z = Math.PI / 4; // Slightly face the camera
+                currentScene.add(textMesh);
+
+                // Add spotlights with changing colors for the text
+                const colors = [0x2c7481, 0xdadad8, 0xf47e42, 0xf46c27]; // Paradiso, Quill Gray, Jaffa, Flamingo
+                let colorIndex = 0;
+                const spotLight = new THREE.SpotLight(colors[colorIndex], 0.5);
+                spotLight.position.set(0, 5, 0);
+                spotLight.target = textMesh;
+                spotLight.castShadow = true;
+                currentScene.add(spotLight);
+                currentScene.add(spotLight.target);
+
+                setInterval(() => {
+                    colorIndex = (colorIndex + 1) % colors.length;
+                    spotLight.color.setHex(colors[colorIndex]);
+                }, 500); // Change color every 0.5 second
+            });
+        }
+
+        function createModelGroup() {
+            modelGroup = new THREE.Group(); // Create a group for the models
+            currentScene.add(modelGroup); // Add the model group to the scene
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (currentScene) { // Ensure currentScene is defined
+                // Rotate the model group to simulate the ground rotating
+                modelGroup.rotation.y += 0.005; // Slow down the rotation
+            }
+            currentRenderer.render(currentScene, currentCamera);
+        }
+
+        // Initialize main viewport and load models
+        const models = [
+            // Your existing models array
+        ];
+
+        loadModels(models, 'mainViewport');
+
+        // Add event listener for AR button
+        document.getElementById('btnAR').addEventListener('click', function () {
+            initializeAR(modelGroup); // Pass modelGroup to the AR module
+        });
+    </script>
+    <script src="ar-module.js"></script> <!-- Load AR module -->
+</body>
+</html>
