@@ -286,14 +286,27 @@
             });
         }
 
-        // Function to update the info area with grade-specific content
-        function updateInfoArea(grade) {
-            const infoViewport = document.getElementById('infoViewport');
-            infoViewport.innerHTML = `
-                <h2>${gradeContent[grade].title}</h2>
-                <p>${gradeContent[grade].description}</p>
-            `;
-        }
+        // Function to update the info area with grade-specific content or default content
+function updateInfoArea(grade) {
+    const infoViewport = document.getElementById('infoViewport');
+    if (grade === 'main') {
+        // Default content for the main page
+        infoViewport.innerHTML = `
+            <h2>Welcome to the Physics Section</h2>
+            <p>
+                Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
+                Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
+                Dive into the world of physics and discover the laws that govern our reality!
+            </p>
+        `;
+    } else {
+        // Grade-specific content
+        infoViewport.innerHTML = `
+            <h2>${gradeContent[grade].title}</h2>
+            <p>${gradeContent[grade].description}</p>
+        `;
+    }
+}
 
         // Event listeners for grade buttons
         document.getElementById('btnGrade1').addEventListener('click', () => {
@@ -311,16 +324,16 @@
             updateInfoArea('grade3');
         });
 
-        // Home button to return to the main page
-        document.getElementById('btnHome').addEventListener('click', () => {
-            const allModels = [
-                ...gradeContent.grade1.models,
-                ...gradeContent.grade2.models,
-                ...gradeContent.grade3.models
-            ];
-            loadModels(allModels);
-            updateInfoArea('main');
-        });
+       // Home button to return to the main page
+document.getElementById('btnHome').addEventListener('click', () => {
+    const allModels = [
+        ...gradeContent.grade1.models,
+        ...gradeContent.grade2.models,
+        ...gradeContent.grade3.models
+    ];
+    loadModels(allModels);
+    updateInfoArea('main'); // Reset info area to default content
+});
 
         // Load all models on the main page initially
         const allModels = [
