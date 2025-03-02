@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Educational 3D Models</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f46c27;
+            display: flex;
+        }
+        .sidebar {
+            width: 20%;
+            height: 100%;
+            background-color: #2c7481;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .button {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 50%;
+            background-color: #f47e42;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #f46c27;
+            transform: scale(1.1);
+        }
+        .main-content {
+            width: 60%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .info-viewport {
+            width: 100%;
+            height: 50%;
+            background-color: #1A0E0D;
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            box-sizing: border-box;
+            overflow-y: auto;
+            font-family: 'TimesNewRomance', serif;
+        }
+        .models-tracks {
+            width: 20%;
+            height: 100%;
+            background-color: #2c7481;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        .model-viewport {
+            width: 100%;
+            height: 50%;
+            background-color: #ffffff;
+            margin-bottom: 2.5mm;
+            border-radius: 50px;
+        }
+        .home-button {
+            width: 100px;
+            height: 40px;
+            margin: 10px;
+            background-color: #f47e42;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .home-button:hover {
+            background-color: #f46c27;
+        }
+    </style>
+    <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="home-button" id="btnHome">Home</div>
+        <div class="button" id="btnGrade1">Grade 1</div>
+        <div class="button" id="btnGrade2">Grade 2</div>
+        <div class="button" id="btnGrade3">Grade 3</div>
+    </div>
+    <div class="main-content">
+        <div class="info-viewport" id="infoViewport">
+            <h2>Welcome to the Physics Section</h2>
+            <p>
+                Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
+                Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
+                Dive into the world of physics and discover the laws that govern our reality!
+            </p>
+        </div>
+        <div class="model-viewport" id="mainViewport"></div>
+    </div>
+    <div class="models-tracks">
+        <h3 style="color: white;">Model Tracks</h3>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        let currentScene, currentRenderer, currentCamera, currentControls, modelGroup;
+
+        // Define grade-specific content
+        const gradeContent = {
+            grade1: {
+                title: "Grade 1: Simple Machines",
+                description: "Exploration of how simple machines work and how they make work easier.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-arcade_machine.glb', name: 'Grade One Arcade Machine', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 },
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-time_machine.glb', name: 'Grade One Time Machine', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }
+                ]
+            },
+            grade2: {
+                title: "Grade 2: Forces and Motion",
+                description: "Experimenting with different forces and observing their effects on motion.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-forces_on_a_rotating_man.glb', name: 'Forces on a Rotating Man', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 },
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-machinery_-_single_pashe_dc_motor.glb', name: 'Single Phase DC Motor', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf46c27 }
+                ]
+            },
+            grade3: {
+                title: "Grade 3: Electromagnetism",
+                description: "Exploring the principles of electromagnetism and its applications.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagneticwave.glb', name: 'Electromagnetic Wave', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 },
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagnetic_portal.glb', name: 'Electromagnetic Portal', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }
+                ]
+            }
+        };
+
+        // Function to create a new scene
+        function createScene(viewportId) {
+            const viewport = document.getElementById(viewportId);
+            currentScene = new THREE.Scene();
+            currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            currentRenderer = new THREE.WebGLRenderer({ antialias: true });
+
+            currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.innerHTML = ''; // Clear previous content
+            viewport.appendChild(currentRenderer.domElement);
+
+            currentControls = new THREE.OrbitControls(currentCamera, currentRenderer.domElement);
+            currentControls.enableDamping = true;
+            currentControls.dampingFactor = 0.1;
+
+            // Add ambient light
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1); // Increased intensity
+            currentScene.add(ambientLight);
+
+            // Add a stage (flat plane) underneath the models
+            const stageGeometry = new THREE.PlaneGeometry(20, 20);
+            const stageMaterial = new THREE.MeshStandardMaterial({ color: 0x808080, side: THREE.DoubleSide });
+            const stage = new THREE.Mesh(stageGeometry, stageMaterial);
+            stage.rotation.x = -Math.PI / 2; // Rotate to be horizontal
+            stage.position.y = -1; // Position slightly below the models
+            currentScene.add(stage);
+
+            // Position the camera higher for a top-down view
+            currentCamera.position.set(0, 15, 15); // Higher and angled
+            currentCamera.lookAt(0, 0, 0);
+
+            createModelGroup();
+            animate();
+        }
+
+        // Function to create a model group
+        function createModelGroup() {
+            modelGroup = new THREE.Group();
+            currentScene.add(modelGroup);
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            if (currentScene && modelGroup) {
+                modelGroup.rotation.y += 0.005;
+                currentRenderer.render(currentScene, currentCamera);
+            }
+        }
+
+        // Function to calculate dynamic scaling for models
+        function calculateScale(object) {
+            const box = new THREE.Box3().setFromObject(object);
+            const size = new THREE.Vector3();
+            box.getSize(size);
+
+            // Determine the maximum dimension of the model
+            const maxDimension = Math.max(size.x, size.y, size.z);
+
+            // Define a target size for the models (adjust as needed)
+            const targetSize = 5; // Models will be scaled to fit within this size
+
+            // Calculate the scale factor
+            const scaleFactor = targetSize / maxDimension;
+
+            return scaleFactor;
+        }
+
+        // Function to load models into the viewport
+        function loadModels(models) {
+            console.log('Starting to load models...');
+            createScene('mainViewport');
+
+            let loadedCount = 0;
+            const totalModels = models.length;
+            const radius = 7; // Increased radius for better spacing
+            const angleIncrement = (Math.PI * 2) / totalModels;
+
+            models.forEach((model, index) => {
+                const loader = new THREE.GLTFLoader();
+                loader.load(
+                    model.path,
+                    function (object) {
+                        loadedCount++;
+                        console.log(`Successfully loaded: ${model.name}`);
+
+                        // Calculate dynamic scale for the model
+                        const scaleFactor = calculateScale(object.scene);
+                        object.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
+
+                        // Position the model in a circular arrangement
+                        const angle = angleIncrement * index;
+                        const x = Math.cos(angle) * radius;
+                        const z = Math.sin(angle) * radius;
+
+                        object.scene.position.set(x, 0, z); // All models on the same X-axis (y = 0)
+                        modelGroup.add(object.scene);
+
+                        // Add multiple lights for each model
+                        const spotlight1 = new THREE.SpotLight(0xffffff, 2, 100, Math.PI / 4, 0.5); // Increased intensity
+                        spotlight1.position.set(x, 10, z); // Above the model
+                        spotlight1.target = object.scene;
+                        currentScene.add(spotlight1);
+                        currentScene.add(spotlight1.target);
+
+                        const spotlight2 = new THREE.SpotLight(0xffffff, 2, 100, Math.PI / 4, 0.5); // Increased intensity
+                        spotlight2.position.set(x + 3, 10, z + 3); // Offset for additional light
+                        spotlight2.target = object.scene;
+                        currentScene.add(spotlight2);
+                        currentScene.add(spotlight2.target);
+
+                        const pointLight = new THREE.PointLight(0xffffff, 2, 50); // Increased intensity
+                        pointLight.position.set(x, 5, z); // Close to the model
+                        currentScene.add(pointLight);
+
+                        if (loadedCount === totalModels) {
+                            console.log('All models loaded successfully');
+                        }
+                    },
+                    function (xhr) {
+                        console.log(`${model.name}: ${(xhr.loaded / xhr.total * 100).toFixed(2)}% loaded`);
+                    },
+                    function (error) {
+                        console.error(`Error loading model: ${model.path}`, error);
+                        loadedCount++;
+                        if (loadedCount === totalModels) {
+                            console.log('All models processed (some may have failed).');
+                        }
+                    }
+                );
+            });
+        }
+
+        // Function to update the info area with grade-specific content or default content
+function updateInfoArea(grade) {
+    const infoViewport = document.getElementById('infoViewport');
+    if (grade === 'main') {
+        // Default content for the main page
+        infoViewport.innerHTML = `
+            <h2>Welcome to the Physics Section</h2>
+            <p>
+                Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
+                Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
+                Dive into the world of physics and discover the laws that govern our reality!
+            </p>
+        `;
+    } else {
+        // Grade-specific content
+        infoViewport.innerHTML = `
+            <h2>${gradeContent[grade].title}</h2>
+            <p>${gradeContent[grade].description}</p>
+        `;
+    }
+}
+
+        // Event listeners for grade buttons
+        document.getElementById('btnGrade1').addEventListener('click', () => {
+            loadModels(gradeContent.grade1.models);
+            updateInfoArea('grade1');
+        });
+
+        document.getElementById('btnGrade2').addEventListener('click', () => {
+            loadModels(gradeContent.grade2.models);
+            updateInfoArea('grade2');
+        });
+
+        document.getElementById('btnGrade3').addEventListener('click', () => {
+            loadModels(gradeContent.grade3.models);
+            updateInfoArea('grade3');
+        });
+
+       // Home button to return to the main page
+document.getElementById('btnHome').addEventListener('click', () => {
+    const allModels = [
+        ...gradeContent.grade1.models,
+        ...gradeContent.grade2.models,
+        ...gradeContent.grade3.models
+    ];
+    loadModels(allModels);
+    updateInfoArea('main'); // Reset info area to default content
+});
+
+        // Load all models on the main page initially
+        const allModels = [
+            ...gradeContent.grade1.models,
+            ...gradeContent.grade2.models,
+            ...gradeContent.grade3.models
+        ];
+        loadModels(allModels);
+    </script>
+</body>
+</html>
