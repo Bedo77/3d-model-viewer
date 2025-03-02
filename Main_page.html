@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com/ajax/libs/three.js/ https://cdn.jsdelivr.net/; style-src 'self' 'unsafe-inline' https://fonts.cdnfonts.com/; img-src 'self' data: https://raw.githubusercontent.com/; connect-src 'self' https://raw.githubusercontent.com/;">
     <title>Educational 3D Models</title>
     <style>
         body {
@@ -280,9 +281,25 @@
 
         // Function to load the Physics page dynamically
         async function loadPhysicsPage() {
-            const response = await fetch('physics_test.html');
-            const html = await response.text();
-            document.getElementById('mainViewport').innerHTML = html;
+            try {
+                const response = await fetch('physics_test.html'); // Ensure this path is correct
+                if (!response.ok) {
+                    throw new Error(`Failed to load physics_test.html: ${response.status} ${response.statusText}`);
+                }
+                const html = await response.text();
+                document.getElementById('mainViewport').innerHTML = html;
+
+                // Reinitialize scripts if needed
+                const scripts = document.getElementById('mainViewport').getElementsByTagName('script');
+                for (let script of scripts) {
+                    const newScript = document.createElement('script');
+                    newScript.src = script.src;
+                    document.body.appendChild(newScript);
+                }
+            } catch (error) {
+                console.error('Error loading physics_test.html:', error);
+                alert('Failed to load the Physics section. Please try again.');
+            }
         }
 
         // Event listener for the Physics button
