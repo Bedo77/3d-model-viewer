@@ -1,7 +1,7 @@
 // AR Module for 3D Studio
 // This script handles AR functionality using AR.js and Three.js
 
-function initializeAR() {
+function initializeAR(modelGroup) {
     // Check if AR is supported
     if (!navigator.xr || !navigator.xr.isSessionSupported) {
         alert("AR is not supported on this device. Please use a mobile device or a browser that supports WebXR.");
