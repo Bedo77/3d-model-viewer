@@ -155,6 +155,23 @@
             }
         }
 
+        function calculateScale(object) {
+            const box = new THREE.Box3().setFromObject(object);
+            const size = new THREE.Vector3();
+            box.getSize(size);
+
+            // Determine the maximum dimension of the model
+            const maxDimension = Math.max(size.x, size.y, size.z);
+
+            // Define a target size for the models (adjust as needed)
+            const targetSize = 5; // Models will be scaled to fit within this size
+
+            // Calculate the scale factor
+            const scaleFactor = targetSize / maxDimension;
+
+            return scaleFactor;
+        }
+
         function loadModels(models) {
             console.log('Starting to load models...');
             createScene('mainViewport');
@@ -172,8 +189,9 @@
                         loadedCount++;
                         console.log(`Successfully loaded: ${model.name}`);
 
-                        // Scale down the model slightly
-                        object.scene.scale.set(0.7, 0.7, 0.7);
+                        // Calculate dynamic scale for the model
+                        const scaleFactor = calculateScale(object.scene);
+                        object.scene.scale.set(scaleFactor, scaleFactor, scaleFactor);
 
                         // Position the model in a circular arrangement
                         const angle = angleIncrement * index;
