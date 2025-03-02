@@ -54,7 +54,6 @@
             padding: 20px;
             text-align: center;
             box-sizing: border-box;
-            overflow-y: auto;
         }
         .model-viewport {
             width: 100%; /* Full width of main-content */
@@ -127,10 +126,10 @@
     </div>
     <div class="main-content">
         <div class="info-viewport" id="infoViewport">
-            <h2>Welcome to the Physics Section</h2>
-            <p>Select a grade to explore relevant models.</p>
+            <h2>Select a Grade</h2>
+            <p>Click on a grade button to see the models.</p>
         </div>
-        <div class="model-viewport" id="mainViewport"></div>
+        <div class="model-viewport" id="mainViewport" droppable="true"></div>
     </div>
     <div class="right-sidebar">
         <h3 style="color: white;">Model Tracks</h3>
@@ -180,9 +179,6 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            if (currentScene) {
-                modelGroup.rotation.y += 0.005;
-            }
             currentRenderer.render(currentScene, currentCamera);
         }
 
@@ -234,13 +230,12 @@
         };
 
         document.getElementById('btnHome').addEventListener('click', () => {
-            console.log("Home button clicked");
-            // Implement home button functionality here
+            window.location.href = "path/to/main/physics/page.html"; // Update this to your main page
         });
 
         document.getElementById('btnBack').addEventListener('click', () => {
-            console.log("Back button clicked");
-            // Implement back button functionality here
+            console.log("Back button functionality here");
+            // Implement back button functionality as needed
         });
 
         function updateInfoViewport(title, description) {
