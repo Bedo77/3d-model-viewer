@@ -1,58 +1,461 @@
-function loadModels(models, viewportId) {
-    createScene(viewportId);
-    const radius = 9; // Radius for circular arrangement
-    const angleIncrement = (Math.PI * 2) / models.length; // Even spacing
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Educational 3D Models</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f46c27; /* flamingo */
+            display: flex;
+            flex-direction: column;
+        }
+        .top-bar {
+            width: 100%;
+            height: 50px;
+            background-color: #2c7481; /* Paradiso */
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        .top-bar button {
+            background-color: #f47e42; /* Jaffa */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .top-bar button:hover {
+            background-color: #f46c27; /* Flamingo */
+        }
+        .sidebar {
+            width: 20%; /* Sidebar width */
+            height: 100%; /* Full height */
+            background-color: #2c7481; /* Paradiso */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            transition: transform 0.3s ease;
+        }
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+        .button {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 50%;
+            background-color: #f47e42; /* Jaffa */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #f46c27; /* Flamingo */
+            transform: scale(1.1);
+        }
+        .main-content {
+            width: 80%; /* Remaining width */
+            height: 100%; /* Full height */
+            display: flex;
+            flex-direction: column;
+        }
+        .info-viewport {
+            width: 100%; /* Full width of main-content */
+            height: 50%; /* Half of main-content height */
+            background-color: #1A0E0D; /* Darker brown */
+            color: #FFFFFF; /* Regular white color */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            box-sizing: border-box;
+            overflow-y: auto;
+            font-family: 'TimesNewRomance', serif; /* TimesNewRomance font */
+        }
+        .models-tracks {
+            width: 20%; /* Right sidebar width */
+            height: 100%; /* Full height */
+            background-color: #2c7481; /* Paradiso */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .model-viewport {
+            width: 100%; /* Full width of main-content */
+            height: 50%; /* Half of main-content height */
+            background-color: #ffffff; /* White background */
+            margin-bottom: 2.5mm; /* Small bottom margin */
+            border-radius: 50px; 
+            position: relative; /* For fallback message positioning */
+        }
+        .back-button {
+            position: absolute;
+            top: 70px;
+            left: 20px;
+            background-color: #f47e42; /* Jaffa */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #f46c27; /* Flamingo */
+        }
+        .fallback-message {
+            color: white;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2em;
+            text-align: center;
+        }
+    </style>
+    <!-- Load TimesNewRomance font -->
+    <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
+</head>
+<body>
+    <div class="top-bar">
+        <button id="btnHome">Home</button>
+        <button id="btnPhysicsSection">Physics Section</button>
+    </div>
+    <div class="sidebar" id="sidebar">
+        <div class="button" id="btnGrade1">Grade 1</div>
+        <div class="button" id="btnGrade2">Grade 2</div>
+        <div class="button" id="btnGrade3">Grade 3</div>
+        <div class="button" id="btnGrade4">Grade 4</div>
+        <div class="button" id="btnGrade5">Grade 5</div>
+        <div class="button" id="btnGrade6">Grade 6</div>
+        <div class="button" id="btnGrade7">Grade 7</div>
+        <div class="button" id="btnGrade8">Grade 8</div>
+        <div class="button" id="btnGrade9">Grade 9</div>
+    </div>
+    <div class="main-content">
+        <div class="info-viewport" id="infoViewport">
+            <h2>Welcome to the Physics Section</h2>
+            <p>
+                Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
+                Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
+                Dive into the world of physics and discover the laws that govern our reality!
+            </p>
+        </div>
+        <div class="model-viewport" id="mainViewport"></div>
+    </div>
+    <div class="models-tracks" id="modelsTracks">
+        <h3 style="color: white;">Model Tracks</h3>
+        <!-- Add model track buttons or content here -->
+    </div>
 
-    models.forEach((model, index) => {
-        console.log(`Loading model from: ${model.path}`); // Debugging statement
-        const loader = new THREE.GLTFLoader();
-        loader.load(model.path, function(object) {
-            if (object.scene) {
-                // Position models in a circular arrangement
-                const angle = angleIncrement * index;
-                const x = Math.cos(angle) * radius;
-                const z = Math.sin(angle) * radius;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup, textMesh;
 
-                object.scene.position.set(x, 0, z);
+        // Function to create a scene
+        function createScene(viewportId) {
+            const viewport = document.getElementById(viewportId);
+            currentScene = new THREE.Scene();
+            currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            currentRenderer = new THREE.WebGLRenderer({ antialias: true });
 
-                // Apply scaling and position adjustments based on model name
-                switch (model.name) {
-                    case 'Lever and Pulley Set':
-                        object.scene.scale.set(2, 2, 2); // Double size
-                        break;
-                    case 'Force Simulator':
-                        object.scene.scale.set(2, 2, 2); // Double size
-                        object.scene.position.y = 0.5; // Lifted up on Y-axis by 0.5 units
-                        break;
-                    case 'EM Field Viewer':
-                        object.scene.scale.set(2, 2, 2); // Double size
-                        break;
-                    default:
-                        object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z); // Default scaling
-                        break;
-                }
+            currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.appendChild(currentRenderer.domElement);
 
-                // Add a spotlight for each model with specific colors
-                const spotLight = new THREE.SpotLight(model.color);
-                spotLight.position.set(x, 5, z); // Height for better visibility
-                spotLight.target = object.scene; // Aim at the model
+            currentControls = new THREE.OrbitControls(currentCamera, currentRenderer.domElement);
+            currentControls.enableDamping = true;
+            currentControls.dampingFactor = 0.1;
+
+            // Reduced light intensity by 50% and changed light color
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.15); // Grey color and reduced intensity
+            currentScene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0x2c7481, 0.25); // Paradiso color and reduced intensity
+            directionalLight.position.set(5, 10, 7.5);
+            currentScene.add(directionalLight);
+
+            currentCamera.position.set(0, 10, 15); // Lifted the camera up by 2 degrees and brought it closer
+            currentCamera.lookAt(0, 2, 0); // Adjusted focus point slightly higher
+
+            createGround(); // Create the ground mesh
+            createModelGroup(); // Create the model group
+            animate();
+        }
+
+        // Function to create the ground
+        function createGround() {
+            const geometry = new THREE.CircleGeometry(10.35, 32); // Increased radius
+            const textureLoader = new THREE.TextureLoader();
+            const texture = textureLoader.load('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/Logo.png', function(texture) {
+                // Adjust texture scaling
+                texture.repeat.set(0.3, 0.3); // Further reduce stretchiness
+                texture.wrapS = THREE.RepeatWrapping; // Repeat texture horizontally
+                texture.wrapT = THREE.RepeatWrapping; // Repeat texture vertically
+            });
+
+            const material = new THREE.MeshStandardMaterial({
+                map: texture,
+                color: 0x000000, // Slight dark black color to absorb some light
+                roughness: 0.7, // Increase roughness for less reflectivity
+                metalness: 0.1, // Reduce metalness for a warmer feel
+            });
+
+            ground = new THREE.Mesh(geometry, material);
+            ground.rotation.x = -Math.PI / 2; // Rotate to make it horizontal
+            ground.position.y = -0.1; // Slightly below the models
+            ground.receiveShadow = true; // Allow shadows on the ground
+            currentScene.add(ground); // Add ground to the scene
+
+            // Add company name text
+            const loader = new THREE.FontLoader();
+            loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+                const textGeometry = new THREE.TextGeometry('Smartistic-Lab\n        Studio', {
+                    font: font,
+                    size: 1.35, // Reduced size by 25% (from 1.8 to 1.35)
+                    height: 0.1,
+                    curveSegments: 12,
+                    bevelEnabled: true,
+                    bevelThickness: 0.03,
+                    bevelSize: 0.02,
+                    bevelOffset: 0,
+                    bevelSegments: 5
+                });
+                const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+                textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                textMesh.position.set(-4.5, -0.1, 0); // Moved 1cm left (from -3.5 to -4.5) and 1cm down (from 0.1 to -0.1)
+                textMesh.rotation.x = -Math.PI / 2; // Rotate to lay flat on the ground
+                textMesh.rotation.z = Math.PI / 4; // Slightly face the camera
+                currentScene.add(textMesh);
+
+                // Add spotlights with changing colors for the text
+                const colors = [0x2c7481, 0xdadad8, 0xf47e42, 0xf46c27]; // Paradiso, Quill Gray, Jaffa, Flamingo
+                let colorIndex = 0;
+                const spotLight = new THREE.SpotLight(colors[colorIndex], 0.5);
+                spotLight.position.set(0, 5, 0);
+                spotLight.target = textMesh;
                 spotLight.castShadow = true;
                 currentScene.add(spotLight);
-                currentScene.add(spotLight.target); // Add target for spotlight
+                currentScene.add(spotLight.target);
 
-                modelGroup.add(object.scene); // Add the model to the model group
-            } else {
-                console.error(`Failed to load model: ${model.name}`);
+                setInterval(() => {
+                    colorIndex = (colorIndex + 1) % colors.length;
+                    spotLight.color.setHex(colors[colorIndex]);
+                }, 500); // Change color every 0.5 second
+            });
+        }
+
+        // Function to create the model group
+        function createModelGroup() {
+            modelGroup = new THREE.Group(); // Create a group for the models
+            currentScene.add(modelGroup); // Add the model group to the scene
+        }
+
+        // Function to animate the scene
+        function animate() {
+            requestAnimationFrame(animate);
+            if (currentScene) { // Ensure currentScene is defined
+                // Rotate the model group to simulate the ground rotating
+                modelGroup.rotation.y += 0.005; // Slow down the rotation
             }
-        }, function(xhr) {
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-        }, function(error) {
-            console.error(`Error loading model: ${model.path}`, error);
-            alert(`Failed to load model: ${model.name}`);
-        });
-    });
+            currentRenderer.render(currentScene, currentCamera);
+        }
 
-    // Adjust camera position
-    currentCamera.position.set(0, 10, 15); // Lifted the camera up by 2 degrees and brought it closer
-    currentCamera.lookAt(0, 2, 0); // Adjusted focus point slightly higher
-}
+        // Function to load models
+        function loadModels(models, viewportId) {
+            createScene(viewportId);
+            const radius = 9; // Radius for circular arrangement
+            const angleIncrement = (Math.PI * 2) / models.length; // Even spacing
+
+            models.forEach((model, index) => {
+                console.log(`Loading model from: ${model.path}`); // Debugging statement
+                const loader = new THREE.GLTFLoader();
+
+                loader.load(
+                    model.path,
+                    function (object) {
+                        if (object.scene) {
+                            // Position models in a circular arrangement
+                            const angle = angleIncrement * index;
+                            const x = Math.cos(angle) * radius;
+                            const z = Math.sin(angle) * radius;
+
+                            object.scene.position.set(x, 0, z);
+
+                            // Apply scaling and position adjustments based on model name
+                            switch (model.name) {
+                                case 'Lever and Pulley Set':
+                                    object.scene.scale.set(2, 2, 2); // Double size
+                                    break;
+                                case 'Force Simulator':
+                                    object.scene.scale.set(2, 2, 2); // Double size
+                                    object.scene.position.y = 0.5; // Lifted up on Y-axis by 0.5 units
+                                    break;
+                                case 'EM Field Viewer':
+                                    object.scene.scale.set(2, 2, 2); // Double size
+                                    break;
+                                default:
+                                    object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z); // Default scaling
+                                    break;
+                            }
+
+                            // Add a spotlight for each model with specific colors
+                            const spotLight = new THREE.SpotLight(model.color);
+                            spotLight.position.set(x, 5, z); // Height for better visibility
+                            spotLight.target = object.scene; // Aim at the model
+                            spotLight.castShadow = true;
+                            currentScene.add(spotLight);
+                            currentScene.add(spotLight.target); // Add target for spotlight
+
+                            modelGroup.add(object.scene); // Add the model to the model group
+                        } else {
+                            console.error(`Failed to load model: ${model.name}`);
+                            alert(`Failed to load model: ${model.name}. The scene is missing.`);
+                        }
+                    },
+                    function (xhr) {
+                        console.log(`${model.name}: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+                    },
+                    function (error) {
+                        console.error(`Error loading model: ${model.path}`, error);
+                        alert(`Failed to load model: ${model.name}. Please check the file path.`);
+
+                        // Fallback: Display a message in the viewport
+                        const fallbackMessage = document.createElement('div');
+                        fallbackMessage.className = 'fallback-message';
+                        fallbackMessage.innerText = `Model "${model.name}" could not be loaded.`;
+                        document.getElementById(viewportId).appendChild(fallbackMessage);
+                    }
+                );
+            });
+
+            // Adjust camera position
+            currentCamera.position.set(0, 10, 15); // Lifted the camera up by 2 degrees and brought it closer
+            currentCamera.lookAt(0, 2, 0); // Adjusted focus point slightly higher
+        }
+
+        // Function to update the info viewport
+        function updateInfoViewport(title, description) {
+            const infoViewport = document.getElementById('infoViewport');
+            infoViewport.innerHTML = `
+                <h2>${title}</h2>
+                <p>${description}</p>
+            `;
+        }
+
+        // Function to update the models tracks area
+        function updateModelsTracks(content) {
+            const modelsTracks = document.getElementById('modelsTracks');
+            modelsTracks.innerHTML = content;
+        }
+
+        // Function to show the main page
+        function showMainPage() {
+            updateInfoViewport("Welcome to the Physics Section", `
+                Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
+                Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
+                Dive into the world of physics and discover the laws that govern our reality!
+            `);
+            document.getElementById('sidebar').classList.remove('hidden');
+            document.getElementById('mainViewport').innerHTML = ''; // Clear the model viewport
+            document.getElementById('modelsTracks').innerHTML = '<h3 style="color: white;">Model Tracks</h3>'; // Reset tracks area
+            document.querySelector('.back-button')?.remove(); // Remove back button if it exists
+        }
+
+        // Grade-specific content
+        const gradeContent = {
+            grade1: {
+                title: "Grade 1: Simple Machines",
+                description: "Exploration of how simple machines work and how they make work easier.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/lever_and_pulley_set.glb', name: 'Lever and Pulley Set', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 }, // Paradiso
+                ],
+                tracksContent: "<p>Explore the mechanics of levers and pulleys.</p>"
+            },
+            grade2: {
+                title: "Grade 2: Forces and Motion",
+                description: "Experimenting with different forces and observing their effects on motion.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/force_simulator.glb', name: 'Force Simulator', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
+                ],
+                tracksContent: "<p>Learn about forces and their impact on motion.</p>"
+            },
+            grade3: {
+                title: "Grade 3: Electromagnetism",
+                description: "Exploring the principles of electromagnetism and its applications.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/em_field_viewer.glb', name: 'EM Field Viewer', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }, // Jaffa
+                ],
+                tracksContent: "<p>Discover the world of electromagnetism.</p>"
+            }
+        };
+
+        // Event listeners for grade buttons
+        document.getElementById('btnGrade1').addEventListener('click', () => {
+            updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
+            loadModels(gradeContent.grade1.models, 'mainViewport');
+            updateModelsTracks(gradeContent.grade1.tracksContent);
+            document.getElementById('sidebar').classList.add('hidden');
+            addBackButton();
+        });
+
+        document.getElementById('btnGrade2').addEventListener('click', () => {
+            updateInfoViewport(gradeContent.grade2.title, gradeContent.grade2.description);
+            loadModels(gradeContent.grade2.models, 'mainViewport');
+            updateModelsTracks(gradeContent.grade2.tracksContent);
+            document.getElementById('sidebar').classList.add('hidden');
+            addBackButton();
+        });
+
+        document.getElementById('btnGrade3').addEventListener('click', () => {
+            updateInfoViewport(gradeContent.grade3.title, gradeContent.grade3.description);
+            loadModels(gradeContent.grade3.models, 'mainViewport');
+            updateModelsTracks(gradeContent.grade3.tracksContent);
+            document.getElementById('sidebar').classList.add('hidden');
+            addBackButton();
+        });
+
+        // Event listeners for top bar buttons
+        document.getElementById('btnHome').addEventListener('click', () => {
+            showMainPage();
+        });
+
+        document.getElementById('btnPhysicsSection').addEventListener('click', () => {
+            showMainPage();
+        });
+
+        // Function to add back button
+        function addBackButton() {
+            const backButton = document.createElement('button');
+            backButton.className = 'back-button';
+            backButton.innerText = 'Back to Main Section';
+            backButton.addEventListener('click', () => {
+                showMainPage();
+            });
+            document.body.appendChild(backButton);
+        }
+
+        // Initialize default view (main page)
+        showMainPage();
+    </script>
+</body>
+</html>
