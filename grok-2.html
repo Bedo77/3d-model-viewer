@@ -10,13 +10,13 @@
             font-family: Arial, sans-serif;
             height: 100vh;
             overflow: hidden;
-            background-color: #f46c27; /* Flamingo */
+            background-color: #f46c27;
             display: flex;
         }
         .sidebar {
             width: 20%;
             height: 100%;
-            background-color: #2c7481; /* Paradiso */
+            background-color: #2c7481;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -28,7 +28,7 @@
             height: 100px;
             margin: 10px;
             border-radius: 50%;
-            background-color: #f47e42; /* Jaffa */
+            background-color: #f47e42;
             color: white;
             display: flex;
             justify-content: center;
@@ -37,7 +37,7 @@
             transition: transform 0.3s ease, background-color 0.3s ease;
         }
         .button:hover {
-            background-color: #f46c27; /* Flamingo */
+            background-color: #f46c27;
             transform: scale(1.1);
         }
         .main-content {
@@ -49,7 +49,7 @@
         .info-viewport {
             width: 100%;
             height: 50%;
-            background-color: #1A0E0D; /* Darker brown */
+            background-color: #1A0E0D;
             color: #FFFFFF;
             display: flex;
             flex-direction: column;
@@ -64,7 +64,7 @@
         .models-tracks {
             width: 20%;
             height: 100%;
-            background-color: #2c7481; /* Paradiso */
+            background-color: #2c7481;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -77,31 +77,6 @@
             background-color: #ffffff;
             margin-bottom: 2.5mm;
             border-radius: 50px;
-        }
-        .grade-page {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #f46c27;
-        }
-        .grade-page.active {
-            display: flex;
-        }
-        .back-button {
-            width: 100px;
-            height: 50px;
-            background-color: #f47e42;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin: 10px auto;
-            transition: background-color 0.3s ease;
-        }
-        .back-button:hover {
-            background-color: #f46c27;
         }
         .loading-indicator {
             position: absolute;
@@ -120,86 +95,40 @@
 </head>
 <body>
     <div class="loading-indicator" id="loadingIndicator">Loading models...</div>
-    
-    <!-- Main Page (Original Layout) -->
-    <div class="main-page" id="mainPage">
-        <div class="sidebar">
-            <div class="button" id="btnPhysics">Physics Section</div>
-            <div class="button" id="btnGrade1">Grade 1</div>
-            <div class="button" id="btnGrade2">Grade 2</div>
-            <div class="button" id="btnGrade3">Grade 3</div>
-        </div>
-        <div class="main-content">
-            <div class="info-viewport">
-                <h2>Welcome to the Physics Section</h2>
-                <p>
-                    Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
-                    Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
-                    Dive into the world of physics and discover the laws that govern our reality!
-                </p>
-            </div>
-            <div class="model-viewport" id="mainViewport"></div>
-        </div>
-        <div class="models-tracks">
-            <h3 style="color: white;">Model Tracks</h3>
-        </div>
+    <div class="sidebar">
+        <div class="button" id="btnGrade1">Grade 1</div>
+        <div class="button" id="btnGrade2">Grade 2</div>
+        <div class="button" id="btnGrade3">Grade 3</div>
     </div>
-
-    <!-- Grade Pages -->
-    <div class="grade-page" id="grade1Page">
-        <div class="sidebar">
-            <div class="button" id="btnBack1">Back</div>
+    <div class="main-content">
+        <div class="info-viewport">
+            <h2>Welcome to the Physics Section</h2>
+            <p>
+                Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
+                Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
+                Dive into the world of physics and discover the laws that govern our reality!
+            </p>
         </div>
-        <div class="main-content">
-            <div class="info-viewport" id="grade1Info"></div>
-            <div class="model-viewport" id="grade1Viewport"></div>
-        </div>
-        <div class="models-tracks">
-            <h3 style="color: white;">Model Tracks</h3>
-        </div>
+        <div class="model-viewport" id="mainViewport"></div>
     </div>
-    <div class="grade-page" id="grade2Page">
-        <div class="sidebar">
-            <div class="button" id="btnBack2">Back</div>
-        </div>
-        <div class="main-content">
-            <div class="info-viewport" id="grade2Info"></div>
-            <div class="model-viewport" id="grade2Viewport"></div>
-        </div>
-        <div class="models-tracks">
-            <h3 style="color: white;">Model Tracks</h3>
-        </div>
-    </div>
-    <div class="grade-page" id="grade3Page">
-        <div class="sidebar">
-            <div class="button" id="btnBack3">Back</div>
-        </div>
-        <div class="main-content">
-            <div class="info-viewport" id="grade3Info"></div>
-            <div class="model-viewport" id="grade3Viewport"></div>
-        </div>
-        <div class="models-tracks">
-            <h3 style="color: white;">Model Tracks</h3>
-        </div>
+    <div class="models-tracks">
+        <h3 style="color: white;">Model Tracks</h3>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
-        let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup;
+        let currentScene, currentRenderer, currentCamera, currentControls, modelGroup;
         const loadingIndicator = document.getElementById('loadingIndicator');
 
         function createScene(viewportId) {
             const viewport = document.getElementById(viewportId);
-            if (!viewport) return;
-
             currentScene = new THREE.Scene();
             currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
             currentRenderer = new THREE.WebGLRenderer({ antialias: true });
 
             currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
-            viewport.innerHTML = '';
             viewport.appendChild(currentRenderer.domElement);
 
             currentControls = new THREE.OrbitControls(currentCamera, currentRenderer.domElement);
@@ -215,32 +144,8 @@
             currentCamera.position.set(0, 10, 15);
             currentCamera.lookAt(0, 2, 0);
 
-            createGround();
             createModelGroup();
             animate();
-        }
-
-        function createGround() {
-            const geometry = new THREE.CircleGeometry(10.35, 32);
-            const textureLoader = new THREE.TextureLoader();
-            const texture = textureLoader.load('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/Logo.png', function(texture) {
-                texture.repeat.set(0.3, 0.3);
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-            });
-
-            const material = new THREE.MeshStandardMaterial({
-                map: texture,
-                color: 0x000000,
-                roughness: 0.7,
-                metalness: 0.1,
-            });
-
-            ground = new THREE.Mesh(geometry, material);
-            ground.rotation.x = -Math.PI / 2;
-            ground.position.y = -0.1;
-            ground.receiveShadow = true;
-            currentScene.add(ground);
         }
 
         function createModelGroup() {
@@ -250,17 +155,15 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            if (currentScene && modelGroup) {
+            if (currentScene) {
                 modelGroup.rotation.y += 0.005;
-                currentRenderer.render(currentScene, currentCamera);
             }
+            currentRenderer.render(currentScene, currentCamera);
         }
 
         function clearModels() {
-            if (modelGroup) {
-                while(modelGroup.children.length > 0) {
-                    modelGroup.remove(modelGroup.children[0]);
-                }
+            while(modelGroup && modelGroup.children.length > 0) {
+                modelGroup.remove(modelGroup.children[0]);
             }
         }
 
@@ -269,14 +172,9 @@
             if (currentRenderer && currentRenderer.domElement && currentRenderer.domElement.parentNode) {
                 currentRenderer.domElement.parentNode.removeChild(currentRenderer.domElement);
             }
-
+            
             createScene(viewportId);
             clearModels();
-
-            if (!models || models.length === 0) {
-                loadingIndicator.style.display = 'none';
-                return;
-            }
 
             let loadedCount = 0;
             const totalModels = models.length;
@@ -307,7 +205,7 @@
                         loadingIndicator.style.display = 'none';
                     }
                 }, undefined, function(error) {
-                    console.error(`Error loading model ${model.path}:`, error);
+                    console.error(`Error loading model: ${model.path}`, error);
                     loadedCount++;
                     if (loadedCount === totalModels) {
                         loadingIndicator.style.display = 'none';
@@ -316,80 +214,28 @@
             });
         }
 
-        function updateInfoViewport(title, description, viewportId) {
-            const infoViewport = document.getElementById(viewportId);
-            if (infoViewport) {
-                infoViewport.innerHTML = `
-                    <h2>${title}</h2>
-                    <p>${description}</p>
-                `;
-            }
-        }
+        // Models found in the repository
+        const allModels = [
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/arcade_machine.glb', name: 'Arcade Machine', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/time_machine.glb', name: 'Time Machine', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/forces_on_a_rotating_man.glb', name: 'Forces on a Rotating Man', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/machinery_-_single_pashe_dc_motor.glb', name: 'Single Phase DC Motor', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/electromagneticwave.glb', name: 'Electromagnetic Wave', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/electromagnetic_portal.glb', name: 'Electromagnetic Portal', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 }
+        ];
 
-        const gradeContent = {
-            grade1: {
-                title: "Grade 1: Simple Machines and Time",
-                description: "Exploration of arcade machines and the concept of time through interactive 3D models.",
-                models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/grade_one_arcade_machine.glb', name: 'Arcade Machine', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/grade_one_time_machine.glb', name: 'Time Machine', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 }
-                ]
-            },
-            grade2: {
-                title: "Grade 2: Forces and Machinery",
-                description: "Study of rotational forces and electric motors through interactive 3D models.",
-                models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/grade_two_forces_on_a_rotating_man.glb', name: 'Forces on a Rotating Man', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/grade_two_machinery_-_single_pashe_dc_motor.glb', name: 'Single Phase DC Motor', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 }
-                ]
-            },
-            grade3: {
-                title: "Grade 3: Electromagnetism",
-                description: "Exploration of electromagnetic waves and portals through interactive 3D models.",
-                models: [
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/grade_three_electromagneticwave.glb', name: 'Electromagnetic Wave', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
-                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/grade_three_electromagnetic_portal.glb', name: 'Electromagnetic Portal', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 }
-                ]
-            }
-        };
-
-        function showPage(pageId) {
-            document.getElementById('mainPage').style.display = 'none';
-            document.querySelectorAll('.grade-page').forEach(page => {
-                page.classList.remove('active');
-            });
-            const page = document.getElementById(pageId);
-            if (page) {
-                page.classList.add('active');
-            }
-        }
-
-        function showMainPage() {
-            document.getElementById('mainPage').style.display = 'flex';
-            document.querySelectorAll('.grade-page').forEach(page => {
-                page.classList.remove('active');
-            });
-            loadModels([], 'mainViewport');
-        }
-
-        function showGradePage(grade) {
-            showPage(`${grade}Page`);
-            updateInfoViewport(gradeContent[grade].title, gradeContent[grade].description, `${grade}Info`);
-            loadModels(gradeContent[grade].models, `${grade}Viewport`);
-        }
-
-        // Event listeners
-        document.getElementById('btnPhysics').addEventListener('click', () => {
-            // No action needed, just keep the main page
+        // Event listeners for grade buttons
+        document.getElementById('btnGrade1').addEventListener('click', () => {
+            loadModels(allModels.slice(0, 2), 'mainViewport');
         });
-        document.getElementById('btnGrade1').addEventListener('click', () => showGradePage('grade1'));
-        document.getElementById('btnGrade2').addEventListener('click', () => showGradePage('grade2'));
-        document.getElementById('btnGrade3').addEventListener('click', () => showGradePage('grade3'));
-        document.getElementById('btnBack1').addEventListener('click', showMainPage);
-        document.getElementById('btnBack2').addEventListener('click', showMainPage);
-        document.getElementById('btnBack3').addEventListener('click', showMainPage);
+        document.getElementById('btnGrade2').addEventListener('click', () => {
+            loadModels(allModels.slice(2, 4), 'mainViewport');
+        });
+        document.getElementById('btnGrade3').addEventListener('click', () => {
+            loadModels(allModels.slice(4, 6), 'mainViewport');
+        });
 
-        // Initialize
+        // Initialize with no models
         loadModels([], 'mainViewport');
     </script>
 </body>
