@@ -134,5 +134,11 @@
         // Your existing script for loading models and initializing the scene
     </script>
     <script src="ar-module.js"></script> <!-- Load AR module -->
+    <script>
+        // Add event listener for AR button
+        document.getElementById('btnAR').addEventListener('click', function () {
+            initializeAR(); // Initialize AR when the button is clicked
+        });
+    </script>
 </body>
 </html>
