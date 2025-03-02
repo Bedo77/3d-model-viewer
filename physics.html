@@ -95,7 +95,7 @@
         <div class="button" id="btnGrade9">Grade 9</div>
     </div>
     <div class="main-content">
-        <div class="info-viewport">
+        <div class="info-viewport" id="infoViewport">
             <h2>Welcome to the Physics Section</h2>
             <p>
                 Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
@@ -105,7 +105,7 @@
         </div>
         <div class="model-viewport" id="mainViewport"></div>
     </div>
-    <div class="models-tracks">
+    <div class="models-tracks" id="modelsTracks">
         <h3 style="color: white;">Model Tracks</h3>
         <!-- Add model track buttons or content here -->
     </div>
@@ -116,6 +116,7 @@
     <script>
         let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup, textMesh;
 
+        // Function to create a scene
         function createScene(viewportId) {
             const viewport = document.getElementById(viewportId);
             currentScene = new THREE.Scene();
@@ -144,6 +145,7 @@
             animate();
         }
 
+        // Function to create the ground
         function createGround() {
             const geometry = new THREE.CircleGeometry(10.35, 32); // Increased radius
             const textureLoader = new THREE.TextureLoader();
@@ -205,11 +207,13 @@
             });
         }
 
+        // Function to create the model group
         function createModelGroup() {
             modelGroup = new THREE.Group(); // Create a group for the models
             currentScene.add(modelGroup); // Add the model group to the scene
         }
 
+        // Function to animate the scene
         function animate() {
             requestAnimationFrame(animate);
             if (currentScene) { // Ensure currentScene is defined
@@ -219,6 +223,7 @@
             currentRenderer.render(currentScene, currentCamera);
         }
 
+        // Function to load models
         function loadModels(models, viewportId) {
             createScene(viewportId);
             const radius = 9; // Radius for circular arrangement
@@ -237,12 +242,15 @@
 
                         // Apply scaling and position adjustments based on model name
                         switch (model.name) {
-                            case 'Bullet Physics Animation':
+                            case 'Lever and Pulley Set':
                                 object.scene.scale.set(2, 2, 2); // Double size
                                 break;
-                            case 'Geometry Spheres':
+                            case 'Force Simulator':
                                 object.scene.scale.set(2, 2, 2); // Double size
                                 object.scene.position.y = 0.5; // Lifted up on Y-axis by 0.5 units
+                                break;
+                            case 'EM Field Viewer':
+                                object.scene.scale.set(2, 2, 2); // Double size
                                 break;
                             default:
                                 object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z); // Default scaling
@@ -274,13 +282,72 @@
             currentCamera.lookAt(0, 2, 0); // Adjusted focus point slightly higher
         }
 
-        // Initialize main viewport and load models
-        const models = [
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', name: 'Bullet Physics Animation', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 }, // Paradiso
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Geometry Spheres', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
-        ];
+        // Function to update the info viewport
+        function updateInfoViewport(title, description) {
+            const infoViewport = document.getElementById('infoViewport');
+            infoViewport.innerHTML = `
+                <h2>${title}</h2>
+                <p>${description}</p>
+            `;
+        }
 
-        loadModels(models, 'mainViewport');
+        // Function to update the models tracks area
+        function updateModelsTracks(content) {
+            const modelsTracks = document.getElementById('modelsTracks');
+            modelsTracks.innerHTML = content;
+        }
+
+        // Grade-specific content
+        const gradeContent = {
+            grade1: {
+                title: "Grade 1: Simple Machines",
+                description: "Exploration of how simple machines work and how they make work easier.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lever_and_pulley_set.glb', name: 'Lever and Pulley Set', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 }, // Paradiso
+                ],
+                tracksContent: "<p>Explore the mechanics of levers and pulleys.</p>"
+            },
+            grade2: {
+                title: "Grade 2: Forces and Motion",
+                description: "Experimenting with different forces and observing their effects on motion.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/force_simulator.glb', name: 'Force Simulator', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
+                ],
+                tracksContent: "<p>Learn about forces and their impact on motion.</p>"
+            },
+            grade3: {
+                title: "Grade 3: Electromagnetism",
+                description: "Exploring the principles of electromagnetism and its applications.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/em_field_viewer.glb', name: 'EM Field Viewer', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }, // Jaffa
+                ],
+                tracksContent: "<p>Discover the world of electromagnetism.</p>"
+            }
+        };
+
+        // Event listeners for grade buttons
+        document.getElementById('btnGrade1').addEventListener('click', () => {
+            updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
+            loadModels(gradeContent.grade1.models, 'mainViewport');
+            updateModelsTracks(gradeContent.grade1.tracksContent);
+        });
+
+        document.getElementById('btnGrade2').addEventListener('click', () => {
+            updateInfoViewport(gradeContent.grade2.title, gradeContent.grade2.description);
+            loadModels(gradeContent.grade2.models, 'mainViewport');
+            updateModelsTracks(gradeContent.grade2.tracksContent);
+        });
+
+        document.getElementById('btnGrade3').addEventListener('click', () => {
+            updateInfoViewport(gradeContent.grade3.title, gradeContent.grade3.description);
+            loadModels(gradeContent.grade3.models, 'mainViewport');
+            updateModelsTracks(gradeContent.grade3.tracksContent);
+        });
+
+        // Initialize default view (Grade 1)
+        updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
+        loadModels(gradeContent.grade1.models, 'mainViewport');
+        updateModelsTracks(gradeContent.grade1.tracksContent);
     </script>
 </body>
 </html>
