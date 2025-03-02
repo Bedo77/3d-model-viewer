@@ -12,30 +12,6 @@
             overflow: hidden;
             background-color: #f46c27; /* flamingo */
             display: flex;
-            flex-direction: column;
-        }
-        .top-bar {
-            width: 100%;
-            height: 50px;
-            background-color: #2c7481; /* Paradiso */
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            padding: 0 20px;
-            box-sizing: border-box;
-        }
-        .top-bar button {
-            background-color: #f47e42; /* Jaffa */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin-left: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .top-bar button:hover {
-            background-color: #f46c27; /* Flamingo */
         }
         .sidebar {
             width: 20%; /* Sidebar width */
@@ -46,10 +22,6 @@
             justify-content: center;
             align-items: center;
             padding: 10px;
-            transition: transform 0.3s ease;
-        }
-        .sidebar.hidden {
-            transform: translateX(-100%);
         }
         .button {
             width: 100px;
@@ -69,7 +41,7 @@
             transform: scale(1.1);
         }
         .main-content {
-            width: 80%; /* Remaining width */
+            width: 60%; /* Remaining width */
             height: 100%; /* Full height */
             display: flex;
             flex-direction: column;
@@ -105,42 +77,12 @@
             background-color: #ffffff; /* White background */
             margin-bottom: 2.5mm; /* Small bottom margin */
             border-radius: 50px; 
-            position: relative; /* For fallback message positioning */
-        }
-        .back-button {
-            position: absolute;
-            top: 70px;
-            left: 20px;
-            background-color: #f47e42; /* Jaffa */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .back-button:hover {
-            background-color: #f46c27; /* Flamingo */
-        }
-        .fallback-message {
-            color: white;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.2em;
-            text-align: center;
         }
     </style>
-    <!-- Load TimesNewRomance font -->
     <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
 <body>
-    <div class="top-bar">
-        <button id="btnHome">Home</button>
-        <button id="btnPhysicsSection">Physics Section</button>
-    </div>
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar">
         <div class="button" id="btnGrade1">Grade 1</div>
         <div class="button" id="btnGrade2">Grade 2</div>
         <div class="button" id="btnGrade3">Grade 3</div>
@@ -172,7 +114,9 @@
     <script>
         let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup, textMesh;
 
+        // Function to create a scene
         function createScene(viewportId) {
+            console.log("Creating scene for viewport: " + viewportId);
             const viewport = document.getElementById(viewportId);
             currentScene = new THREE.Scene();
             currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
@@ -199,7 +143,9 @@
             animate();
         }
 
+        // Function to create the ground
         function createGround() {
+            console.log("Creating ground");
             const geometry = new THREE.CircleGeometry(10.35, 32);
             const textureLoader = new THREE.TextureLoader();
             const texture = textureLoader.load('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/Logo.png', function(texture) {
@@ -257,11 +203,14 @@
             });
         }
 
+        // Function to create the model group
         function createModelGroup() {
+            console.log("Creating model group");
             modelGroup = new THREE.Group();
             currentScene.add(modelGroup);
         }
 
+        // Function to animate the scene
         function animate() {
             requestAnimationFrame(animate);
             if (currentScene) {
@@ -270,52 +219,61 @@
             currentRenderer.render(currentScene, currentCamera);
         }
 
+        // Function to load models
         function loadModels(models, viewportId) {
+            console.log("Loading models for viewport: " + viewportId);
             createScene(viewportId);
             const radius = 9;
             const angleIncrement = (Math.PI * 2) / models.length;
 
             models.forEach((model, index) => {
                 const loader = new THREE.GLTFLoader();
+                console.log("Loading model: " + model.path);
+                loader.load(model.path, function(object) {
+                    if (object.scene) {
+                        const angle = angleIncrement * index;
+                        const x = Math.cos(angle) * radius;
+                        const z = Math.sin(angle) * radius;
 
-                loader.load(
-                    model.path,
-                    function (object) {
-                        if (object.scene) {
-                            const angle = angleIncrement * index;
-                            const x = Math.cos(angle) * radius;
-                            const z = Math.sin(angle) * radius;
+                        object.scene.position.set(x, 0, z);
+                        object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z);
 
-                            object.scene.position.set(x, 0, z);
-                            object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z);
+                        const spotLight = new THREE.SpotLight(model.color);
+                        spotLight.position.set(x, 5, z);
+                        spotLight.target = object.scene;
+                        spotLight.castShadow = true;
+                        currentScene.add(spotLight);
+                        currentScene.add(spotLight.target);
 
-                            const spotLight = new THREE.SpotLight(model.color);
-                            spotLight.position.set(x, 5, z);
-                            spotLight.target = object.scene;
-                            spotLight.castShadow = true;
-                            currentScene.add(spotLight);
-                            currentScene.add(spotLight.target);
-
-                            modelGroup.add(object.scene);
-                        } else {
-                            console.error(`Failed to load model: ${model.name}`);
-                        }
-                    },
-                    function (xhr) {
-                        console.log(`${model.name}: ${(xhr.loaded / xhr.total) * 100}% loaded`);
-                    },
-                    function (error) {
-                        console.error(`Error loading model: ${model.path}`, error);
-                        const fallbackMessage = document.createElement('div');
-                        fallbackMessage.className = 'fallback-message';
-                        fallbackMessage.innerText = `Model could not be loaded.`;
-                        document.getElementById(viewportId).appendChild(fallbackMessage);
+                        modelGroup.add(object.scene);
+                        console.log("Model loaded successfully: " + model.name);
+                    } else {
+                        console.error(`Failed to load model: ${model.name}`);
                     }
-                );
+                }, function(xhr) {
+                    console.log(`${model.name}: ${(xhr.loaded / xhr.total) * 100}% loaded`);
+                }, function(error) {
+                    console.error(`Error loading model: ${model.path}`, error);
+                    alert(`Failed to load model: ${model.name}`);
+                });
             });
+        }
 
-            currentCamera.position.set(0, 10, 15);
-            currentCamera.lookAt(0, 2, 0);
+        // Function to update the info viewport
+        function updateInfoViewport(title, description) {
+            console.log("Updating info viewport");
+            const infoViewport = document.getElementById('infoViewport');
+            infoViewport.innerHTML = `
+                <h2>${title}</h2>
+                <p>${description}</p>
+            `;
+        }
+
+        // Function to update the models tracks area
+        function updateModelsTracks(content) {
+            console.log("Updating models tracks");
+            const modelsTracks = document.getElementById('modelsTracks');
+            modelsTracks.innerHTML = content;
         }
 
         const gradeContent = {
@@ -348,49 +306,33 @@
             }
         };
 
+        // Event listeners for grade buttons
         document.getElementById('btnGrade1').addEventListener('click', () => {
+            console.log("Grade 1 button clicked");
             updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
             loadModels(gradeContent.grade1.models, 'mainViewport');
             updateModelsTracks(gradeContent.grade1.tracksContent);
-            document.getElementById('sidebar').classList.add('hidden');
-            addBackButton();
         });
 
         document.getElementById('btnGrade2').addEventListener('click', () => {
+            console.log("Grade 2 button clicked");
             updateInfoViewport(gradeContent.grade2.title, gradeContent.grade2.description);
             loadModels(gradeContent.grade2.models, 'mainViewport');
             updateModelsTracks(gradeContent.grade2.tracksContent);
-            document.getElementById('sidebar').classList.add('hidden');
-            addBackButton();
         });
 
         document.getElementById('btnGrade3').addEventListener('click', () => {
+            console.log("Grade 3 button clicked");
             updateInfoViewport(gradeContent.grade3.title, gradeContent.grade3.description);
             loadModels(gradeContent.grade3.models, 'mainViewport');
             updateModelsTracks(gradeContent.grade3.tracksContent);
-            document.getElementById('sidebar').classList.add('hidden');
-            addBackButton();
         });
 
-        document.getElementById('btnHome').addEventListener('click', () => {
-            showMainPage();
-        });
-
-        document.getElementById('btnPhysicsSection').addEventListener('click', () => {
-            showMainPage();
-        });
-
-        function addBackButton() {
-            const backButton = document.createElement('button');
-            backButton.className = 'back-button';
-            backButton.innerText = 'Back to Main Section';
-            backButton.addEventListener('click', () => {
-                showMainPage();
-            });
-            document.body.appendChild(backButton);
-        }
-
-        showMainPage();
+        // Initialize default view (Grade 1)
+        console.log("Initializing default view for Grade 1");
+        updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
+        loadModels(gradeContent.grade1.models, 'mainViewport');
+        updateModelsTracks(gradeContent.grade1.tracksContent);
     </script>
 </body>
 </html>
