@@ -126,6 +126,14 @@
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
             currentScene.add(ambientLight);
 
+            // Add a stage (flat plane) underneath the models
+            const stageGeometry = new THREE.PlaneGeometry(20, 20);
+            const stageMaterial = new THREE.MeshStandardMaterial({ color: 0x808080, side: THREE.DoubleSide });
+            const stage = new THREE.Mesh(stageGeometry, stageMaterial);
+            stage.rotation.x = -Math.PI / 2; // Rotate to be horizontal
+            stage.position.y = -1; // Position slightly below the models
+            currentScene.add(stage);
+
             // Position the camera
             currentCamera.position.set(0, 5, 10);
             currentCamera.lookAt(0, 0, 0);
@@ -164,21 +172,33 @@
                         loadedCount++;
                         console.log(`Successfully loaded: ${model.name}`);
 
+                        // Scale down the model by 80%
+                        object.scene.scale.set(0.8, 0.8, 0.8);
+
                         // Position the model in a circular arrangement
                         const angle = angleIncrement * index;
                         const x = Math.cos(angle) * radius;
                         const z = Math.sin(angle) * radius;
 
                         object.scene.position.set(x, 0, z);
-                        object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z);
                         modelGroup.add(object.scene);
 
-                        // Add a spotlight directed at the model
-                        const spotlight = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 4, 0.5);
-                        spotlight.position.set(x, 5, z); // Position the spotlight above the model
-                        spotlight.target = object.scene; // Direct the spotlight at the model
-                        currentScene.add(spotlight);
-                        currentScene.add(spotlight.target);
+                        // Add multiple lights for each model
+                        const spotlight1 = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 4, 0.5);
+                        spotlight1.position.set(x, 5, z); // Above the model
+                        spotlight1.target = object.scene;
+                        currentScene.add(spotlight1);
+                        currentScene.add(spotlight1.target);
+
+                        const spotlight2 = new THREE.SpotLight(0xffffff, 1, 100, Math.PI / 4, 0.5);
+                        spotlight2.position.set(x + 2, 5, z + 2); // Offset for additional light
+                        spotlight2.target = object.scene;
+                        currentScene.add(spotlight2);
+                        currentScene.add(spotlight2.target);
+
+                        const pointLight = new THREE.PointLight(0xffffff, 1, 50);
+                        pointLight.position.set(x, 3, z); // Close to the model
+                        currentScene.add(pointLight);
 
                         if (loadedCount === totalModels) {
                             console.log('All models loaded successfully');
@@ -199,12 +219,12 @@
         }
 
         const allModels = [
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-arcade_machine.glb', name: 'Grade 1 Arcade Machine', scale: { x: 1, y: 1, z: 1 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-time_machine.glb', name: 'Grade 1 Time Machine', scale: { x: 1, y: 1, z: 1 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-forces_on_a_rotating_man.glb', name: 'Grade 2 Forces on a Rotating Man', scale: { x: 1, y: 1, z: 1 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-machinery_-_single_pashe_dc_motor.glb', name: 'Grade 2 Single Phase DC Motor', scale: { x: 1, y: 1, z: 1 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagneticwave.glb', name: 'Grade 3 Electromagnetic Wave', scale: { x: 1, y: 1, z: 1 } },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagnetic_portal.glb', name: 'Grade 3 Electromagnetic Portal', scale: { x: 1, y: 1, z: 1 } }
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-arcade_machine.glb', name: 'Grade 1 Arcade Machine' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-time_machine.glb', name: 'Grade 1 Time Machine' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-forces_on_a_rotating_man.glb', name: 'Grade 2 Forces on a Rotating Man' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-machinery_-_single_pashe_dc_motor.glb', name: 'Grade 2 Single Phase DC Motor' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagneticwave.glb', name: 'Grade 3 Electromagnetic Wave' },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagnetic_portal.glb', name: 'Grade 3 Electromagnetic Portal' }
         ];
 
         // Load all models when the page loads
