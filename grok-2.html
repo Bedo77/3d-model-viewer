@@ -142,7 +142,7 @@
             currentScene.add(directionalLight);
 
             currentCamera.position.set(0, 10, 15);
-            currentCamera.lookAt(0, 2, 0);
+            currentCamera.lookAt(0, 0, 0); // Adjusted to look at origin
 
             createModelGroup();
             animate();
@@ -155,14 +155,14 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            if (currentScene) {
+            if (currentScene && modelGroup) {
                 modelGroup.rotation.y += 0.005;
+                currentRenderer.render(currentScene, currentCamera);
             }
-            currentRenderer.render(currentScene, currentCamera);
         }
 
         function clearModels() {
-            while(modelGroup && modelGroup.children.length > 0) {
+            while (modelGroup && modelGroup.children.length > 0) {
                 modelGroup.remove(modelGroup.children[0]);
             }
         }
@@ -172,7 +172,7 @@
             if (currentRenderer && currentRenderer.domElement && currentRenderer.domElement.parentNode) {
                 currentRenderer.domElement.parentNode.removeChild(currentRenderer.domElement);
             }
-            
+
             createScene(viewportId);
             clearModels();
 
@@ -183,38 +183,38 @@
 
             models.forEach((model, index) => {
                 const loader = new THREE.GLTFLoader();
-                loader.load(model.path, function(object) {
-                    loadedCount++;
-                    const angle = angleIncrement * index;
-                    const x = Math.cos(angle) * radius;
-                    const z = Math.sin(angle) * radius;
+                loader.load(
+                    model.path,
+                    function (object) {
+                        loadedCount++;
+                        console.log(`Model loaded: ${model.name}`);
+                        const angle = angleIncrement * index;
+                        const x = Math.cos(angle) * radius;
+                        const z = Math.sin(angle) * radius;
 
-                    object.scene.position.set(x, 0, z);
-                    object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z);
+                        object.scene.position.set(x, 0, z);
+                        object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z);
+                        modelGroup.add(object.scene);
 
-                    const spotLight = new THREE.SpotLight(model.color);
-                    spotLight.position.set(x, 5, z);
-                    spotLight.target = object.scene;
-                    spotLight.castShadow = true;
-                    currentScene.add(spotLight);
-                    currentScene.add(spotLight.target);
-
-                    modelGroup.add(object.scene);
-
-                    if (loadedCount === totalModels) {
-                        loadingIndicator.style.display = 'none';
+                        if (loadedCount === totalModels) {
+                            console.log('All models loaded');
+                            loadingIndicator.style.display = 'none';
+                        }
+                    },
+                    function (xhr) {
+                        console.log(`${model.name}: ${(xhr.loaded / xhr.total * 100)}% loaded`);
+                    },
+                    function (error) {
+                        console.error(`Error loading model: ${model.path}`, error);
+                        loadedCount++;
+                        if (loadedCount === totalModels) {
+                            loadingIndicator.style.display = 'none';
+                        }
                     }
-                }, undefined, function(error) {
-                    console.error(`Error loading model: ${model.path}`, error);
-                    loadedCount++;
-                    if (loadedCount === totalModels) {
-                        loadingIndicator.style.display = 'none';
-                    }
-                });
+                );
             });
         }
 
-        // Models found in the repository
         const allModels = [
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/arcade_machine.glb', name: 'Arcade Machine', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/time_machine.glb', name: 'Time Machine', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 },
@@ -224,7 +224,6 @@
             { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/electromagnetic_portal.glb', name: 'Electromagnetic Portal', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 }
         ];
 
-        // Event listeners for grade buttons
         document.getElementById('btnGrade1').addEventListener('click', () => {
             loadModels(allModels.slice(0, 2), 'mainViewport');
         });
@@ -235,7 +234,6 @@
             loadModels(allModels.slice(4, 6), 'mainViewport');
         });
 
-        // Initialize with no models
         loadModels([], 'mainViewport');
     </script>
 </body>
