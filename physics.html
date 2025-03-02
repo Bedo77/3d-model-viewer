@@ -25,9 +25,9 @@
         }
         .button {
             width: 100px;
-            height: 100px;
+            height: 50px;
             margin: 10px;
-            border-radius: 50%;
+            border-radius: 5px;
             background-color: #f47e42; /* Jaffa */
             color: white;
             display: flex;
@@ -67,31 +67,61 @@
             background-color: #2c7481; /* Paradiso */
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             padding: 10px;
+            overflow-y: auto;
         }
         .model-viewport {
             width: 100%; /* Full width of main-content */
             height: 50%; /* Half of main-content height */
-            background-color: #ffffff; /* White background */
+            background-color: #f0f0f0; /* Light gray for better visibility */
             margin-bottom: 2.5mm; /* Small bottom margin */
             border-radius: 50px; 
+            position: relative;
+        }
+        .model-icon {
+            width: 80px;
+            height: 80px;
+            margin: 10px;
+            border: 1px solid #fff;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            background-color: #fff;
+            transition: transform 0.3s ease;
+        }
+        .model-icon:hover {
+            transform: scale(1.1);
+        }
+        .model-icon img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 5px;
+        }
+        .top-bar {
+            width: 100%;
+            height: 50px;
+            background-color: #2c7481; /* Paradiso */
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 20px;
+            box-sizing: border-box;
         }
     </style>
     <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
 <body>
+    <div class="top-bar">
+        <button class="button" id="btnHome">Home</button>
+        <button class="button" id="btnBack">Back</button>
+    </div>
     <div class="sidebar">
-        <div class="button" id="btnGrade1">Grade 1</div>
-        <div class="button" id="btnGrade2">Grade 2</div>
-        <div class="button" id="btnGrade3">Grade 3</div>
-        <div class="button" id="btnGrade4">Grade 4</div>
-        <div class="button" id="btnGrade5">Grade 5</div>
-        <div class="button" id="btnGrade6">Grade 6</div>
-        <div class="button" id="btnGrade7">Grade 7</div>
-        <div class="button" id="btnGrade8">Grade 8</div>
-        <div class="button" id="btnGrade9">Grade 9</div>
+        <h3 style="color: white;">Model Tracks</h3>
+        <div id="trackModels"></div>
     </div>
     <div class="main-content">
         <div class="info-viewport" id="infoViewport">
@@ -102,10 +132,7 @@
                 Dive into the world of physics and discover the laws that govern our reality!
             </p>
         </div>
-        <div class="model-viewport" id="mainViewport"></div>
-    </div>
-    <div class="models-tracks" id="modelsTracks">
-        <h3 style="color: white;">Model Tracks</h3>
+        <div class="model-viewport" id="mainViewport" droppable="true"></div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -114,9 +141,7 @@
     <script>
         let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup, textMesh;
 
-        // Function to create a scene
         function createScene(viewportId) {
-            console.log("Creating scene for viewport: " + viewportId);
             const viewport = document.getElementById(viewportId);
             currentScene = new THREE.Scene();
             currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
@@ -143,9 +168,7 @@
             animate();
         }
 
-        // Function to create the ground
         function createGround() {
-            console.log("Creating ground");
             const geometry = new THREE.CircleGeometry(10.35, 32);
             const textureLoader = new THREE.TextureLoader();
             const texture = textureLoader.load('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/Logo.png', function(texture) {
@@ -186,31 +209,14 @@
                 textMesh.rotation.x = -Math.PI / 2;
                 textMesh.rotation.z = Math.PI / 4;
                 currentScene.add(textMesh);
-
-                const colors = [0x2c7481, 0xdadad8, 0xf47e42, 0xf46c27];
-                let colorIndex = 0;
-                const spotLight = new THREE.SpotLight(colors[colorIndex], 0.5);
-                spotLight.position.set(0, 5, 0);
-                spotLight.target = textMesh;
-                spotLight.castShadow = true;
-                currentScene.add(spotLight);
-                currentScene.add(spotLight.target);
-
-                setInterval(() => {
-                    colorIndex = (colorIndex + 1) % colors.length;
-                    spotLight.color.setHex(colors[colorIndex]);
-                }, 500);
             });
         }
 
-        // Function to create the model group
         function createModelGroup() {
-            console.log("Creating model group");
             modelGroup = new THREE.Group();
             currentScene.add(modelGroup);
         }
 
-        // Function to animate the scene
         function animate() {
             requestAnimationFrame(animate);
             if (currentScene) {
@@ -219,34 +225,13 @@
             currentRenderer.render(currentScene, currentCamera);
         }
 
-        // Function to load models
-        function loadModels(models, viewportId) {
-            console.log("Loading models for viewport: " + viewportId);
-            createScene(viewportId);
-            const radius = 9;
-            const angleIncrement = (Math.PI * 2) / models.length;
-
-            models.forEach((model, index) => {
+        function loadModels(models) {
+            clearModels();
+            models.forEach(model => {
                 const loader = new THREE.GLTFLoader();
-                console.log("Loading model: " + model.path);
                 loader.load(model.path, function(object) {
                     if (object.scene) {
-                        const angle = angleIncrement * index;
-                        const x = Math.cos(angle) * radius;
-                        const z = Math.sin(angle) * radius;
-
-                        object.scene.position.set(x, 0, z);
-                        object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z);
-
-                        const spotLight = new THREE.SpotLight(model.color);
-                        spotLight.position.set(x, 5, z);
-                        spotLight.target = object.scene;
-                        spotLight.castShadow = true;
-                        currentScene.add(spotLight);
-                        currentScene.add(spotLight.target);
-
                         modelGroup.add(object.scene);
-                        console.log("Model loaded successfully: " + model.name);
                     } else {
                         console.error(`Failed to load model: ${model.name}`);
                     }
@@ -254,14 +239,54 @@
                     console.log(`${model.name}: ${(xhr.loaded / xhr.total) * 100}% loaded`);
                 }, function(error) {
                     console.error(`Error loading model: ${model.path}`, error);
-                    alert(`Failed to load model: ${model.name}`);
                 });
             });
         }
 
-        // Function to update the info viewport
+        function clearModels() {
+            while (modelGroup.children.length) {
+                modelGroup.remove(modelGroup.children[0]);
+            }
+        }
+
+        const gradeContent = {
+            grade1: {
+                title: "Grade 1: Simple Machines",
+                description: "Exploration of how simple machines work and how they make work easier.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20one%20arcade_machine.glb', name: 'Arcade Machine' },
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20one%20time_machine.glb', name: 'Time Machine' },
+                ]
+            },
+            grade2: {
+                title: "Grade 2: Forces and Motion",
+                description: "Experimenting with different forces and observing their effects on motion.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20two%20forces_on_a_rotating_man.glb', name: 'Forces on a Rotating Man' },
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20two%20machinery_-_single_pashe_dc_motor.glb', name: 'Single Phase DC Motor' },
+                ]
+            },
+            grade3: {
+                title: "Grade 3: Electromagnetism",
+                description: "Exploring the principles of electromagnetism and its applications.",
+                models: [
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20three%20electromagnetic_portal.glb', name: 'Electromagnetic Portal' },
+                    { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20three%20electromagneticwave.glb', name: 'Electromagnetic Wave' },
+                ]
+            }
+        };
+
+        document.getElementById('btnHome').addEventListener('click', () => {
+            console.log("Home button clicked");
+            // Implement home button functionality here
+        });
+
+        document.getElementById('btnBack').addEventListener('click', () => {
+            console.log("Back button clicked");
+            // Implement back button functionality here
+        });
+
         function updateInfoViewport(title, description) {
-            console.log("Updating info viewport");
             const infoViewport = document.getElementById('infoViewport');
             infoViewport.innerHTML = `
                 <h2>${title}</h2>
@@ -269,70 +294,47 @@
             `;
         }
 
-        // Function to update the models tracks area
-        function updateModelsTracks(content) {
-            console.log("Updating models tracks");
-            const modelsTracks = document.getElementById('modelsTracks');
-            modelsTracks.innerHTML = content;
-        }
+        function displayModelIcons(models) {
+            const trackModels = document.getElementById('trackModels');
+            trackModels.innerHTML = ''; // Clear previous icons
+            models.forEach(model => {
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'model-icon';
+                iconDiv.setAttribute('draggable', 'true');
+                iconDiv.dataset.model = model.name;
+                iconDiv.innerHTML = `<img src="path/to/icon.png" alt="${model.name}" />`; // Replace with actual icon path
 
-        const gradeContent = {
-    grade1: {
-        title: "Grade 1: Simple Machines",
-        description: "Exploration of how simple machines work and how they make work easier.",
-        models: [
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20one%20arcade_machine.glb', name: 'Arcade Machine', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20one%20time_machine.glb', name: 'Time Machine', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
-        ],
-        tracksContent: "<p>Explore the mechanics of levers and pulleys.</p>"
-    },
-    grade2: {
-        title: "Grade 2: Forces and Motion",
-        description: "Experimenting with different forces and observing their effects on motion.",
-        models: [
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20two%20forces_on_a_rotating_man.glb', name: 'Forces on a Rotating Man', scale: { x: 1, y: 1, z: 1 }, color: 0xdadad8 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20two%20machinery_-_single_pashe_dc_motor.glb', name: 'Single Phase DC Motor', scale: { x: 1, y: 1, z: 1 }, color: 0xdadad8 },
-        ],
-        tracksContent: "<p>Learn about forces and their impact on motion.</p>"
-    },
-    grade3: {
-        title: "Grade 3: Electromagnetism",
-        description: "Exploring the principles of electromagnetism and its applications.",
-        models: [
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20three%20electromagnetic_portal.glb', name: 'Electromagnetic Portal', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade%20three%20electromagneticwave.glb', name: 'Electromagnetic Wave', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 },
-        ],
-        tracksContent: "<p>Discover the world of electromagnetism.</p>"
-    }
-};
+                iconDiv.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', model.path); // Drag model path
+                });
+
+                trackModels.appendChild(iconDiv);
+            });
+        }
 
         // Event listeners for grade buttons
         document.getElementById('btnGrade1').addEventListener('click', () => {
-            console.log("Grade 1 button clicked");
             updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
-            loadModels(gradeContent.grade1.models, 'mainViewport');
-            updateModelsTracks(gradeContent.grade1.tracksContent);
+            loadModels(gradeContent.grade1.models);
+            displayModelIcons(gradeContent.grade1.models);
         });
 
         document.getElementById('btnGrade2').addEventListener('click', () => {
-            console.log("Grade 2 button clicked");
             updateInfoViewport(gradeContent.grade2.title, gradeContent.grade2.description);
-            loadModels(gradeContent.grade2.models, 'mainViewport');
-            updateModelsTracks(gradeContent.grade2.tracksContent);
+            loadModels(gradeContent.grade2.models);
+            displayModelIcons(gradeContent.grade2.models);
         });
 
         document.getElementById('btnGrade3').addEventListener('click', () => {
-            console.log("Grade 3 button clicked");
             updateInfoViewport(gradeContent.grade3.title, gradeContent.grade3.description);
-            loadModels(gradeContent.grade3.models, 'mainViewport');
-            updateModelsTracks(gradeContent.grade3.tracksContent);
+            loadModels(gradeContent.grade3.models);
+            displayModelIcons(gradeContent.grade3.models);
         });
 
         // Initialize default view (Grade 1)
-        console.log("Initializing default view for Grade 1");
         updateInfoViewport(gradeContent.grade1.title, gradeContent.grade1.description);
-        loadModels(gradeContent.grade1.models, 'mainViewport');
-        updateModelsTracks(gradeContent.grade1.tracksContent);
+        loadModels(gradeContent.grade1.models);
+        displayModelIcons(gradeContent.grade1.models);
     </script>
 </body>
 </html>
