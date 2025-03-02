@@ -108,11 +108,24 @@
         .back-button:hover {
             background-color: #f46c27; /* Flamingo */
         }
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+        }
     </style>
     <!-- Load TimesNewRomance font -->
     <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
 <body>
+    <div class="loading-indicator" id="loadingIndicator">Loading models...</div>
     <div class="sidebar">
         <div class="button" id="btnGrade1">Grade 1</div>
         <div class="button" id="btnGrade2">Grade 2</div>
@@ -145,6 +158,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
         let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup, textMesh;
+        let loadingIndicator = document.getElementById('loadingIndicator');
 
         function createScene(viewportId) {
             const viewport = document.getElementById(viewportId);
@@ -250,12 +264,15 @@
 
         function clearModels() {
             // Remove all existing models from the group
-            while(modelGroup.children.length > 0){ 
+            while(modelGroup && modelGroup.children.length > 0){ 
                 modelGroup.remove(modelGroup.children[0]); 
             }
         }
 
         function loadModels(models, viewportId) {
+            // Show loading indicator
+            loadingIndicator.style.display = 'block';
+            
             // Clear the renderer if it exists
             if (currentRenderer && currentRenderer.domElement && currentRenderer.domElement.parentNode) {
                 currentRenderer.domElement.parentNode.removeChild(currentRenderer.domElement);
@@ -264,12 +281,27 @@
             createScene(viewportId);
             clearModels();
             
+            // Track loading progress
+            let loadedCount = 0;
+            const totalModels = models.length;
+            
+            if (totalModels === 0) {
+                // No models to load, hide the indicator
+                loadingIndicator.style.display = 'none';
+                return;
+            }
+            
             const radius = 9; // Radius for circular arrangement
             const angleIncrement = (Math.PI * 2) / models.length; // Even spacing
 
             models.forEach((model, index) => {
                 const loader = new THREE.GLTFLoader();
+                console.log(`Attempting to load model: ${model.path}`);
+                
                 loader.load(model.path, function(object) {
+                    loadedCount++;
+                    console.log(`Successfully loaded model ${loadedCount}/${totalModels}: ${model.name}`);
+                    
                     if (object.scene) {
                         const angle = angleIncrement * index;
                         const x = Math.cos(angle) * radius;
@@ -289,11 +321,25 @@
                     } else {
                         console.error(`Failed to load model: ${model.name}`);
                     }
-                }, function(xhr) {
-                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-                }, function(error) {
+                    
+                    // Hide loading indicator when all models are loaded
+                    if (loadedCount === totalModels) {
+                        loadingIndicator.style.display = 'none';
+                    }
+                }, 
+                // Progress callback
+                function(xhr) {
+                    console.log(`${model.name}: ${Math.round(xhr.loaded / xhr.total * 100)}% loaded`);
+                }, 
+                // Error callback
+                function(error) {
+                    loadedCount++;
                     console.error(`Error loading model: ${model.path}`, error);
-                    alert(`Failed to load model: ${model.name}`);
+                    
+                    // Hide loading indicator when all models are loaded (even with errors)
+                    if (loadedCount === totalModels) {
+                        loadingIndicator.style.display = 'none';
+                    }
                 });
             });
 
@@ -309,19 +355,20 @@
             `;
         }
 
+        // Correct model file paths based on GitHub repository structure
         const gradeContent = {
             grade1: {
                 title: "Grade 1: Simple Machines and Time",
                 description: "Exploration of arcade machines and the concept of time through interactive 3D models.",
                 models: [
                     { 
-                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/grade_one_arcade_machine.glb', 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/arcade_machine.glb', 
                         name: 'Arcade Machine', 
                         scale: { x: 1, y: 1, z: 1 }, 
                         color: 0x2c7481 // Paradiso
                     },
                     { 
-                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/grade_one_time_machine.glb', 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/time_machine.glb', 
                         name: 'Time Machine', 
                         scale: { x: 1, y: 1, z: 1 }, 
                         color: 0xf47e42 // Jaffa
@@ -333,13 +380,13 @@
                 description: "Study of rotational forces and electric motors through interactive 3D models.",
                 models: [
                     { 
-                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/grade_two_forces_on_a_rotating_man.glb', 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/forces_on_a_rotating_man.glb', 
                         name: 'Forces on a Rotating Man', 
                         scale: { x: 1, y: 1, z: 1 }, 
                         color: 0x2c7481 // Paradiso
                     },
                     { 
-                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/grade_two_machinery_-_single_pashe_dc_motor.glb', 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/machinery_-_single_pashe_dc_motor.glb', 
                         name: 'Single Phase DC Motor', 
                         scale: { x: 1, y: 1, z: 1 }, 
                         color: 0xf47e42 // Jaffa
@@ -351,13 +398,13 @@
                 description: "Exploration of electromagnetic waves and portals through interactive 3D models.",
                 models: [
                     { 
-                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/grade_three_electromagneticwave.glb', 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/electromagneticwave.glb', 
                         name: 'Electromagnetic Wave', 
                         scale: { x: 1, y: 1, z: 1 }, 
                         color: 0x2c7481 // Paradiso
                     },
                     { 
-                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/grade_three_electromagnetic_portal.glb', 
+                        path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/electromagnetic_portal.glb', 
                         name: 'Electromagnetic Portal', 
                         scale: { x: 1, y: 1, z: 1 }, 
                         color: 0xf47e42 // Jaffa
