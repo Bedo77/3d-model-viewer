@@ -129,20 +129,21 @@
             currentRenderer = new THREE.WebGLRenderer({ antialias: true });
 
             currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.innerHTML = ''; // Clear previous content
             viewport.appendChild(currentRenderer.domElement);
 
             currentControls = new THREE.OrbitControls(currentCamera, currentRenderer.domElement);
             currentControls.enableDamping = true;
             currentControls.dampingFactor = 0.1;
 
-            const ambientLight = new THREE.AmbientLight(0x404040, 0.15);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // Brighter ambient light
             currentScene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0x2c7481, 0.25);
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5); // Brighter directional light
             directionalLight.position.set(5, 10, 7.5);
             currentScene.add(directionalLight);
 
-            currentCamera.position.set(0, 10, 15);
-            currentCamera.lookAt(0, 0, 0); // Adjusted to look at origin
+            currentCamera.position.set(0, 5, 10); // Closer camera position
+            currentCamera.lookAt(0, 0, 0);
 
             createModelGroup();
             animate();
@@ -178,7 +179,7 @@
 
             let loadedCount = 0;
             const totalModels = models.length;
-            const radius = 9;
+            const radius = 5; // Reduced radius for closer placement
             const angleIncrement = (Math.PI * 2) / totalModels;
 
             models.forEach((model, index) => {
@@ -187,7 +188,7 @@
                     model.path,
                     function (object) {
                         loadedCount++;
-                        console.log(`Model loaded: ${model.name}`);
+                        console.log(`Successfully loaded: ${model.name}`);
                         const angle = angleIncrement * index;
                         const x = Math.cos(angle) * radius;
                         const z = Math.sin(angle) * radius;
@@ -197,7 +198,7 @@
                         modelGroup.add(object.scene);
 
                         if (loadedCount === totalModels) {
-                            console.log('All models loaded');
+                            console.log('All models loaded successfully');
                             loadingIndicator.style.display = 'none';
                         }
                     },
@@ -216,12 +217,12 @@
         }
 
         const allModels = [
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/arcade_machine.glb', name: 'Arcade Machine', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade1/time_machine.glb', name: 'Time Machine', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/forces_on_a_rotating_man.glb', name: 'Forces on a Rotating Man', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade2/machinery_-_single_pashe_dc_motor.glb', name: 'Single Phase DC Motor', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/electromagneticwave.glb', name: 'Electromagnetic Wave', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
-            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/Grade3/electromagnetic_portal.glb', name: 'Electromagnetic Portal', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 }
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-arcade_machine.glb', name: 'Grade 1 Arcade Machine', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-time_machine.glb', name: 'Grade 1 Time Machine', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-forces_on_a_rotating_man.glb', name: 'Grade 2 Forces on a Rotating Man', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-machinery_-_single_pashe_dc_motor.glb', name: 'Grade 2 Single Phase DC Motor', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagneticwave.glb', name: 'Grade 3 Electromagnetic Wave', scale: { x: 1, y: 1, z: 1 }, color: 0x2c7481 },
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagnetic_portal.glb', name: 'Grade 3 Electromagnetic Portal', scale: { x: 1, y: 1, z: 1 }, color: 0xf47e42 }
         ];
 
         document.getElementById('btnGrade1').addEventListener('click', () => {
