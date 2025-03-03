@@ -3,81 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com/ajax/libs/three.js/ https://cdn.jsdelivr.net/; style-src 'self' 'unsafe-inline' https://fonts.cdnfonts.com/; font-src 'self' https://fonts.cdnfonts.com/; img-src 'self' data: https://raw.githubusercontent.com/; connect-src 'self' https://raw.githubusercontent.com/;">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self'; 
+        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; 
+        style-src 'self' 'unsafe-inline' https://fonts.cdnfonts.com; 
+        font-src 'self' https://fonts.cdnfonts.com; 
+        img-src 'self' data: https://raw.githubusercontent.com; 
+        connect-src 'self' https://raw.githubusercontent.com https://threejs.org blob:;
+    ">
     <title>Educational 3D Models</title>
     <style>
         /* Your CSS styles */
     </style>
-    <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
-</head>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #f46c27; /* flamingo */
-            display: flex;
-        }
-        .sidebar {
-            width: 15%; /* Sidebar width */
-            height: 100%; /* Full height */
-            background-color: #2c7481; /* Paradiso */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 10px;
-        }
-        .button {
-            width: 100px;
-            height: 100px;
-            margin: 10px;
-            border-radius: 50%;
-            background-color: #f47e42; /* Jaffa */
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-        .button:hover {
-            background-color: #f46c27; /* Flamingo */
-            transform: scale(1.1);
-        }
-        .main-content {
-            width: 80%; /* Remaining width */
-            height: 100%; /* Full height */
-            display: flex;
-            flex-direction: column;
-        }
-        .info-viewport {
-            width: 85%; /* Full width of main-content */
-            height: 50%; /* Half of main-content height */
-            background-color: #1A0E0D; /* Darker brown */
-            color: #FFFFFF; /* Regular white color */
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
-            box-sizing: border-box;
-            overflow-y: auto;
-            transform: translateX(-20px); /* Move slightly to the left */
-            font-family: 'TimesNewRomance', serif; /* TimesNewRomance font */
-        }
-        .model-viewport {
-            width: 85%; /* Full width of main-content */
-            height: 50%; /* Half of main-content height */
-            background-color: #ffffff; /* White background */
-            transform: translateX(-20px); /* Move slightly to the left */
-            margin-bottom: 2.5mm; /* Small bottom margin */
-            border-radius: 50px; 
-        }
-    </style>
-    <!-- Load TimesNewRomance font -->
     <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
 <body>
