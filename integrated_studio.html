@@ -78,11 +78,31 @@
             margin-bottom: 2.5mm; /* Small bottom margin */
             border-radius: 50px; 
         }
+        .home-button {
+            width: 100px;
+            height: 40px;
+            margin: 10px;
+            background-color: #f47e42;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .home-button:hover {
+            background-color: #f46c27;
+        }
+        #physicsContent {
+            display: none; /* Hide physics content by default */
+        }
     </style>
     <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
 <body>
-    <div class="sidebar">
+    <!-- Main Content -->
+    <div class="sidebar" id="mainSidebar">
         <div class="button" id="btnGeometry">Geometry</div>
         <div class="button" id="btnPhysics">Physics</div>
         <div class="button" id="btnChemistry">Chemistry</div>
@@ -94,7 +114,7 @@
         <div class="button" id="btnGeology">Geology</div>
     </div>
     <div class="main-content">
-        <div class="info-viewport">
+        <div class="info-viewport" id="mainInfoViewport">
             <h2>Welcome to Smartistic-Lab Studio</h2>
             <p>
                 Welcome to <strong>Smartistic-Lab Studio</strong>, a leading company in educational technology. 
@@ -105,6 +125,30 @@
             </p>
         </div>
         <div class="model-viewport" id="mainViewport"></div>
+    </div>
+
+    <!-- Physics Content (Hidden by Default) -->
+    <div id="physicsContent">
+        <div class="sidebar" id="physicsSidebar">
+            <div class="home-button" id="btnHome">Home</div>
+            <div class="button" id="btnGrade1">Grade 1</div>
+            <div class="button" id="btnGrade2">Grade 2</div>
+            <div class="button" id="btnGrade3">Grade 3</div>
+        </div>
+        <div class="main-content">
+            <div class="info-viewport" id="physicsInfoViewport">
+                <h2>Welcome to the Physics Section</h2>
+                <p>
+                    Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
+                    Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
+                    Dive into the world of physics and discover the laws that govern our reality!
+                </p>
+            </div>
+            <div class="model-viewport" id="physicsViewport"></div>
+        </div>
+        <div class="models-tracks">
+            <h3 style="color: white;">Model Tracks</h3>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -285,32 +329,46 @@
             currentCamera.lookAt(0, 2, 0); // Adjusted focus point slightly higher
         }
 
-        // Function to load the Physics page dynamically
-        async function loadPhysicsPage() {
-            try {
-                const response = await fetch('Physics_test.html'); // Ensure this path is correct
-                if (!response.ok) {
-                    throw new Error(`Failed to load Physics_test.html: ${response.status} ${response.statusText}`);
-                }
-                const html = await response.text();
-                document.body.innerHTML = html; // Replace the entire page content with Physics_test.html
+        // Function to load physics models
+        function loadPhysicsModels() {
+            const physicsModels = [
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-arcade_machine.glb', name: 'Grade One Arcade Machine', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-time_machine.glb', name: 'Grade One Time Machine', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-forces_on_a_rotating_man.glb', name: 'Forces on a Rotating Man', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-machinery_-_single_pashe_dc_motor.glb', name: 'Single Phase DC Motor', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf46c27 },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagneticwave.glb', name: 'Electromagnetic Wave', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagnetic_portal.glb', name: 'Electromagnetic Portal', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }
+            ];
 
-                // Reinitialize scripts if needed
-                const scripts = document.body.getElementsByTagName('script');
-                for (let script of scripts) {
-                    const newScript = document.createElement('script');
-                    newScript.src = script.src;
-                    document.body.appendChild(newScript);
-                }
-            } catch (error) {
-                console.error('Error loading Physics_test.html:', error);
-                alert('Failed to load the Physics section. Please try again.');
-            }
+            loadModels(physicsModels, 'physicsViewport');
         }
 
         // Event listener for the Physics button
         document.getElementById('btnPhysics').addEventListener('click', () => {
-            loadPhysicsPage();
+            // Hide the main content
+            document.getElementById('mainViewport').style.display = 'none';
+            document.getElementById('mainInfoViewport').style.display = 'none';
+            document.getElementById('mainSidebar').style.display = 'none';
+
+            // Show the physics content
+            document.getElementById('physicsContent').style.display = 'flex';
+
+            // Load physics models
+            loadPhysicsModels();
+        });
+
+        // Event listener for the Home button
+        document.getElementById('btnHome').addEventListener('click', () => {
+            // Hide the physics content
+            document.getElementById('physicsContent').style.display = 'none';
+
+            // Show the main content
+            document.getElementById('mainViewport').style.display = 'block';
+            document.getElementById('mainInfoViewport').style.display = 'flex';
+            document.getElementById('mainSidebar').style.display = 'flex';
+
+            // Reload main models (if needed)
+            loadModels(models, 'mainViewport');
         });
 
         // Initialize main viewport and load models
