@@ -102,7 +102,7 @@
 </head>
 <body>
     <!-- Main Content -->
-    <div class="sidebar">
+    <div class="sidebar" id="mainSidebar">
         <div class="button" id="btnGeometry">Geometry</div>
         <div class="button" id="btnPhysics">Physics</div>
         <div class="button" id="btnChemistry">Chemistry</div>
@@ -129,7 +129,7 @@
 
     <!-- Physics Content (Hidden by Default) -->
     <div id="physicsContent">
-        <div class="sidebar">
+        <div class="sidebar" id="physicsSidebar">
             <div class="home-button" id="btnHome">Home</div>
             <div class="button" id="btnGrade1">Grade 1</div>
             <div class="button" id="btnGrade2">Grade 2</div>
@@ -348,6 +348,7 @@
             // Hide the main content
             document.getElementById('mainViewport').style.display = 'none';
             document.getElementById('mainInfoViewport').style.display = 'none';
+            document.getElementById('mainSidebar').style.display = 'none';
 
             // Show the physics content
             document.getElementById('physicsContent').style.display = 'flex';
@@ -364,6 +365,7 @@
             // Show the main content
             document.getElementById('mainViewport').style.display = 'block';
             document.getElementById('mainInfoViewport').style.display = 'flex';
+            document.getElementById('mainSidebar').style.display = 'flex';
 
             // Reload main models (if needed)
             loadModels(models, 'mainViewport');
