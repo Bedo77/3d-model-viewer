@@ -94,6 +94,9 @@
         .home-button:hover {
             background-color: #f46c27;
         }
+        #physicsContent {
+            display: none; /* Hide physics content by default */
+        }
     </style>
     <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
 </head>
@@ -111,7 +114,7 @@
         <div class="button" id="btnGeology">Geology</div>
     </div>
     <div class="main-content">
-        <div class="info-viewport">
+        <div class="info-viewport" id="mainInfoViewport">
             <h2>Welcome to Smartistic-Lab Studio</h2>
             <p>
                 Welcome to <strong>Smartistic-Lab Studio</strong>, a leading company in educational technology. 
@@ -125,7 +128,7 @@
     </div>
 
     <!-- Physics Content (Hidden by Default) -->
-    <div id="physicsContent" style="display: none;">
+    <div id="physicsContent">
         <div class="sidebar">
             <div class="home-button" id="btnHome">Home</div>
             <div class="button" id="btnGrade1">Grade 1</div>
@@ -133,7 +136,7 @@
             <div class="button" id="btnGrade3">Grade 3</div>
         </div>
         <div class="main-content">
-            <div class="info-viewport" id="infoViewport">
+            <div class="info-viewport" id="physicsInfoViewport">
                 <h2>Welcome to the Physics Section</h2>
                 <p>
                     Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
@@ -344,7 +347,7 @@
         document.getElementById('btnPhysics').addEventListener('click', () => {
             // Hide the main content
             document.getElementById('mainViewport').style.display = 'none';
-            document.getElementById('info-viewport').style.display = 'none';
+            document.getElementById('mainInfoViewport').style.display = 'none';
 
             // Show the physics content
             document.getElementById('physicsContent').style.display = 'flex';
@@ -360,7 +363,7 @@
 
             // Show the main content
             document.getElementById('mainViewport').style.display = 'block';
-            document.getElementById('info-viewport').style.display = 'flex';
+            document.getElementById('mainInfoViewport').style.display = 'flex';
 
             // Reload main models (if needed)
             loadModels(models, 'mainViewport');
