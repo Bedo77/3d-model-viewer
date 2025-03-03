@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self'; 
+        script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; 
+        style-src 'self' 'unsafe-inline' https://fonts.cdnfonts.com; 
+        font-src 'self' https://fonts.cdnfonts.com; 
+        img-src 'self' data: https://raw.githubusercontent.com; 
+        connect-src 'self' https://raw.githubusercontent.com https://threejs.org blob:;
+    ">
+    <title>Educational 3D Models</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f46c27; /* flamingo */
+            display: flex;
+        }
+        .sidebar {
+            width: 15%; /* Sidebar width */
+            height: 100%; /* Full height */
+            background-color: #2c7481; /* Paradiso */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .button {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 50%;
+            background-color: #f47e42; /* Jaffa */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #f46c27; /* Flamingo */
+            transform: scale(1.1);
+        }
+        .main-content {
+            width: 80%; /* Remaining width */
+            height: 100%; /* Full height */
+            display: flex;
+            flex-direction: column;
+        }
+        .info-viewport {
+            width: 85%; /* Full width of main-content */
+            height: 50%; /* Half of main-content height */
+            background-color: #1A0E0D; /* Darker brown */
+            color: #FFFFFF; /* Regular white color */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+            box-sizing: border-box;
+            overflow-y: auto;
+            transform: translateX(-20px); /* Move slightly to the left */
+            font-family: 'TimesNewRomance', serif; /* TimesNewRomance font */
+        }
+        .model-viewport {
+            width: 85%; /* Full width of main-content */
+            height: 50%; /* Half of main-content height */
+            background-color: #ffffff; /* White background */
+            transform: translateX(-20px); /* Move slightly to the left */
+            margin-bottom: 2.5mm; /* Small bottom margin */
+            border-radius: 50px; 
+        }
+        .home-button {
+            width: 100px;
+            height: 40px;
+            margin: 10px;
+            background-color: #f47e42;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .home-button:hover {
+            background-color: #f46c27;
+        }
+    </style>
+    <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="sidebar">
+        <div class="button" id="btnGeometry">Geometry</div>
+        <div class="button" id="btnPhysics">Physics</div>
+        <div class="button" id="btnChemistry">Chemistry</div>
+        <div class="button" id="btnBiology">Biology</div>
+        <div class="button" id="btnAstronomy">Astronomy</div>
+        <div class="button" id="btnEcology">Ecology</div>
+        <div class="button" id="btnRobotics">Robotics</div>
+        <div class="button" id="btnMathematics">Mathematics</div>
+        <div class="button" id="btnGeology">Geology</div>
+    </div>
+    <div class="main-content">
+        <div class="info-viewport">
+            <h2>Welcome to Smartistic-Lab Studio</h2>
+            <p>
+                Welcome to <strong>Smartistic-Lab Studio</strong>, a leading company in educational technology. 
+                We specialize in creating cutting-edge products designed to inspire and educate learners of all ages, 
+                from 3 to 18 years old. 
+                Our mission is to transform education by integrating technology into the learning process, 
+                making it more engaging, interactive, and effective. Join us in shaping the future of education!
+            </p>
+        </div>
+        <div class="model-viewport" id="mainViewport"></div>
+    </div>
+
+    <!-- Physics Content (Hidden by Default) -->
+    <div id="physicsContent" style="display: none;">
+        <div class="sidebar">
+            <div class="home-button" id="btnHome">Home</div>
+            <div class="button" id="btnGrade1">Grade 1</div>
+            <div class="button" id="btnGrade2">Grade 2</div>
+            <div class="button" id="btnGrade3">Grade 3</div>
+        </div>
+        <div class="main-content">
+            <div class="info-viewport" id="infoViewport">
+                <h2>Welcome to the Physics Section</h2>
+                <p>
+                    Welcome to the <strong>Physics Section</strong> of Smartistic-Lab Studio. Here, we explore the fundamental principles of the universe, from motion and forces to energy and matter. 
+                    Our interactive 3D models and simulations are designed to make learning physics engaging and intuitive for students of all ages. 
+                    Dive into the world of physics and discover the laws that govern our reality!
+                </p>
+            </div>
+            <div class="model-viewport" id="physicsViewport"></div>
+        </div>
+        <div class="models-tracks">
+            <h3 style="color: white;">Model Tracks</h3>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup, textMesh;
+
+        // Function to create a new scene
+        function createScene(viewportId) {
+            const viewport = document.getElementById(viewportId);
+            currentScene = new THREE.Scene();
+            currentCamera = new THREE.PerspectiveCamera(75, viewport.clientWidth / viewport.clientHeight, 0.1, 1000);
+            currentRenderer = new THREE.WebGLRenderer({ antialias: true });
+
+            currentRenderer.setSize(viewport.clientWidth, viewport.clientHeight);
+            viewport.innerHTML = ''; // Clear previous content
+            viewport.appendChild(currentRenderer.domElement);
+
+            currentControls = new THREE.OrbitControls(currentCamera, currentRenderer.domElement);
+            currentControls.enableDamping = true;
+            currentControls.dampingFactor = 0.1;
+
+            // Reduced light intensity by 50% and changed light color
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.15); // Grey color and reduced intensity
+            currentScene.add(ambientLight);
+            const directionalLight = new THREE.DirectionalLight(0x2c7481, 0.25); // Paradiso color and reduced intensity
+            directionalLight.position.set(5, 10, 7.5);
+            currentScene.add(directionalLight);
+
+            currentCamera.position.set(0, 10, 15); // Lifted the camera up by 2 degrees and brought it closer
+            currentCamera.lookAt(0, 2, 0); // Adjusted focus point slightly higher
+
+            createGround(); // Create the ground mesh
+            createModelGroup(); // Create the model group
+            animate();
+        }
+
+        // Function to create the ground
+        function createGround() {
+            const geometry = new THREE.CircleGeometry(10.35, 32); // Increased radius
+            const textureLoader = new THREE.TextureLoader();
+            const texture = textureLoader.load('https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/images/Logo.png', function(texture) {
+                // Adjust texture scaling
+                texture.repeat.set(0.3, 0.3); // Further reduce stretchiness
+                texture.wrapS = THREE.RepeatWrapping; // Repeat texture horizontally
+                texture.wrapT = THREE.RepeatWrapping; // Repeat texture vertically
+            });
+
+            const material = new THREE.MeshStandardMaterial({
+                map: texture,
+                color: 0x000000, // Slight dark black color to absorb some light
+                roughness: 0.7, // Increase roughness for less reflectivity
+                metalness: 0.1, // Reduce metalness for a warmer feel
+            });
+
+            ground = new THREE.Mesh(geometry, material);
+            ground.rotation.x = -Math.PI / 2; // Rotate to make it horizontal
+            ground.position.y = -0.1; // Slightly below the models
+            ground.receiveShadow = true; // Allow shadows on the ground
+            currentScene.add(ground); // Add ground to the scene
+
+            // Add company name text
+            const loader = new THREE.FontLoader();
+            loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', function(font) {
+                const textGeometry = new THREE.TextGeometry('Smartistic-Lab\n        Studio', {
+                    font: font,
+                    size: 1.35, // Reduced size by 25% (from 1.8 to 1.35)
+                    height: 0.1,
+                    curveSegments: 12,
+                    bevelEnabled: true,
+                    bevelThickness: 0.03,
+                    bevelSize: 0.02,
+                    bevelOffset: 0,
+                    bevelSegments: 5
+                });
+                const textMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+                textMesh = new THREE.Mesh(textGeometry, textMaterial);
+                textMesh.position.set(-4.5, -0.1, 0); // Moved 1cm left (from -3.5 to -4.5) and 1cm down (from 0.1 to -0.1)
+                textMesh.rotation.x = -Math.PI / 2; // Rotate to lay flat on the ground
+                textMesh.rotation.z = Math.PI / 4; // Slightly face the camera
+                currentScene.add(textMesh);
+
+                // Add spotlights with changing colors for the text
+                const colors = [0x2c7481, 0xdadad8, 0xf47e42, 0xf46c27]; // Paradiso, Quill Gray, Jaffa, Flamingo
+                let colorIndex = 0;
+                const spotLight = new THREE.SpotLight(colors[colorIndex], 0.5);
+                spotLight.position.set(0, 5, 0);
+                spotLight.target = textMesh;
+                spotLight.castShadow = true;
+                currentScene.add(spotLight);
+                currentScene.add(spotLight.target);
+
+                setInterval(() => {
+                    colorIndex = (colorIndex + 1) % colors.length;
+                    spotLight.color.setHex(colors[colorIndex]);
+                }, 500); // Change color every 0.5 second
+            });
+        }
+
+        // Function to create a model group
+        function createModelGroup() {
+            modelGroup = new THREE.Group(); // Create a group for the models
+            currentScene.add(modelGroup); // Add the model group to the scene
+        }
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            if (currentScene) { // Ensure currentScene is defined
+                // Rotate the model group to simulate the ground rotating
+                modelGroup.rotation.y += 0.005; // Slow down the rotation
+            }
+            currentRenderer.render(currentScene, currentCamera);
+        }
+
+        // Function to load models into the viewport
+        function loadModels(models, viewportId) {
+            createScene(viewportId);
+            const radius = 9; // Radius for circular arrangement
+            const angleIncrement = (Math.PI * 2) / models.length; // Even spacing
+
+            models.forEach((model, index) => {
+                const loader = new THREE.GLTFLoader();
+                loader.load(model.path, function(object) {
+                    if (object.scene) {
+                        // Position models in a circular arrangement
+                        const angle = angleIncrement * index;
+                        const x = Math.cos(angle) * radius;
+                        const z = Math.sin(angle) * radius;
+
+                        object.scene.position.set(x, 0, z);
+
+                        // Apply scaling and position adjustments based on model name
+                        switch (model.name) {
+                            case 'Geometry Spheres':
+                                object.scene.scale.set(2, 2, 2); // Double size
+                                break;
+                            case 'Insect Anatomy':
+                                object.scene.scale.set(2, 2, 2); // Double size
+                                object.scene.position.y = 0.5; // Lifted up on Y-axis by 0.5 units (adjust as needed)
+                                break;
+                            case 'Female Human Skeleton':
+                                object.scene.scale.set(0.105, 0.105, 0.105); // Scaled up by 5% (from 0.1 to 0.105)
+                                object.scene.position.y = 1.0; // Lifted up on Y-axis by 1.0 units (adjust as needed)
+                                break;
+                            case 'Generalized Human Body':
+                            case 'Animal Pack':
+                                object.scene.scale.set(0.5, 0.5, 0.5); // Default scaling
+                                break;
+                            default:
+                                object.scene.scale.set(model.scale.x, model.scale.y, model.scale.z); // Default scaling
+                                break;
+                        }
+
+                        // Add a spotlight for each model with specific colors
+                        const spotLight = new THREE.SpotLight(model.color);
+                        spotLight.position.set(x, 5, z); // Height for better visibility
+                        spotLight.target = object.scene; // Aim at the model
+                        spotLight.castShadow = true;
+                        currentScene.add(spotLight);
+                        currentScene.add(spotLight.target); // Add target for spotlight
+
+                        modelGroup.add(object.scene); // Add the model to the model group
+                    } else {
+                        console.error(`Failed to load model: ${model.name}`);
+                    }
+                }, function(xhr) {
+                    console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                }, function(error) {
+                    console.error(`Error loading model: ${model.path}`, error);
+                    alert(`Failed to load model: ${model.name}`);
+                });
+            });
+
+            // Adjust camera position
+            currentCamera.position.set(0, 10, 15); // Lifted the camera up by 2 degrees and brought it closer
+            currentCamera.lookAt(0, 2, 0); // Adjusted focus point slightly higher
+        }
+
+        // Function to load physics models
+        function loadPhysicsModels() {
+            const physicsModels = [
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-arcade_machine.glb', name: 'Grade One Arcade Machine', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one-time_machine.glb', name: 'Grade One Time Machine', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-forces_on_a_rotating_man.glb', name: 'Forces on a Rotating Man', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_two-machinery_-_single_pashe_dc_motor.glb', name: 'Single Phase DC Motor', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf46c27 },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagneticwave.glb', name: 'Electromagnetic Wave', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 },
+                { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_three-electromagnetic_portal.glb', name: 'Electromagnetic Portal', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }
+            ];
+
+            loadModels(physicsModels, 'physicsViewport');
+        }
+
+        // Event listener for the Physics button
+        document.getElementById('btnPhysics').addEventListener('click', () => {
+            // Hide the main content
+            document.getElementById('mainViewport').style.display = 'none';
+            document.getElementById('info-viewport').style.display = 'none';
+
+            // Show the physics content
+            document.getElementById('physicsContent').style.display = 'flex';
+
+            // Load physics models
+            loadPhysicsModels();
+        });
+
+        // Event listener for the Home button
+        document.getElementById('btnHome').addEventListener('click', () => {
+            // Hide the physics content
+            document.getElementById('physicsContent').style.display = 'none';
+
+            // Show the main content
+            document.getElementById('mainViewport').style.display = 'block';
+            document.getElementById('info-viewport').style.display = 'flex';
+
+            // Reload main models (if needed)
+            loadModels(models, 'mainViewport');
+        });
+
+        // Initialize main viewport and load models
+        const models = [
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/generalized_human_body.glb', name: 'Generalized Human Body', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0x2c7481 }, // Paradiso
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/a_modern_agricultural_worker-944.glb', name: 'Agricultural Worker', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/animal_pack_vol_1.glb', name: 'Animal Pack', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf47e42 }, // Jaffa
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', name: 'Insect Anatomy', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xf46c27 }, // Flamingo
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/female_human_skeleton_-_zbrush_-_anatomy_study.glb', name: 'Female Human Skeleton', scale: { x: 0.105, y: 0.105, z: 0.105 }, color: 0x2c7481 }, // Paradiso (scaled up by 5%)
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/geometry_texture_effect_spheres.glb', name: 'Geometry Spheres', scale: { x: 0.5, y: 0.5, z: 0.5 }, color: 0xdadad8 }, // Quill Gray
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/lighting_pack_-_chain_lighting.glb', name: 'Lighting Pack', scale: { x: 0.1, y: 0.1, z: 0.1 }, color: 0xf47e42 }, // Jaffa
+            { path: 'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/stylized_chemistry_set.glb', name: 'Chemistry Set', scale: { x: 0.4, y: 0.4, z: 0.4 }, color: 0xf46c27 } // Flamingo
+        ];
+
+        loadModels(models, 'mainViewport');
+    </script>
+</body>
+</html>
