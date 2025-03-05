@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Test - Smartistic-Lab</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #debug { position: fixed; top: 10px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 10px; font-family: Arial; }
+    </style>
+</head>
+<body>
+    <!-- Debug Output -->
+    <div id="debug"></div>
+
+    <!-- AR.js Scene -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+    <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: true; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
+             vr-mode-ui="enabled: false">
+        <!-- Marker with Hiro pattern -->
+        <a-marker type="pattern" url="https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Resources/hiro.patt">
+            <!-- Model Group -->
+            <a-entity id="model-group" position="0 0 0" rotation="0 0 0">
+                <a-entity id="insect" position="-1 0 0"></a-entity>
+                <a-entity id="bullet" position="1 0 0"></a-entity>
+            </a-entity>
+        </a-marker>
+        <!-- Camera -->
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+        // Debug logging function
+        const debugEl = document.getElementById('debug');
+        function log(message, type = 'info') {
+            console[type === 'error' ? 'error' : 'log'](message);
+            debugEl.innerHTML += `[${type.toUpperCase()}] ${new Date().toLocaleTimeString()}: ${message}<br>`;
+            debugEl.scrollTop = debugEl.scrollHeight; // Auto-scroll
+        }
+
+        // Initialize when scene is ready
+        const sceneEl = document.querySelector('a-scene');
+        sceneEl.addEventListener('loaded', () => {
+            log('A-Frame scene loaded successfully');
+        });
+
+        // Check AR.js initialization
+        if (!window.THREEx || !window.THREEx.ArToolkitContext) {
+            log('AR.js failed to load', 'error');
+            throw new Error('AR.js not available');
+        } else {
+            log('AR.js initialized');
+        }
+
+        // Model loading function
+        const loader = new THREE.GLTFLoader();
+        function loadModel(entityId, url, scale = 1, positionOffset = { x: 0, y: 0, z: 0 }) {
+            const entity = document.getElementById(entityId);
+            if (!entity) {
+                log(`Entity ${entityId} not found`, 'error');
+                return;
+            }
+
+            log(`Loading model from ${url}`);
+            loader.load(
+                url,
+                (gltf) => {
+                    try {
+                        // Adjust scale and position
+                        gltf.scene.scale.set(scale, scale, scale);
+                        gltf.scene.position.set(positionOffset.x, positionOffset.y, positionOffset.z);
+                        
+                        // Add to A-Frame entity
+                        entity.object3D.add(gltf.scene);
+                        log(`Model ${entityId} loaded successfully with scale ${scale}`);
+
+                        // Bounding box for debugging
+                        const box = new THREE.Box3().setFromObject(gltf.scene);
+                        const size = new THREE.Vector3();
+                        box.getSize(size);
+                        log(`Model ${entityId} size: x:${size.x.toFixed(2)}, y:${size.y.toFixed(2)}, z:${size.z.toFixed(2)}`);
+                    } catch (e) {
+                        log(`Error processing ${entityId} model: ${e.message}`, 'error');
+                    }
+                },
+                (xhr) => {
+                    log(`${entityId}: ${(xhr.loaded / xhr.total * 100).toFixed(2)}% loaded`);
+                },
+                (error) => {
+                    log(`Error loading ${entityId} from ${url}: ${error.message}`, 'error');
+                }
+            );
+        }
+
+        // Load models when marker is detected
+        const marker = document.querySelector('a-marker');
+        marker.addEventListener('markerFound', () => {
+            log('Hiro marker detected');
+            loadModel('insect', 
+                'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/Insect_Anatomy.glb', 
+                2, // Scale up for visibility
+                { x: 0, y: 0.5, z: 0 } // Slight Y offset
+            );
+            loadModel('bullet', 
+                'https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/models/bullet_physics_animation_8_reconstruction.glb', 
+                0.5, // Smaller scale
+                { x: 0, y: 0, z: 0 }
+            );
+        });
+
+        marker.addEventListener('markerLost', () => {
+            log('Hiro marker lost');
+        });
+
+        // Webcam error handling
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(() => log('Webcam access granted'))
+            .catch((err) => log(`Webcam access denied: ${err.message}`, 'error'));
+
+        // Animation loop for debugging
+        function animate() {
+            requestAnimationFrame(animate);
+            const group = document.getElementById('model-group');
+            if (group && marker.object3D.visible) {
+                group.object3D.rotation.y += 0.01; // Slow rotation for visibility
+            }
+        }
+        animate();
+
+        // Initial log
+        log('AR Test Script initialized');
+    </script>
+</body>
+</html>
