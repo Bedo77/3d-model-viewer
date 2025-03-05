@@ -69,7 +69,7 @@
             transform: translateX(-20px);
             margin-bottom: 2.5mm;
             border-radius: 50px;
-            position: relative; /* For AR overlay */
+            position: relative;
         }
     </style>
     <link href="https://fonts.cdnfonts.com/css/times-new-romance" rel="stylesheet">
@@ -85,7 +85,7 @@
         <div class="button" id="btnRobotics">Robotics</div>
         <div class="button" id="btnMathematics">Mathematics</div>
         <div class="button" id="btnGeology">Geology</div>
-        <div class="button" id="btnAR">AR Mode</div> <!-- New AR button -->
+        <div class="button" id="btnAR">AR Mode</div>
     </div>
     <div class="main-content" id="mainContent">
         <div class="info-viewport" id="infoViewport">
@@ -106,6 +106,7 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     <script>
         let currentScene, currentRenderer, currentCamera, currentControls, ground, modelGroup, textMesh;
+        let arStream = null;
 
         function createScene(viewportId) {
             const viewport = document.getElementById(viewportId);
@@ -277,11 +278,13 @@
         loadModels(defaultModels, 'mainViewport');
 
         // Simulated AR Mode
-        let arStream = null; // To track webcam stream
         function enterSimulatedAR() {
             const viewport = document.getElementById('mainViewport');
             const infoViewport = document.getElementById('infoViewport');
-            infoViewport.innerHTML = '<h2>AR Mode</h2><p>View models overlaid on your camera feed. Use mouse or touch to rotate and zoom.</p>';
+            infoViewport.innerHTML = `
+                <h2>AR Mode</h2>
+                <p>View models overlaid on your camera feed. Use mouse or touch to rotate and zoom.</p>
+            `;
 
             viewport.innerHTML = '<video id="arVideo" autoplay playsinline style="position:absolute;width:100%;height:100%;object-fit:cover;z-index:-1;"></video>';
             const video = document.getElementById('arVideo');
@@ -345,18 +348,27 @@
                         arStream = null;
                     }
                     loadModels(defaultModels, 'mainViewport');
-                    infoViewport.innerHTML = '<h2>Welcome to Smartistic-Lab Studio</h2><p>Welcome to <strong>Smartistic-Lab Studio</strong>...",
+                    infoViewport.innerHTML = `
+                        <h2>Welcome to Smartistic-Lab Studio</h2>
+                        <p>
+                            Welcome to <strong>Smartistic-Lab Studio</strong>, a leading company in educational technology. 
+                            We specialize in creating cutting-edge products designed to inspire and educate learners of all ages, 
+                            from 3 to 18 years old. 
+                            Our mission is to transform education by integrating technology into the learning process, 
+                            making it more engaging, interactive, and effective. Join us in shaping the future of education!
+                        </p>
+                    `;
                 };
                 viewport.appendChild(backBtn);
             }).catch(err => {
                 alert('Failed to start AR: ' + err.message);
-                loadModels(defaultModels, 'mainViewport'); // Fallback
+                loadModels(defaultModels, 'mainViewport');
             });
         }
 
         document.getElementById('btnAR').addEventListener('click', enterSimulatedAR);
 
-        // Existing Physics content (omitted for brevity, remains unchanged)
+        // Physics content (omitted for brevity, assumed unchanged)
         function loadPhysicsContent() { /* ... */ }
         document.getElementById('btnPhysics').addEventListener('click', () => { loadPhysicsContent(); });
     </script>
