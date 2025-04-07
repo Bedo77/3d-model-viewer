@@ -121,46 +121,6 @@
     "lastUpdated": "4/7/2025, 10:49:49 PM"
   },
   {
-    "name": "Push and Pull Forces",
-    "teacher": "Ms. Zoe",
-    "lessonIcon": "https://example.com/force.png",
-    "objectives": {
-      "learningObjectives": [],
-      "standardsAlignment": [
-        "NGSS K-PS2-1",
-        "UK KS1 Physics"
-      ]
-    },
-    "structure": {
-      "engage": "Push/pull a toy car.\\nAsk: \"\"What made it move?\"\"",
-      "explore": "Test forces on objects (e.g., roll, slide).\\nRecord which need more force.",
-      "explain": "Define force (push/pull).\\nShow 3D force diagram.",
-      "elaborate": "Design a \"\"force maze\"\" (e.g., blow a ball through straws).",
-      "evaluate": "Act out forces (e.g., push a door)."
-    },
-    "resources": {
-      "materialsNeeded": [
-        "toy cars",
-        "straws",
-        "balls"
-      ],
-      "keyVocabulary": [
-        "push",
-        "pull",
-        "force"
-      ],
-      "supplementaryLinks": [
-        "https://example.com/forces-game"
-      ],
-      "images": []
-    },
-    "notes": {
-      "teacherNotes": "Encourage teamwork.\\nUse lightweight objects."
-    },
-    "models": [],
-    "lastUpdated": "4/7/2025, 10:49:49 PM"
-  },
-  {
     "name": "Plant Parts and Functions",
     "teacher": "Ms. Lia",
     "lessonIcon": "https://example.com/plant.png",
