@@ -40,47 +40,6 @@
     "lastUpdated": "4/7/2025, 10:49:49 PM"
   },
   {
-    "name": "Plant Parts and Functions",
-    "teacher": "Ms. Lia",
-    "lessonIcon": "https://example.com/plant.png",
-    "objectives": {
-      "learningObjectives": [],
-      "standardsAlignment": [
-        "NGSS 1-LS1-1",
-        "UK KS1 Biology"
-      ]
-    },
-    "structure": {
-      "engage": "Show a potted plant.\\nAsk: \"\"What parts do you see?\"\"",
-      "explore": "Dissect a plant (roots, stem, leaves).\\nUse magnifiers.",
-      "explain": "Explain each partï¿½s job.\\nShow 3D plant anatomy model.",
-      "elaborate": "Plant seeds in cups.\\nPredict growth.",
-      "evaluate": "Match parts to functions (e.g., roots drink water)."
-    },
-    "resources": {
-      "materialsNeeded": [
-        "plants",
-        "magnifiers",
-        "cups"
-      ],
-      "keyVocabulary": [
-        "root",
-        "stem",
-        "leaf",
-        "flower"
-      ],
-      "supplementaryLinks": [
-        "https://example.com/plant-parts"
-      ],
-      "images": []
-    },
-    "notes": {
-      "teacherNotes": "Use fast-growing seeds (e.g., beans).\\nAllocate roles in group work."
-    },
-    "models": [],
-    "lastUpdated": "4/7/2025, 10:49:49 PM"
-  },
-  {
     "name": "Weather Watchers",
     "teacher": "Ms. Kim",
     "lessonIcon": "https://example.com/weather.png",
