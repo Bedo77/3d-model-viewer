@@ -1,45 +1,5 @@
 [
   {
-    "name": "Properties of Solids",
-    "teacher": "Mr. Lee",
-    "lessonIcon": "https://example.com/solid.png",
-    "objectives": {
-      "learningObjectives": [],
-      "standardsAlignment": [
-        "NGSS 2-PS1-1",
-        "UK KS1 Science"
-      ]
-    },
-    "structure": {
-      "engage": "Show a rock, toy, and book.\\nAsk: \"\"What do these have in common?\"\"",
-      "explore": "Sort objects into solids/non-solids.\\nTest hardness with a spoon.",
-      "explain": "Define solids (fixed shape/volume).\\nShow 3D particle model.",
-      "elaborate": "Build a \"\"solid tower\"\" with blocks.\\nPredict which shapes stack best.",
-      "evaluate": "Draw a solid object.\\nExplain why itï¿½s a solid."
-    },
-    "resources": {
-      "materialsNeeded": [
-        "blocks",
-        "spoon",
-        "objects"
-      ],
-      "keyVocabulary": [
-        "solid",
-        "shape",
-        "volume"
-      ],
-      "supplementaryLinks": [
-        "https://example.com/solids-video"
-      ],
-      "images": []
-    },
-    "notes": {
-      "teacherNotes": "Use tactile objects for ESL students.\\nHighlight safety with hard objects."
-    },
-    "models": [],
-    "lastUpdated": "4/7/2025, 10:49:49 PM"
-  },
-  {
     "name": "Weather Watchers",
     "teacher": "Ms. Kim",
     "lessonIcon": "https://example.com/weather.png",
