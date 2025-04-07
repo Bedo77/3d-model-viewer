@@ -1,6 +1,10 @@
 [
   {
+    "name": "Properties of Solids",
+    "teacher": "Mr. Lee",
+    "lessonIcon": "https://example.com/solid.png",
     "objectives": {
+      "learningObjectives": [],
       "standardsAlignment": [
         "NGSS 2-PS1-1",
         "UK KS1 Science"
@@ -11,18 +15,18 @@
       "explore": "Sort objects into solids/non-solids.\\nTest hardness with a spoon.",
       "explain": "Define solids (fixed shape/volume).\\nShow 3D particle model.",
       "elaborate": "Build a \"\"solid tower\"\" with blocks.\\nPredict which shapes stack best.",
-      "evaluate": "Draw a solid object.\\nExplain why it�s a solid."
+      "evaluate": "Draw a solid object.\\nExplain why itï¿½s a solid."
     },
     "resources": {
-      "keyVocabulary": [
-        "solid",
-        "shape",
-        "volume"
-      ],
       "materialsNeeded": [
         "blocks",
         "spoon",
         "objects"
+      ],
+      "keyVocabulary": [
+        "solid",
+        "shape",
+        "volume"
       ],
       "supplementaryLinks": [
         "https://example.com/solids-video"
@@ -33,13 +37,14 @@
       "teacherNotes": "Use tactile objects for ESL students.\\nHighlight safety with hard objects."
     },
     "models": [],
-    "name": "Properties of Solids",
-    "teacher": "Mr. Lee",
-    "lessonIcon": "https://example.com/solid.png",
     "lastUpdated": "4/7/2025, 10:49:49 PM"
   },
   {
+    "name": "Liquids: Pour and Flow",
+    "teacher": "Ms. Ana",
+    "lessonIcon": "https://example.com/liquid.png",
     "objectives": {
+      "learningObjectives": [],
       "standardsAlignment": [
         "NGSS 2-PS1-2",
         "UK KS1 Science"
@@ -53,16 +58,16 @@
       "evaluate": "Match liquids to real-world uses (e.g., honey in sandwiches)."
     },
     "resources": {
-      "keyVocabulary": [
-        "liquid",
-        "flow",
-        "viscosity"
-      ],
       "materialsNeeded": [
         "water",
         "oil",
         "syrup",
         "timer"
+      ],
+      "keyVocabulary": [
+        "liquid",
+        "flow",
+        "viscosity"
       ],
       "supplementaryLinks": [
         "https://example.com/liquids-lab"
@@ -73,35 +78,36 @@
       "teacherNotes": "Supervise spills.\\nUse non-toxic liquids."
     },
     "models": [],
-    "name": "Liquids: Pour and Flow",
-    "teacher": "Ms. Ana",
-    "lessonIcon": "https://example.com/liquid.png",
     "lastUpdated": "4/7/2025, 10:49:49 PM"
   },
   {
+    "name": "What is a Gas?",
+    "teacher": "Dr. Sam",
+    "lessonIcon": "https://example.com/gas.png",
     "objectives": {
+      "learningObjectives": [],
       "standardsAlignment": [
         "NGSS 2-PS1-3",
         "UK KS1 Science"
       ]
     },
     "structure": {
-      "engage": "Blow up a balloon.\\nAsk: \"\"What�s inside?\"\"",
+      "engage": "Blow up a balloon.\\nAsk: \"\"Whatï¿½s inside?\"\"",
       "explore": "Capture air in bags.\\nObserve bubbles in soda.",
       "explain": "Define gases (no fixed shape/volume).\\nShow 3D gas particle model.",
       "elaborate": "Simulate wind with a fan.\\nPredict how gases move.",
       "evaluate": "Circle gas examples (e.g., steam, air)."
     },
     "resources": {
-      "keyVocabulary": [
-        "gas",
-        "air",
-        "invisible"
-      ],
       "materialsNeeded": [
         "balloons",
         "soda",
         "bags"
+      ],
+      "keyVocabulary": [
+        "gas",
+        "air",
+        "invisible"
       ],
       "supplementaryLinks": [
         "https://example.com/gas-experiment"
@@ -112,13 +118,14 @@
       "teacherNotes": "Use clear soda for visibility.\\nAvoid latex allergies."
     },
     "models": [],
-    "name": "What is a Gas?",
-    "teacher": "Dr. Sam",
-    "lessonIcon": "https://example.com/gas.png",
     "lastUpdated": "4/7/2025, 10:49:49 PM"
   },
   {
+    "name": "Push and Pull Forces",
+    "teacher": "Ms. Zoe",
+    "lessonIcon": "https://example.com/force.png",
     "objectives": {
+      "learningObjectives": [],
       "standardsAlignment": [
         "NGSS K-PS2-1",
         "UK KS1 Physics"
@@ -132,15 +139,15 @@
       "evaluate": "Act out forces (e.g., push a door)."
     },
     "resources": {
-      "keyVocabulary": [
-        "push",
-        "pull",
-        "force"
-      ],
       "materialsNeeded": [
         "toy cars",
         "straws",
         "balls"
+      ],
+      "keyVocabulary": [
+        "push",
+        "pull",
+        "force"
       ],
       "supplementaryLinks": [
         "https://example.com/forces-game"
@@ -151,52 +158,14 @@
       "teacherNotes": "Encourage teamwork.\\nUse lightweight objects."
     },
     "models": [],
-    "name": "Push and Pull Forces",
-    "teacher": "Ms. Zoe",
-    "lessonIcon": "https://example.com/force.png",
     "lastUpdated": "4/7/2025, 10:49:49 PM"
   },
   {
+    "name": "Plant Parts and Functions",
+    "teacher": "Ms. Lia",
+    "lessonIcon": "https://example.com/plant.png",
     "objectives": {
-      "standardsAlignment": [
-        "NGSS 1-PS4-3",
-        "UK KS1 Physics"
-      ]
-    },
-    "structure": {
-      "engage": "Shine a flashlight on hands.\\nAsk: \"\"Why does a shadow form?\"\"",
-      "explore": "Trace shadows at different times.\\nMeasure length changes.",
-      "explain": "Explain light blockage = shadow.\\nShow 3D light-path model.",
-      "elaborate": "Create shadow puppets.\\nPerform a play.",
-      "evaluate": "Label light/shadow in a diagram."
-    },
-    "resources": {
-      "keyVocabulary": [
-        "light",
-        "shadow",
-        "block"
-      ],
-      "materialsNeeded": [
-        "flashlight",
-        "paper",
-        "ruler"
-      ],
-      "supplementaryLinks": [
-        "https://example.com/shadow-lab"
-      ],
-      "images": []
-    },
-    "notes": {
-      "teacherNotes": "Use sunny days for outdoor shadow tracking."
-    },
-    "models": [],
-    "name": "Light and Shadows",
-    "teacher": "Mr. Tom",
-    "lessonIcon": "https://example.com/light.png",
-    "lastUpdated": "4/7/2025, 10:49:49 PM"
-  },
-  {
-    "objectives": {
+      "learningObjectives": [],
       "standardsAlignment": [
         "NGSS 1-LS1-1",
         "UK KS1 Biology"
@@ -205,21 +174,21 @@
     "structure": {
       "engage": "Show a potted plant.\\nAsk: \"\"What parts do you see?\"\"",
       "explore": "Dissect a plant (roots, stem, leaves).\\nUse magnifiers.",
-      "explain": "Explain each part�s job.\\nShow 3D plant anatomy model.",
+      "explain": "Explain each partï¿½s job.\\nShow 3D plant anatomy model.",
       "elaborate": "Plant seeds in cups.\\nPredict growth.",
       "evaluate": "Match parts to functions (e.g., roots drink water)."
     },
     "resources": {
+      "materialsNeeded": [
+        "plants",
+        "magnifiers",
+        "cups"
+      ],
       "keyVocabulary": [
         "root",
         "stem",
         "leaf",
         "flower"
-      ],
-      "materialsNeeded": [
-        "plants",
-        "magnifiers",
-        "cups"
       ],
       "supplementaryLinks": [
         "https://example.com/plant-parts"
@@ -230,34 +199,35 @@
       "teacherNotes": "Use fast-growing seeds (e.g., beans).\\nAllocate roles in group work."
     },
     "models": [],
-    "name": "Plant Parts and Functions",
-    "teacher": "Ms. Lia",
-    "lessonIcon": "https://example.com/plant.png",
     "lastUpdated": "4/7/2025, 10:49:49 PM"
   },
   {
+    "name": "Weather Watchers",
+    "teacher": "Ms. Kim",
+    "lessonIcon": "https://example.com/weather.png",
     "objectives": {
+      "learningObjectives": [],
       "standardsAlignment": [
         "NGSS K-ESS2-1",
         "UK KS1 Geography"
       ]
     },
     "structure": {
-      "engage": "Ask: \"\"What�s the weather today?\"\"\\nShow a weather report clip.",
+      "engage": "Ask: \"\"Whatï¿½s the weather today?\"\"\\nShow a weather report clip.",
       "explore": "Record daily weather for a week.\\nUse symbols (sun, cloud, rain).",
       "explain": "Discuss weather types and causes.\\nShow 3D water cycle model.",
-      "elaborate": "Predict tomorrow�s weather.\\nCompare with actual results.",
+      "elaborate": "Predict tomorrowï¿½s weather.\\nCompare with actual results.",
       "evaluate": "Sort clothing for sunny/rainy days."
     },
     "resources": {
+      "materialsNeeded": [
+        "weather chart",
+        "symbols"
+      ],
       "keyVocabulary": [
         "sunny",
         "rainy",
         "windy"
-      ],
-      "materialsNeeded": [
-        "weather chart",
-        "symbols"
       ],
       "supplementaryLinks": [
         "https://example.com/weather-kids"
@@ -268,13 +238,14 @@
       "teacherNotes": "Link to local weather patterns.\\nUse a class weather station."
     },
     "models": [],
-    "name": "Weather Watchers",
-    "teacher": "Ms. Kim",
-    "lessonIcon": "https://example.com/weather.png",
     "lastUpdated": "4/7/2025, 10:49:49 PM"
   },
   {
+    "name": "Sound Vibrations",
+    "teacher": "Mr. Ray",
+    "lessonIcon": "https://example.com/sound.png",
     "objectives": {
+      "learningObjectives": [],
       "standardsAlignment": [
         "NGSS 1-PS4-1",
         "UK KS1 Physics"
@@ -288,15 +259,15 @@
       "evaluate": "Identify loud/soft sounds in the classroom."
     },
     "resources": {
-      "keyVocabulary": [
-        "vibration",
-        "sound",
-        "wave"
-      ],
       "materialsNeeded": [
         "rubber bands",
         "boxes",
         "drums"
+      ],
+      "keyVocabulary": [
+        "vibration",
+        "sound",
+        "wave"
       ],
       "supplementaryLinks": [
         "https://example.com/sound-waves"
@@ -307,13 +278,14 @@
       "teacherNotes": "Use headphones for hearing-sensitive students."
     },
     "models": [],
-    "name": "Sound Vibrations",
-    "teacher": "Mr. Ray",
-    "lessonIcon": "https://example.com/sound.png",
     "lastUpdated": "4/7/2025, 10:49:49 PM"
   },
   {
+    "name": "Simple Machines: Ramps",
+    "teacher": "Ms. Ada",
+    "lessonIcon": "https://example.com/ramp.png",
     "objectives": {
+      "learningObjectives": [],
       "standardsAlignment": [
         "NGSS K-2-ETS1-2",
         "UK KS1 DT"
@@ -327,15 +299,15 @@
       "evaluate": "Label ramps in everyday life (e.g., slides)."
     },
     "resources": {
-      "keyVocabulary": [
-        "ramp",
-        "slope",
-        "machine"
-      ],
       "materialsNeeded": [
         "planks",
         "toy cars",
         "rulers"
+      ],
+      "keyVocabulary": [
+        "ramp",
+        "slope",
+        "machine"
       ],
       "supplementaryLinks": [
         "https://example.com/ramps-lab"
@@ -346,9 +318,6 @@
       "teacherNotes": "Use non-slip materials.\\nEmphasize teamwork."
     },
     "models": [],
-    "name": "Simple Machines: Ramps",
-    "teacher": "Ms. Ada",
-    "lessonIcon": "https://example.com/ramp.png",
     "lastUpdated": "4/7/2025, 10:49:49 PM"
   }
 ]
