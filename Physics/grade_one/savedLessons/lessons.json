@@ -40,47 +40,6 @@
     "lastUpdated": "4/7/2025, 10:49:49 PM"
   },
   {
-    "name": "Liquids: Pour and Flow",
-    "teacher": "Ms. Ana",
-    "lessonIcon": "https://example.com/liquid.png",
-    "objectives": {
-      "learningObjectives": [],
-      "standardsAlignment": [
-        "NGSS 2-PS1-2",
-        "UK KS1 Science"
-      ]
-    },
-    "structure": {
-      "engage": "Pour water, oil, and syrup.\\nAsk: \"\"Which flows fastest?\"\"",
-      "explore": "Time liquid flow on slopes.\\nRecord results.",
-      "explain": "Discuss viscosity and fluidity.\\nShow liquid particle model.",
-      "elaborate": "Design a \"\"liquid race\"\" track.\\nTest different liquids.",
-      "evaluate": "Match liquids to real-world uses (e.g., honey in sandwiches)."
-    },
-    "resources": {
-      "materialsNeeded": [
-        "water",
-        "oil",
-        "syrup",
-        "timer"
-      ],
-      "keyVocabulary": [
-        "liquid",
-        "flow",
-        "viscosity"
-      ],
-      "supplementaryLinks": [
-        "https://example.com/liquids-lab"
-      ],
-      "images": []
-    },
-    "notes": {
-      "teacherNotes": "Supervise spills.\\nUse non-toxic liquids."
-    },
-    "models": [],
-    "lastUpdated": "4/7/2025, 10:49:49 PM"
-  },
-  {
     "name": "What is a Gas?",
     "teacher": "Dr. Sam",
     "lessonIcon": "https://example.com/gas.png",
