@@ -239,45 +239,5 @@
     },
     "models": [],
     "lastUpdated": "4/7/2025, 10:49:49 PM"
-  },
-  {
-    "name": "Simple Machines: Ramps",
-    "teacher": "Ms. Ada",
-    "lessonIcon": "https://example.com/ramp.png",
-    "objectives": {
-      "learningObjectives": [],
-      "standardsAlignment": [
-        "NGSS K-2-ETS1-2",
-        "UK KS1 DT"
-      ]
-    },
-    "structure": {
-      "engage": "Roll a ball down a plank.\\nAsk: \"\"Did the slope change speed?\"\"",
-      "explore": "Test ramp angles with toy cars.\\nMeasure distance traveled.",
-      "explain": "Define ramps as simple machines.\\nShow 3D ramp mechanics model.",
-      "elaborate": "Build a \"\"marble run\"\" with tubes and ramps.",
-      "evaluate": "Label ramps in everyday life (e.g., slides)."
-    },
-    "resources": {
-      "materialsNeeded": [
-        "planks",
-        "toy cars",
-        "rulers"
-      ],
-      "keyVocabulary": [
-        "ramp",
-        "slope",
-        "machine"
-      ],
-      "supplementaryLinks": [
-        "https://example.com/ramps-lab"
-      ],
-      "images": []
-    },
-    "notes": {
-      "teacherNotes": "Use non-slip materials.\\nEmphasize teamwork."
-    },
-    "models": [],
-    "lastUpdated": "4/7/2025, 10:49:49 PM"
   }
 ]
