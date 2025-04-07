@@ -238,44 +238,6 @@
   {
     "objectives": {
       "standardsAlignment": [
-        "NGSS K-LS1-1",
-        "UK KS1 Biology"
-      ]
-    },
-    "structure": {
-      "engage": "Show pictures of pets.\\nAsk: \"\"What do they need to live?\"\"",
-      "explore": "Match animals to habitats (e.g., fish/water).\\nDiscuss zoo habitats.",
-      "explain": "Define survival needs (air, water, food, shelter).\\nShow 3D habitat diorama.",
-      "elaborate": "Design a \"\"perfect habitat\"\" for a chosen animal.",
-      "evaluate": "Draw an animal and list its needs."
-    },
-    "resources": {
-      "keyVocabulary": [
-        "habitat",
-        "air",
-        "shelter"
-      ],
-      "materialsNeeded": [
-        "pictures",
-        "craft supplies"
-      ],
-      "supplementaryLinks": [
-        "https://example.com/animal-habitats"
-      ],
-      "images": []
-    },
-    "notes": {
-      "teacherNotes": "Use stuffed animals for kinesthetic learners."
-    },
-    "models": [],
-    "name": "Animal Needs",
-    "teacher": "Dr. Eli",
-    "lessonIcon": "https://example.com/animal.png",
-    "lastUpdated": "4/7/2025, 10:49:49 PM"
-  },
-  {
-    "objectives": {
-      "standardsAlignment": [
         "NGSS K-ESS2-1",
         "UK KS1 Geography"
       ]
