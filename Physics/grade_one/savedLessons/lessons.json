@@ -135,51 +135,5 @@
       }
     ],
     "lastUpdated": "4/7/2025, 11:47:06 PM"
-  },
-  {
-    "name": "Sound Vibrations",
-    "teacher": "Mr. Ray",
-    "lessonIcon": "https://example.com/sound.png",
-    "objectives": {
-      "learningObjectives": [],
-      "standardsAlignment": [
-        "NGSS 1-PS4-1",
-        "UK KS1 Physics"
-      ]
-    },
-    "structure": {
-      "engage": "Strum a rubber band.\\nAsk: \"\"What do you see/feel?\"\"",
-      "explore": "Test sound makers (e.g., drums, shakers).\\nFeel vibrations.",
-      "explain": "Explain sound = vibrations.\\nShow 3D sound wave model.",
-      "elaborate": "Make a DIY \"\"guitar\"\" with rubber bands and boxes.",
-      "evaluate": "Identify loud/soft sounds in the classroom."
-    },
-    "resources": {
-      "materialsNeeded": [
-        "rubber bands",
-        "boxes",
-        "drums"
-      ],
-      "keyVocabulary": [
-        "vibration",
-        "sound",
-        "wave"
-      ],
-      "supplementaryLinks": [
-        "https://example.com/sound-waves"
-      ],
-      "images": []
-    },
-    "notes": {
-      "teacherNotes": "Use headphones for hearing-sensitive students."
-    },
-    "models": [
-      {
-        "name": "Drum vibration simulator.glb",
-        "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one/models/Drum%20vibration%20simulator.glb",
-        "base64": null
-      }
-    ],
-    "lastUpdated": "4/7/2025, 11:47:06 PM"
   }
 ]
