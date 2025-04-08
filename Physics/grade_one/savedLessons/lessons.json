@@ -1,1 +1,428 @@
-[]
+[
+  {
+    "objectives": {
+      "standardsAlignment": [
+        "NGSS 2-PS1-1",
+        "UK KS1 Science"
+      ]
+    },
+    "structure": {
+      "engage": "Show a rock, toy, and book.\\nAsk: \"\"What do these have in common?\"\"",
+      "explore": "Sort objects into solids/non-solids.\\nTest hardness with a spoon.",
+      "explain": "Define solids (fixed shape/volume).\\nShow 3D particle model.",
+      "elaborate": "Build a \"\"solid tower\"\" with blocks.\\nPredict which shapes stack best.",
+      "evaluate": "Draw a solid object.\\nExplain why it�s a solid."
+    },
+    "resources": {
+      "keyVocabulary": [
+        "solid",
+        "shape",
+        "volume"
+      ],
+      "materialsNeeded": [
+        "blocks",
+        "spoon",
+        "objects"
+      ],
+      "supplementaryLinks": [
+        "https://example.com/solids-video"
+      ],
+      "images": []
+    },
+    "notes": {
+      "teacherNotes": "Use tactile objects for ESL students.\\nHighlight safety with hard objects."
+    },
+    "models": [],
+    "name": "Properties of Solids",
+    "teacher": "Mr. Lee",
+    "lessonIcon": "https://example.com/solid.png",
+    "lastUpdated": "4/8/2025, 3:05:53 AM"
+  },
+  {
+    "objectives": {
+      "standardsAlignment": [
+        "NGSS 2-PS1-2",
+        "UK KS1 Science"
+      ]
+    },
+    "structure": {
+      "engage": "Pour water, oil, and syrup.\\nAsk: \"\"Which flows fastest?\"\"",
+      "explore": "Time liquid flow on slopes.\\nRecord results.",
+      "explain": "Discuss viscosity and fluidity.\\nShow liquid particle model.",
+      "elaborate": "Design a \"\"liquid race\"\" track.\\nTest different liquids.",
+      "evaluate": "Match liquids to real-world uses (e.g., honey in sandwiches)."
+    },
+    "resources": {
+      "keyVocabulary": [
+        "liquid",
+        "flow",
+        "viscosity"
+      ],
+      "materialsNeeded": [
+        "water",
+        "oil",
+        "syrup",
+        "timer"
+      ],
+      "supplementaryLinks": [
+        "https://example.com/liquids-lab"
+      ],
+      "images": []
+    },
+    "notes": {
+      "teacherNotes": "Supervise spills.\\nUse non-toxic liquids."
+    },
+    "models": [],
+    "name": "Liquids: Pour and Flow",
+    "teacher": "Ms. Ana",
+    "lessonIcon": "https://example.com/liquid.png",
+    "lastUpdated": "4/8/2025, 3:05:53 AM"
+  },
+  {
+    "objectives": {
+      "standardsAlignment": [
+        "NGSS 2-PS1-3",
+        "UK KS1 Science"
+      ]
+    },
+    "structure": {
+      "engage": "Blow up a balloon.\\nAsk: \"\"What�s inside?\"\"",
+      "explore": "Capture air in bags.\\nObserve bubbles in soda.",
+      "explain": "Define gases (no fixed shape/volume).\\nShow 3D gas particle model.",
+      "elaborate": "Simulate wind with a fan.\\nPredict how gases move.",
+      "evaluate": "Circle gas examples (e.g., steam, air)."
+    },
+    "resources": {
+      "keyVocabulary": [
+        "gas",
+        "air",
+        "invisible"
+      ],
+      "materialsNeeded": [
+        "balloons",
+        "soda",
+        "bags"
+      ],
+      "supplementaryLinks": [
+        "https://example.com/gas-experiment"
+      ],
+      "images": []
+    },
+    "notes": {
+      "teacherNotes": "Use clear soda for visibility.\\nAvoid latex allergies."
+    },
+    "models": [
+      {
+        "name": "Gas particle motion simulator.glb",
+        "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one/models/Gas%20particle%20motion%20simulator.glb",
+        "base64": null
+      }
+    ],
+    "name": "What is a Gas?",
+    "teacher": "Dr. Sam",
+    "lessonIcon": "https://example.com/gas.png",
+    "lastUpdated": "4/8/2025, 3:05:53 AM"
+  },
+  {
+    "objectives": {
+      "standardsAlignment": [
+        "NGSS K-PS2-1",
+        "UK KS1 Physics"
+      ]
+    },
+    "structure": {
+      "engage": "Push/pull a toy car.\\nAsk: \"\"What made it move?\"\"",
+      "explore": "Test forces on objects (e.g., roll, slide).\\nRecord which need more force.",
+      "explain": "Define force (push/pull).\\nShow 3D force diagram.",
+      "elaborate": "Design a \"\"force maze\"\" (e.g., blow a ball through straws).",
+      "evaluate": "Act out forces (e.g., push a door)."
+    },
+    "resources": {
+      "keyVocabulary": [
+        "push",
+        "pull",
+        "force"
+      ],
+      "materialsNeeded": [
+        "toy cars",
+        "straws",
+        "balls"
+      ],
+      "supplementaryLinks": [
+        "https://example.com/forces-game"
+      ],
+      "images": []
+    },
+    "notes": {
+      "teacherNotes": "Encourage teamwork.\\nUse lightweight objects."
+    },
+    "models": [
+      {
+        "name": "Interactive force simulator.glb",
+        "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one/models/Interactive%20force%20simulator.glb",
+        "base64": null
+      }
+    ],
+    "name": "Push and Pull Forces",
+    "teacher": "Ms. Zoe",
+    "lessonIcon": "https://example.com/force.png",
+    "lastUpdated": "4/8/2025, 3:05:53 AM"
+  },
+  {
+    "objectives": {
+      "standardsAlignment": [
+        "NGSS 1-PS4-3",
+        "UK KS1 Physics"
+      ]
+    },
+    "structure": {
+      "engage": "Shine a flashlight on hands.\\nAsk: \"\"Why does a shadow form?\"\"",
+      "explore": "Trace shadows at different times.\\nMeasure length changes.",
+      "explain": "Explain light blockage = shadow.\\nShow 3D light-path model.",
+      "elaborate": "Create shadow puppets.\\nPerform a play.",
+      "evaluate": "Label light/shadow in a diagram."
+    },
+    "resources": {
+      "keyVocabulary": [
+        "light",
+        "shadow",
+        "block"
+      ],
+      "materialsNeeded": [
+        "flashlight",
+        "paper",
+        "ruler"
+      ],
+      "supplementaryLinks": [
+        "https://example.com/shadow-lab"
+      ],
+      "images": []
+    },
+    "notes": {
+      "teacherNotes": "Use sunny days for outdoor shadow tracking."
+    },
+    "models": [
+      {
+        "name": "sun shadow simulator.glb",
+        "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one/models/sun%20shadow%20simulator.glb",
+        "base64": null
+      }
+    ],
+    "name": "Light and Shadows",
+    "teacher": "Mr. Tom",
+    "lessonIcon": "https://example.com/light.png",
+    "lastUpdated": "4/8/2025, 3:05:53 AM"
+  },
+  {
+    "objectives": {
+      "standardsAlignment": [
+        "NGSS 1-LS1-1",
+        "UK KS1 Biology"
+      ]
+    },
+    "structure": {
+      "engage": "Show a potted plant.\\nAsk: \"\"What parts do you see?\"\"",
+      "explore": "Dissect a plant (roots, stem, leaves).\\nUse magnifiers.",
+      "explain": "Explain each part�s job.\\nShow 3D plant anatomy model.",
+      "elaborate": "Plant seeds in cups.\\nPredict growth.",
+      "evaluate": "Match parts to functions (e.g., roots drink water)."
+    },
+    "resources": {
+      "keyVocabulary": [
+        "root",
+        "stem",
+        "leaf",
+        "flower"
+      ],
+      "materialsNeeded": [
+        "plants",
+        "magnifiers",
+        "cups"
+      ],
+      "supplementaryLinks": [
+        "https://example.com/plant-parts"
+      ],
+      "images": []
+    },
+    "notes": {
+      "teacherNotes": "Use fast-growing seeds (e.g., beans).\\nAllocate roles in group work."
+    },
+    "models": [],
+    "name": "Plant Parts and Functions",
+    "teacher": "Ms. Lia",
+    "lessonIcon": "https://example.com/plant.png",
+    "lastUpdated": "4/8/2025, 3:05:53 AM"
+  },
+  {
+    "objectives": {
+      "standardsAlignment": [
+        "NGSS K-LS1-1",
+        "UK KS1 Biology"
+      ]
+    },
+    "structure": {
+      "engage": "Show pictures of pets.\\nAsk: \"\"What do they need to live?\"\"",
+      "explore": "Match animals to habitats (e.g., fish/water).\\nDiscuss zoo habitats.",
+      "explain": "Define survival needs (air, water, food, shelter).\\nShow 3D habitat diorama.",
+      "elaborate": "Design a \"\"perfect habitat\"\" for a chosen animal.",
+      "evaluate": "Draw an animal and list its needs."
+    },
+    "resources": {
+      "keyVocabulary": [
+        "habitat",
+        "air",
+        "shelter"
+      ],
+      "materialsNeeded": [
+        "pictures",
+        "craft supplies"
+      ],
+      "supplementaryLinks": [
+        "https://example.com/animal-habitats"
+      ],
+      "images": []
+    },
+    "notes": {
+      "teacherNotes": "Use stuffed animals for kinesthetic learners."
+    },
+    "models": [
+      {
+        "name": "3D habitat explorer.glb",
+        "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one/models/3D%20habitat%20explorer.glb",
+        "base64": null
+      }
+    ],
+    "name": "Animal Needs",
+    "teacher": "Dr. Eli",
+    "lessonIcon": "https://example.com/animal.png",
+    "lastUpdated": "4/8/2025, 3:05:53 AM"
+  },
+  {
+    "objectives": {
+      "standardsAlignment": [
+        "NGSS K-ESS2-1",
+        "UK KS1 Geography"
+      ]
+    },
+    "structure": {
+      "engage": "Ask: \"\"What�s the weather today?\"\"\\nShow a weather report clip.",
+      "explore": "Record daily weather for a week.\\nUse symbols (sun, cloud, rain).",
+      "explain": "Discuss weather types and causes.\\nShow 3D water cycle model.",
+      "elaborate": "Predict tomorrow�s weather.\\nCompare with actual results.",
+      "evaluate": "Sort clothing for sunny/rainy days."
+    },
+    "resources": {
+      "keyVocabulary": [
+        "sunny",
+        "rainy",
+        "windy"
+      ],
+      "materialsNeeded": [
+        "weather chart",
+        "symbols"
+      ],
+      "supplementaryLinks": [
+        "https://example.com/weather-kids"
+      ],
+      "images": []
+    },
+    "notes": {
+      "teacherNotes": "Link to local weather patterns.\\nUse a class weather station."
+    },
+    "models": [
+      {
+        "name": "3D water cycle model.glb",
+        "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one/models/3D%20water%20cycle%20model.glb",
+        "base64": null
+      }
+    ],
+    "name": "Weather Watchers",
+    "teacher": "Ms. Kim",
+    "lessonIcon": "https://example.com/weather.png",
+    "lastUpdated": "4/8/2025, 3:05:53 AM"
+  },
+  {
+    "objectives": {
+      "standardsAlignment": [
+        "NGSS 1-PS4-1",
+        "UK KS1 Physics"
+      ]
+    },
+    "structure": {
+      "engage": "Strum a rubber band.\\nAsk: \"\"What do you see/feel?\"\"",
+      "explore": "Test sound makers (e.g., drums, shakers).\\nFeel vibrations.",
+      "explain": "Explain sound = vibrations.\\nShow 3D sound wave model.",
+      "elaborate": "Make a DIY \"\"guitar\"\" with rubber bands and boxes.",
+      "evaluate": "Identify loud/soft sounds in the classroom."
+    },
+    "resources": {
+      "keyVocabulary": [
+        "vibration",
+        "sound",
+        "wave"
+      ],
+      "materialsNeeded": [
+        "rubber bands",
+        "boxes",
+        "drums"
+      ],
+      "supplementaryLinks": [
+        "https://example.com/sound-waves"
+      ],
+      "images": []
+    },
+    "notes": {
+      "teacherNotes": "Use headphones for hearing-sensitive students."
+    },
+    "models": [
+      {
+        "name": "Drum vibration simulator.glb",
+        "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one/models/Drum%20vibration%20simulator.glb",
+        "base64": null
+      }
+    ],
+    "name": "Sound Vibrations",
+    "teacher": "Mr. Ray",
+    "lessonIcon": "https://example.com/sound.png",
+    "lastUpdated": "4/8/2025, 3:05:53 AM"
+  },
+  {
+    "objectives": {
+      "standardsAlignment": [
+        "NGSS K-2-ETS1-2",
+        "UK KS1 DT"
+      ]
+    },
+    "structure": {
+      "engage": "Roll a ball down a plank.\\nAsk: \"\"Did the slope change speed?\"\"",
+      "explore": "Test ramp angles with toy cars.\\nMeasure distance traveled.",
+      "explain": "Define ramps as simple machines.\\nShow 3D ramp mechanics model.",
+      "elaborate": "Build a \"\"marble run\"\" with tubes and ramps.",
+      "evaluate": "Label ramps in everyday life (e.g., slides)."
+    },
+    "resources": {
+      "keyVocabulary": [
+        "ramp",
+        "slope",
+        "machine"
+      ],
+      "materialsNeeded": [
+        "planks",
+        "toy cars",
+        "rulers"
+      ],
+      "supplementaryLinks": [
+        "https://example.com/ramps-lab"
+      ],
+      "images": []
+    },
+    "notes": {
+      "teacherNotes": "Use non-slip materials.\\nEmphasize teamwork."
+    },
+    "models": [],
+    "name": "Simple Machines: Ramps",
+    "teacher": "Ms. Ada",
+    "lessonIcon": "https://example.com/ramp.png",
+    "lastUpdated": "4/8/2025, 3:05:53 AM"
+  }
+]
