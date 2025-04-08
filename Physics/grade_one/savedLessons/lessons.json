@@ -90,50 +90,5 @@
       }
     ],
     "lastUpdated": "4/7/2025, 11:47:06 PM"
-  },
-  {
-    "name": "Weather Watchers",
-    "teacher": "Ms. Kim",
-    "lessonIcon": "https://example.com/weather.png",
-    "objectives": {
-      "learningObjectives": [],
-      "standardsAlignment": [
-        "NGSS K-ESS2-1",
-        "UK KS1 Geography"
-      ]
-    },
-    "structure": {
-      "engage": "Ask: \"\"Whatï¿½s the weather today?\"\"\\nShow a weather report clip.",
-      "explore": "Record daily weather for a week.\\nUse symbols (sun, cloud, rain).",
-      "explain": "Discuss weather types and causes.\\nShow 3D water cycle model.",
-      "elaborate": "Predict tomorrowï¿½s weather.\\nCompare with actual results.",
-      "evaluate": "Sort clothing for sunny/rainy days."
-    },
-    "resources": {
-      "materialsNeeded": [
-        "weather chart",
-        "symbols"
-      ],
-      "keyVocabulary": [
-        "sunny",
-        "rainy",
-        "windy"
-      ],
-      "supplementaryLinks": [
-        "https://example.com/weather-kids"
-      ],
-      "images": []
-    },
-    "notes": {
-      "teacherNotes": "Link to local weather patterns.\\nUse a class weather station."
-    },
-    "models": [
-      {
-        "name": "3D water cycle model.glb",
-        "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one/models/3D%20water%20cycle%20model.glb",
-        "base64": null
-      }
-    ],
-    "lastUpdated": "4/7/2025, 11:47:06 PM"
   }
 ]
