@@ -44,51 +44,5 @@
       }
     ],
     "lastUpdated": "4/7/2025, 11:47:06 PM"
-  },
-  {
-    "name": "Light and Shadows",
-    "teacher": "Mr. Tom",
-    "lessonIcon": "https://example.com/light.png",
-    "objectives": {
-      "learningObjectives": [],
-      "standardsAlignment": [
-        "NGSS 1-PS4-3",
-        "UK KS1 Physics"
-      ]
-    },
-    "structure": {
-      "engage": "Shine a flashlight on hands.\\nAsk: \"\"Why does a shadow form?\"\"",
-      "explore": "Trace shadows at different times.\\nMeasure length changes.",
-      "explain": "Explain light blockage = shadow.\\nShow 3D light-path model.",
-      "elaborate": "Create shadow puppets.\\nPerform a play.",
-      "evaluate": "Label light/shadow in a diagram."
-    },
-    "resources": {
-      "materialsNeeded": [
-        "flashlight",
-        "paper",
-        "ruler"
-      ],
-      "keyVocabulary": [
-        "light",
-        "shadow",
-        "block"
-      ],
-      "supplementaryLinks": [
-        "https://example.com/shadow-lab"
-      ],
-      "images": []
-    },
-    "notes": {
-      "teacherNotes": "Use sunny days for outdoor shadow tracking."
-    },
-    "models": [
-      {
-        "name": "sun shadow simulator.glb",
-        "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one/models/sun%20shadow%20simulator.glb",
-        "base64": null
-      }
-    ],
-    "lastUpdated": "4/7/2025, 11:47:06 PM"
   }
 ]
