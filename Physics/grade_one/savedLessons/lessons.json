@@ -1,5 +1,9 @@
 [
   {
+    "name": "Properties of Solids",
+    "subject": "",
+    "teacher": "Mr. Lee",
+    "lessonIcon": "https://example.com/solid.png",
     "objectives": {
       "learningObjectives": [
         "1. Identify solids by their fixed shape and volume.\\n2. Compare hardness of different solids.\\n3. Use a 3D model to visualize particle arrangement."
@@ -12,22 +16,22 @@
     "structure": {
       "engage": "**Demo:** Show a rock, toy, and book.\\n**Question:** \"What do these objects have in common?\"\\n**Prediction:** Have students guess which is hardest.\\n**Hook:** Squeeze a stress ball vs. a wooden block to contrast solids vs. non-solids.",
       "explore": "**Hands-on Activity:**\\n- Sort objects into solids/non-solids (e.g., pencil, water bottle, gel).\\n- Test hardness by scratching with a spoon (safe objects only).\\n**Data Recording:** Draw objects in a table labeled \"Hard\" or \"Soft\".",
-      "explain": "**Direct Instruction:**\\n- Define solids (fixed shape/volume).\\n- Show 3D particle model (projector).\\n**Discussion:** \"Why can’t you pour a solid like a liquid?\"\\n**Real-World Connection:** Name 5 solid objects in the classroom.",
-      "elaborate": "**STEM Challenge:**\\n- Build the tallest tower using only solids (blocks, books).\\n- Predict which shapes stack best (cubes vs. spheres).\\n**Extension:** Freeze water to show liquid → solid change.",
+      "explain": "**Direct Instruction:**\\n- Define solids (fixed shape/volume).\\n- Show 3D particle model (projector).\\n**Discussion:** \"Why canât you pour a solid like a liquid?\"\\n**Real-World Connection:** Name 5 solid objects in the classroom.",
+      "elaborate": "**STEM Challenge:**\\n- Build the tallest tower using only solids (blocks, books).\\n- Predict which shapes stack best (cubes vs. spheres).\\n**Extension:** Freeze water to show liquid â solid change.",
       "evaluate": "**Formative:**\\n- Draw and label a solid, explaining its properties.\\n**Summative:**\\n- Oral quiz: \"Is __ a solid? Why/why not?\"\\n**Exit Ticket:** Name one solid you used today."
     },
     "resources": {
-      "keyVocabulary": [
-        "solid",
-        "shape",
-        "volume",
-        "hardness"
-      ],
       "materialsNeeded": [
         "blocks",
         "spoon",
         "stress ball",
         "objects chart"
+      ],
+      "keyVocabulary": [
+        "solid",
+        "shape",
+        "volume",
+        "hardness"
       ],
       "supplementaryLinks": [
         "https://example.com/solids-video",
@@ -38,14 +42,19 @@
     "notes": {
       "teacherNotes": "**Differentiation:**\\n- Tactile objects for kinesthetic learners.\\n- Sentence stems for ELLs (\"This is a solid because __\").\\n**Safety:** Avoid sharp objects.\\n**Common Misconception:** Some children think \"soft\" solids (sponge) are liquids."
     },
-    "models": [],
-    "name": "Properties of Solids",
-    "subject": "Science",
-    "teacher": "Mr. Lee",
-    "lessonIcon": "https://example.com/solid.png",
-    "lastUpdated": "4/10/2025, 12:53:04 AM"
+    "models": [
+      {
+        "name": "Drum vibration simulator.glb",
+        "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one/models/Drum%20vibration%20simulator.glb",
+        "base64": null
+      }
+    ],
+    "lastUpdated": "4/10/2025, 1:22:51 AM"
   },
   {
+    "name": "Liquids: Pour and Flow",
+    "teacher": "Ms. Ana",
+    "lessonIcon": "https://example.com/liquid.png",
     "objectives": {
       "learningObjectives": [
         "1. Observe how liquids take the shape of their container.\\n2. Compare flow rates of different liquids.\\n3. Understand viscosity through hands-on tests."
@@ -63,12 +72,6 @@
       "evaluate": "**Formative:**\\n- Circle the slowest liquid in a worksheet.\\n**Summative:**\\n- Explain in pairs: \"Why is honey harder to pour than water?\"\\n**Exit Ticket:** Name a liquid you drank today."
     },
     "resources": {
-      "keyVocabulary": [
-        "liquid",
-        "flow",
-        "viscosity",
-        "pour"
-      ],
       "materialsNeeded": [
         "water",
         "oil",
@@ -76,6 +79,12 @@
         "trays",
         "timers",
         "gloves"
+      ],
+      "keyVocabulary": [
+        "liquid",
+        "flow",
+        "viscosity",
+        "pour"
       ],
       "supplementaryLinks": [
         "https://example.com/liquids-lab",
@@ -93,13 +102,12 @@
         "base64": null
       }
     ],
-    "name": "Liquids: Pour and Flow",
-    "subject": "Science",
-    "teacher": "Ms. Ana",
-    "lessonIcon": "https://example.com/liquid.png",
     "lastUpdated": "4/10/2025, 12:53:04 AM"
   },
   {
+    "name": "What is a Gas?",
+    "teacher": "Ms. Ana",
+    "lessonIcon": "https://example.com/liquid.png",
     "objectives": {
       "learningObjectives": [
         "1. Observe how liquids take the shape of their container.\\n2. Compare flow rates of different liquids.\\n3. Understand viscosity through hands-on tests."
@@ -110,22 +118,22 @@
       ]
     },
     "structure": {
-      "engage": "Blow up a balloon.\\nAsk: \"\"What�s inside?\"\"",
+      "engage": "Blow up a balloon.\\nAsk: \"\"Whatï¿½s inside?\"\"",
       "explore": "Capture air in bags.\\nObserve bubbles in soda.",
       "explain": "Define gases (no fixed shape/volume).\\nShow 3D gas particle model.",
       "elaborate": "Simulate wind with a fan.\\nPredict how gases move.",
       "evaluate": "Circle gas examples (e.g., steam, air)."
     },
     "resources": {
-      "keyVocabulary": [
-        "gas",
-        "air",
-        "invisible"
-      ],
       "materialsNeeded": [
         "balloons",
         "soda",
         "bags"
+      ],
+      "keyVocabulary": [
+        "gas",
+        "air",
+        "invisible"
       ],
       "supplementaryLinks": [
         "https://example.com/gas-experiment"
@@ -142,13 +150,12 @@
         "base64": null
       }
     ],
-    "name": "What is a Gas?",
-    "subject": "Science",
-    "teacher": "Ms. Ana",
-    "lessonIcon": "https://example.com/liquid.png",
     "lastUpdated": "4/10/2025, 12:53:04 AM"
   },
   {
+    "name": "Push and Pull Forces",
+    "teacher": "Ms. Zoe",
+    "lessonIcon": "https://example.com/force.png",
     "objectives": {
       "learningObjectives": [
         "1. Identify push/pull actions in daily life.\\n2. Compare how forces affect different objects.\\n3. Predict motion using a 3D force simulator."
@@ -161,22 +168,22 @@
     "structure": {
       "engage": "**Demo:** Push/pull a toy car with varying force.\\n**Question:** \"What made the car move farther?\"\\n**Hook:** Tug-of-war with a soft rope (teacher vs. 3 students).",
       "explore": "**Stations:**\\n- Station 1: Roll balls with different pushes.\\n- Station 2: Use magnets to pull paperclips.\\n- Station 3: Blow through straws to move cotton balls.\\n**Data Recording:** Draw arrows to show force direction.",
-      "explain": "**Direct Instruction:**\\n- Define force (push/pull).\\n- Show 3D force diagram (arrows = strength/direction).\\n**Discussion:** \"Why can’t you pull a glued object?\"\\n**Real-World Connection:** List 3 push/pull actions at home.",
+      "explain": "**Direct Instruction:**\\n- Define force (push/pull).\\n- Show 3D force diagram (arrows = strength/direction).\\n**Discussion:** \"Why canât you pull a glued object?\"\\n**Real-World Connection:** List 3 push/pull actions at home.",
       "elaborate": "**STEM Challenge:**\\n- Design a \"force maze\" where partners guide a ball using only blows (no touching).\\n**Extension:** Test how surface friction affects motion (carpet vs. tile).",
       "evaluate": "**Formative:**\\n- Act out pushes/pulls (e.g., opening a door).\\n**Summative:**\\n- Worksheet: Label push/pull images.\\n**Exit Ticket:** Demonstrate a pull action."
     },
     "resources": {
-      "keyVocabulary": [
-        "push",
-        "pull",
-        "force",
-        "motion"
-      ],
       "materialsNeeded": [
         "toy cars",
         "magnets",
         "straws",
         "cotton balls"
+      ],
+      "keyVocabulary": [
+        "push",
+        "pull",
+        "force",
+        "motion"
       ],
       "supplementaryLinks": [
         "https://example.com/forces-game",
@@ -194,13 +201,12 @@
         "base64": null
       }
     ],
-    "name": "Push and Pull Forces",
-    "subject": "Science",
-    "teacher": "Ms. Zoe",
-    "lessonIcon": "https://example.com/force.png",
     "lastUpdated": "4/10/2025, 12:53:04 AM"
   },
   {
+    "name": "Light and Shadows",
+    "teacher": "Mr. Tom",
+    "lessonIcon": "https://example.com/light.png",
     "objectives": {
       "learningObjectives": [
         "1. Explain how shadows form.\\n2. Predict shadow changes based on light position.\\n3. Use a 3D sun simulator to test hypotheses."
@@ -218,17 +224,17 @@
       "evaluate": "**Formative:**\\n- Draw a shadow at two different times.\\n**Summative:**\\n- Oral explanation: \"What makes shadows change size?\"\\n**Exit Ticket:** Point to the light source in the room."
     },
     "resources": {
-      "keyVocabulary": [
-        "light",
-        "shadow",
-        "block",
-        "position"
-      ],
       "materialsNeeded": [
         "flashlight",
         "toy dinosaur",
         "chalk",
         "ruler"
+      ],
+      "keyVocabulary": [
+        "light",
+        "shadow",
+        "block",
+        "position"
       ],
       "supplementaryLinks": [
         "https://example.com/shadow-lab",
@@ -246,13 +252,12 @@
         "base64": null
       }
     ],
-    "name": "Light and Shadows",
-    "subject": "Science",
-    "teacher": "Mr. Tom",
-    "lessonIcon": "https://example.com/light.png",
     "lastUpdated": "4/10/2025, 12:53:04 AM"
   },
   {
+    "name": "Plant Parts and Functions",
+    "teacher": "Ms. Lia",
+    "lessonIcon": "https://example.com/plant.png",
     "objectives": {
       "learningObjectives": [
         "1. Label roots",
@@ -273,18 +278,18 @@
       "evaluate": "**Formative:**\\n- Match parts to functions (e.g., roots drink water).\\n**Summative:**\\n- Present their planted seed and describe its parts.\\n**Exit Ticket:** Name one job of leaves."
     },
     "resources": {
+      "materialsNeeded": [
+        "potted plant",
+        "magnifiers",
+        "seeds",
+        "clear cups"
+      ],
       "keyVocabulary": [
         "root",
         "stem",
         "leaf",
         "flower",
         "photosynthesis"
-      ],
-      "materialsNeeded": [
-        "potted plant",
-        "magnifiers",
-        "seeds",
-        "clear cups"
       ],
       "supplementaryLinks": [
         "https://example.com/plant-parts",
@@ -302,13 +307,12 @@
         "base64": null
       }
     ],
-    "name": "Plant Parts and Functions",
-    "subject": "Science",
-    "teacher": "Ms. Lia",
-    "lessonIcon": "https://example.com/plant.png",
     "lastUpdated": "4/10/2025, 12:53:04 AM"
   },
   {
+    "name": "Animal Needs",
+    "teacher": "Dr. Eli",
+    "lessonIcon": "https://example.com/animal.png",
     "objectives": {
       "learningObjectives": [
         "1. List four things animals need to survive.\\n2. Match animals to their habitats.\\n3. Design a habitat for a chosen animal."
@@ -320,23 +324,23 @@
     },
     "structure": {
       "engage": "**Demo:** Show pictures of a fish, bird, and dog.\\n**Question:** \"What would happen if the fish had no water?\"\\n**Hook:** Play animal sounds and guess the habitat.",
-      "explore": "**Stations:**\\n- Station 1: Sort animal cards into habitats (desert, ocean, forest).\\n- Station 2: Build a nest with twigs and string.\\n**Critical Thinking:** \"Why can’t a polar live in the desert?",
+      "explore": "**Stations:**\\n- Station 1: Sort animal cards into habitats (desert, ocean, forest).\\n- Station 2: Build a nest with twigs and string.\\n**Critical Thinking:** \"Why canât a polar live in the desert?",
       "explain": "**Direct Instruction:**\\n- Define habitat (\"animal home\").\\n- Show 3D habitat diorama (ocean vs. desert).\\n**Real-World Connection:**\\n- \"Why do birds migrate?",
-      "elaborate": "**STEM Challenge:**\\n- Design a zoo enclosure for a tiger (draw or use blocks).\\n**Extension:** Research an animal’s diet (herbivore/carnivore).",
+      "elaborate": "**STEM Challenge:**\\n- Design a zoo enclosure for a tiger (draw or use blocks).\\n**Extension:** Research an animalâs diet (herbivore/carnivore).",
       "evaluate": "**Formative:**\\n- Circle what a squirrel needs (acorns, water, etc.).\\n**Summative:**\\n- Present their zoo design to the class.\\n**Exit Ticket:** Name one thing you gave your animal."
     },
     "resources": {
-      "keyVocabulary": [
-        "habitat",
-        "air",
-        "shelter",
-        "water"
-      ],
       "materialsNeeded": [
         "animal cards",
         "twigs",
         "string",
         "craft supplies"
+      ],
+      "keyVocabulary": [
+        "habitat",
+        "air",
+        "shelter",
+        "water"
       ],
       "supplementaryLinks": [
         "https://example.com/animal-habitats",
@@ -354,13 +358,12 @@
         "base64": null
       }
     ],
-    "name": "Animal Needs",
-    "subject": "Science",
-    "teacher": "Dr. Eli",
-    "lessonIcon": "https://example.com/animal.png",
     "lastUpdated": "4/10/2025, 12:53:04 AM"
   },
   {
+    "name": "Weather Watchers",
+    "teacher": "Ms. Kim",
+    "lessonIcon": "https://example.com/weather.png",
     "objectives": {
       "learningObjectives": [
         "1. Identify four weather types.\\n2. Record daily weather for a week.\\n3. Link weather to clothing choices."
@@ -375,19 +378,19 @@
       "explore": "**Hands-on Activity:**\\n- Use a class weather chart (sun, cloud, rain, snow).\\n- Measure temperature with a large thermometer.\\n**Critical Thinking:** \"Why is it colder in winter?",
       "explain": "**Direct Instruction:**\\n- Define precipitation (rain, snow, hail).\\n- Show 3D water cycle model (interactive).\\n**Real-World Connection:**\\n- \"Why do we need umbrellas?",
       "elaborate": "**STEM Challenge:**\\n- Create a weather vane with paper and straws.\\n**Art Integration:** Paint a rainy scene with cotton-ball clouds.",
-      "evaluate": "**Formative:**\\n- Match weather symbols to names.\\n**Summative:**\\n- Present a 3-day \"forecast\" to the class.\\n**Exit Ticket:** Point to today’s weather symbol."
+      "evaluate": "**Formative:**\\n- Match weather symbols to names.\\n**Summative:**\\n- Present a 3-day \"forecast\" to the class.\\n**Exit Ticket:** Point to todayâs weather symbol."
     },
     "resources": {
+      "materialsNeeded": [
+        "weather chart",
+        "thermometer",
+        "paper plates"
+      ],
       "keyVocabulary": [
         "sunny",
         "rainy",
         "windy",
         "temperature"
-      ],
-      "materialsNeeded": [
-        "weather chart",
-        "thermometer",
-        "paper plates"
       ],
       "supplementaryLinks": [
         "https://example.com/weather-kids",
@@ -396,7 +399,7 @@
       "images": []
     },
     "notes": {
-      "teacherNotes": "**Local Focus:** Compare weather to your region’s seasons.\\n**Adaptation:** Use tactile symbols for visually impaired students."
+      "teacherNotes": "**Local Focus:** Compare weather to your regionâs seasons.\\n**Adaptation:** Use tactile symbols for visually impaired students."
     },
     "models": [
       {
@@ -405,13 +408,12 @@
         "base64": null
       }
     ],
-    "name": "Weather Watchers",
-    "subject": "Science",
-    "teacher": "Ms. Kim",
-    "lessonIcon": "https://example.com/weather.png",
     "lastUpdated": "4/10/2025, 12:53:04 AM"
   },
   {
+    "name": "Sound Vibrations",
+    "teacher": "Mr. Ray",
+    "lessonIcon": "https://example.com/sound.png",
     "objectives": {
       "learningObjectives": [
         "1. Demonstrate how sound is made by vibrations.\\n2. Compare high/low pitch.\\n3. Test how sound travels through solids."
@@ -422,24 +424,24 @@
       ]
     },
     "structure": {
-      "engage": "**Demo:** Pluck a rubber band near a student’s ear.\\n**Question:** \"What do you feel when I pluck this?\"\\n**Hook:** Play musical glasses with varying water levels.",
-      "explore": "**Stations:**\\n- Station 1: Feel a tuning fork’s vibrations.\\n- Station 2: Test sound through a string telephone.\\n- Station 3: Bang drums with/without rice (see vibrations).",
-      "explain": "**Direct Instruction:**\\n- Define vibration (\"fast back-and-forth\").\\n- Show 3D sound wave model (projector).\\n**Real-World Connection:**\\n- \"Why can’t you hear in space?",
+      "engage": "**Demo:** Pluck a rubber band near a studentâs ear.\\n**Question:** \"What do you feel when I pluck this?\"\\n**Hook:** Play musical glasses with varying water levels.",
+      "explore": "**Stations:**\\n- Station 1: Feel a tuning forkâs vibrations.\\n- Station 2: Test sound through a string telephone.\\n- Station 3: Bang drums with/without rice (see vibrations).",
+      "explain": "**Direct Instruction:**\\n- Define vibration (\"fast back-and-forth\").\\n- Show 3D sound wave model (projector).\\n**Real-World Connection:**\\n- \"Why canât you hear in space?",
       "elaborate": "**STEM Challenge:**\\n- Make a DIY kazoo with toilet paper rolls.\\n**Extension:** Test if sound travels better through wood or metal (knock test).",
       "evaluate": "**Formative:**\\n- Hum high/low notes.\\n**Summative:**\\n- Explain how their string telephone works.\\n**Exit Ticket:** Name one thing that vibrates to make sound."
     },
     "resources": {
-      "keyVocabulary": [
-        "vibration",
-        "sound",
-        "pitch",
-        "travel"
-      ],
       "materialsNeeded": [
         "rubber bands",
         "tuning forks",
         "string",
         "cups"
+      ],
+      "keyVocabulary": [
+        "vibration",
+        "sound",
+        "pitch",
+        "travel"
       ],
       "supplementaryLinks": [
         "https://example.com/sound-waves",
@@ -457,13 +459,12 @@
         "base64": null
       }
     ],
-    "name": "Sound Vibrations",
-    "subject": "Science",
-    "teacher": "Mr. Ray",
-    "lessonIcon": "https://example.com/sound.png",
     "lastUpdated": "4/10/2025, 12:53:04 AM"
   },
   {
+    "name": "Simple Machines: Ramps",
+    "teacher": "Ms. Ada",
+    "lessonIcon": "https://example.com/ramp.png",
     "objectives": {
       "learningObjectives": [
         "1. Identify ramps in everyday life.\\n2. Test how slope affects speed.\\n3. Build a ramp to solve a problem."
@@ -481,17 +482,17 @@
       "evaluate": "**Formative:**\\n- Label ramps in pictures (e.g., slide, wheelchair ramp).\\n**Summative:**\\n- Present their escape ramp design.\\n**Exit Ticket:** Point to a ramp in the classroom."
     },
     "resources": {
-      "keyVocabulary": [
-        "ramp",
-        "slope",
-        "speed",
-        "machine"
-      ],
       "materialsNeeded": [
         "planks",
         "toy cars",
         "rulers",
         "textbooks"
+      ],
+      "keyVocabulary": [
+        "ramp",
+        "slope",
+        "speed",
+        "machine"
       ],
       "supplementaryLinks": [
         "https://example.com/ramps-lab",
@@ -503,10 +504,6 @@
       "teacherNotes": "**Safety:** Secure ramps to avoid slips.\\n**Differentiation:** Provide pre-angled ramps for struggling learners."
     },
     "models": [],
-    "name": "Simple Machines: Ramps",
-    "subject": "Science",
-    "teacher": "Ms. Ada",
-    "lessonIcon": "https://example.com/ramp.png",
     "lastUpdated": "4/10/2025, 12:53:04 AM"
   }
 ]
