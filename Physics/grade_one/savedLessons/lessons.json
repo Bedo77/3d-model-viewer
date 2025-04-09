@@ -1,5 +1,9 @@
 [
   {
+    "name": "Properties of Solids",
+    "subject": "Science",
+    "teacher": "Mr. Lee",
+    "lessonIcon": "https://example.com/solid.png",
     "objectives": {
       "learningObjectives": [
         "1. Identify solids by their fixed shape and volume.\\n2. Compare hardness of different solids.\\n3. Use a 3D model to visualize particle arrangement."
@@ -17,17 +21,17 @@
       "evaluate": "**Formative:**\\n- Draw and label a solid, explaining its properties.\\n**Summative:**\\n- Oral quiz: \"Is __ a solid? Why/why not?\"\\n**Exit Ticket:** Name one solid you used today."
     },
     "resources": {
-      "keyVocabulary": [
-        "solid",
-        "shape",
-        "volume",
-        "hardness"
-      ],
       "materialsNeeded": [
         "blocks",
         "spoon",
         "stress ball",
         "objects chart"
+      ],
+      "keyVocabulary": [
+        "solid",
+        "shape",
+        "volume",
+        "hardness"
       ],
       "supplementaryLinks": [
         "https://example.com/solids-video",
@@ -38,12 +42,14 @@
     "notes": {
       "teacherNotes": "**Differentiation:**\\n- Tactile objects for kinesthetic learners.\\n- Sentence stems for ELLs (\"This is a solid because __\").\\n**Safety:** Avoid sharp objects.\\n**Common Misconception:** Some children think \"soft\" solids (sponge) are liquids."
     },
-    "models": [],
-    "name": "Properties of Solids",
-    "subject": "Science",
-    "teacher": "Mr. Lee",
-    "lessonIcon": "https://example.com/solid.png",
-    "lastUpdated": "4/9/2025, 11:07:58 PM"
+    "models": [
+      {
+        "name": "sun shadow simulator.glb",
+        "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Physics/grade_one/models/sun%20shadow%20simulator.glb",
+        "base64": null
+      }
+    ],
+    "lastUpdated": "4/10/2025, 12:10:48 AM"
   },
   {
     "objectives": {
