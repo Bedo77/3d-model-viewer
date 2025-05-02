@@ -314,14 +314,16 @@
       ],
       "standardsAlignment": [
         "NGSS K-LS1-1",
-        "UK KS1 Biology"
+        "UK KS1 Biology",
+        "ngss ks2",
+        "ngss22"
       ]
     },
     "structure": {
       "engage": "**Demo:** Show pictures of a fish, bird, and dog.\\n**Question:** \"What would happen if the fish had no water?\"\\n**Hook:** Play animal sounds and guess the habitat.",
       "explore": "fdfkdjfkdjfdfdjfkdjfkdjkfjdkfjdk\nfdkjfdkfjdkfjdkfjdfjkdjfkdjfkd\n\nfjdkfjdkjfdkfd",
       "explain": "**Direct Instruction:**\\n- Define habitat (\"animal home\").\\n- Show 3D habitat diorama (ocean vs. desert).\\n**Real-World Connection:**\\n- \"Why do birds migrate?",
-      "elaborate": "dfdkfjkdfjdk\ndkfjdkfjkdfjd\nfdfjdkjfdkfjd\ndjfkdjfkdjfdk",
+      "elaborate": "dfdkfjkdfjdkdkfjdkfjkdfjd\nfdfjdkjfdkfjd\ndjfkdjfkdjfdk",
       "evaluate": "**Formative:**\\n- Circle what a squirrel needs (acorns, water, etc.).\\n**Summative:**\\n- Present their zoo design to the class.\\n**Exit Ticket:** Name one thing you gave your animal."
     },
     "resources": {
@@ -353,7 +355,7 @@
         "base64": null
       }
     ],
-    "lastUpdated": "5/2/2025, 7:37:12 AM"
+    "lastUpdated": "5/2/2025, 7:39:31 AM"
   },
   {
     "name": "Weather Watchers",
