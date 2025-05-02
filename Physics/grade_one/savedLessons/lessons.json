@@ -320,7 +320,7 @@
       ]
     },
     "structure": {
-      "engage": "**Demo:** Show pictures of a fish, bird, and dog.\\n**Question:** \"What would happen if the fish had no water?\"\\n**Hook:** Play animal sounds and guess the habitat.",
+      "engage": "**Demo:** Show pictures of a fish, bird, and dog.\\n**Question:** \"What would happen if the fish had no watr?\"\\n**Hook:** Play animal sounds and guess the habitat.\n**Demo:** Show pictures of a fish, bird, and dog.\\n**Question:** \"What would happen if the fish had no watr?\"\\**Hook:** Play animal sounds and guess the habitat.",
       "explore": "fdfkdjfkdjfdfdjfkdjfkdjkfjdkfjdk\nfdkjfdkfjdkfjdkfjdfjkdjfkdjfkd\n\nfjdkfjdkjfdkfd",
       "explain": "**Direct Instruction:**\\n- Define habitat (\"animal home\").\\n- Show 3D habitat diorama (ocean vs. desert).\\n**Real-World Connection:**\\n- \"Why do birds migrate?",
       "elaborate": "dfdkfjkdfjdkdkfjdkfjkdfjd\nfdfjdkjfdkfjd\ndjfkdjfkdjfdk",
@@ -355,7 +355,7 @@
         "base64": null
       }
     ],
-    "lastUpdated": "5/2/2025, 7:39:31 AM"
+    "lastUpdated": "5/2/2025, 7:40:33 AM"
   },
   {
     "name": "Weather Watchers",
