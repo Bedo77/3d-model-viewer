@@ -1,0 +1,56 @@
+{
+  "objectives": {
+    "learningObjectives": [
+      "1. Label roots",
+      "stem",
+      "leaves",
+      "and flowers.\\n2. Describe how each part helps the plant survive.\\n3. Dissect a real plant using magnifiers."
+    ],
+    "standardsAlignment": [
+      "NGSS 1-LS1-1",
+      "UK KS1 Biology"
+    ]
+  },
+  "structure": {
+    "engage": "**Demo:** Show a potted plant with visible roots.\\n**Question:** \"What would happen if we cut the roots?\"\\n**Hook:** Play a time-lapse video of a growing seed.",
+    "explore": "**Hands-on Activity:**\\n- Dissect a bean plant (roots, stem, leaves).\\n- Use magnifiers to observe veins in leaves.\\n**Data Recording:** Draw and label parts in a science journal.",
+    "explain": "**Direct Instruction:**\\n- Explain photosynthesis (\"plant food-making\").\\n- Show 3D plant anatomy model (interactive).\\n**Real-World Connection:**\\n- \"Why do carrots taste sweet? (They store sugar in roots)",
+    "elaborate": "**STEM Challenge:**\\n- Plant seeds in clear cups to observe root growth.\\n**Art Integration:** Paint a plant and label parts with arrows.",
+    "evaluate": "**Formative:**\\n- Match parts to functions (e.g., roots drink water).\\n**Summative:**\\n- Present their planted seed and describe its parts.\\n**Exit Ticket:** Name one job of leaves."
+  },
+  "resources": {
+    "keyVocabulary": [
+      "root",
+      "stem",
+      "leaf",
+      "flower",
+      "photosynthesis"
+    ],
+    "materialsNeeded": [
+      "potted plant",
+      "magnifiers",
+      "seeds",
+      "clear cups"
+    ],
+    "supplementaryLinks": [
+      "https://example.com/plant-parts",
+      "https://example.com/photosynthesis-song"
+    ],
+    "images": []
+  },
+  "notes": {
+    "teacherNotes": "**Ethics:** Use fast-growing seeds (beans) to avoid frustration.\\n**ELL Support:** Pre-teach parts with bilingual labels."
+  },
+  "models": [
+    {
+      "name": "Interactive plant anatomy model.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/Interactive%20plant%20anatomy%20model.glb",
+      "base64": null
+    }
+  ],
+  "name": "Plant Parts and Functions",
+  "subject": "Science",
+  "teacher": "Ms. Lia",
+  "lessonIcon": "https://example.com/plant.png",
+  "lastUpdated": "5/3/2025, 3:02:04 AM"
+}
