@@ -1,0 +1,52 @@
+{
+  "objectives": {
+    "learningObjectives": [
+      "1. Demonstrate how sound is made by vibrations.\\n2. Compare high/low pitch.\\n3. Test how sound travels through solids."
+    ],
+    "standardsAlignment": [
+      "NGSS 1-PS4-1",
+      "UK KS1 Physics"
+    ]
+  },
+  "structure": {
+    "engage": "**Demo:** Pluck a rubber band near a student’s ear.\\n**Question:** \"What do you feel when I pluck this?\"\\n**Hook:** Play musical glasses with varying water levels.",
+    "explore": "**Stations:**\\n- Station 1: Feel a tuning fork’s vibrations.\\n- Station 2: Test sound through a string telephone.\\n- Station 3: Bang drums with/without rice (see vibrations).",
+    "explain": "**Direct Instruction:**\\n- Define vibration (\"fast back-and-forth\").\\n- Show 3D sound wave model (projector).\\n**Real-World Connection:**\\n- \"Why can’t you hear in space?",
+    "elaborate": "**STEM Challenge:**\\n- Make a DIY kazoo with toilet paper rolls.\\n**Extension:** Test if sound travels better through wood or metal (knock test).",
+    "evaluate": "**Formative:**\\n- Hum high/low notes.\\n**Summative:**\\n- Explain how their string telephone works.\\n**Exit Ticket:** Name one thing that vibrates to make sound."
+  },
+  "resources": {
+    "keyVocabulary": [
+      "vibration",
+      "sound",
+      "pitch",
+      "travel"
+    ],
+    "materialsNeeded": [
+      "rubber bands",
+      "tuning forks",
+      "string",
+      "cups"
+    ],
+    "supplementaryLinks": [
+      "https://example.com/sound-waves",
+      "https://example.com/musical-instruments"
+    ],
+    "images": []
+  },
+  "notes": {
+    "teacherNotes": "**Noise Sensitivity:** Offer headphones.\\n**Management:** Pre-test volume of sound stations."
+  },
+  "models": [
+    {
+      "name": "Drum vibration simulator.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/Drum%20vibration%20simulator.glb",
+      "base64": null
+    }
+  ],
+  "name": "Sound Vibrations",
+  "subject": "Science",
+  "teacher": "Mr. Ray",
+  "lessonIcon": "https://example.com/sound.png",
+  "lastUpdated": "5/3/2025, 3:02:04 AM"
+}
