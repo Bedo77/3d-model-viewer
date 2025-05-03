@@ -1,0 +1,54 @@
+{
+  "objectives": {
+    "learningObjectives": [
+      "1. Observe how liquids take the shape of their container.\\n2. Compare flow rates of different liquids.\\n3. Understand viscosity through hands-on tests."
+    ],
+    "standardsAlignment": [
+      "NGSS 2-PS1-2",
+      "UK KS1 Science"
+    ]
+  },
+  "structure": {
+    "engage": "**Demo:** Pour water, oil, and syrup side-by-side.\\n**Question:** \"Which liquid would win a race?\"\\n**Prediction:** Vote on fastest liquid.\\n**Hook:** Let students dip fingers in each (with gloves) to feel stickiness.",
+    "explore": "**Experiment:**\\n- Time how long each liquid takes to flow down a tilted tray.\\n- Record results in a chart.\\n**Observation:** Discuss transparency (water vs. syrup).\\n**Critical Thinking:** \"Why does syrup slow down?",
+    "explain": "**Direct Instruction:**\\n- Define viscosity (\"thickness\").\\n- Show 3D liquid particle model (loosely packed).\\n**Real-World Connection:**\\n- \"Where do we see slow vs. fast liquids? (e.g., ketchup vs. juice)",
+    "elaborate": "**STEM Challenge:**\\n- Design a \"liquid race\" track with grooves to test flow.\\n- Test how heating syrup changes viscosity (teacher demo).\\n**Art Integration:** Drop liquid food coloring in water to show diffusion.",
+    "evaluate": "**Formative:**\\n- Circle the slowest liquid in a worksheet.\\n**Summative:**\\n- Explain in pairs: \"Why is honey harder to pour than water?\"\\n**Exit Ticket:** Name a liquid you drank today."
+  },
+  "resources": {
+    "keyVocabulary": [
+      "liquid",
+      "flow",
+      "viscosity",
+      "pour"
+    ],
+    "materialsNeeded": [
+      "water",
+      "oil",
+      "syrup",
+      "trays",
+      "timers",
+      "gloves"
+    ],
+    "supplementaryLinks": [
+      "https://example.com/liquids-lab",
+      "https://example.com/viscosity-song"
+    ],
+    "images": []
+  },
+  "notes": {
+    "teacherNotes": "**Safety:** Use non-toxic, food-grade liquids.\\n**Clean-Up:** Assign student roles for spills.\\n**ELL Support:** Pair with visual flashcards (liquid images + words)."
+  },
+  "models": [
+    {
+      "name": "Interactive liquid flow simulator.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/Interactive%20liquid%20flow%20simulator.glb",
+      "base64": null
+    }
+  ],
+  "name": "Liquids: Pour and Flow",
+  "subject": "Science",
+  "teacher": "Ms. Ana",
+  "lessonIcon": "https://example.com/liquid.png",
+  "lastUpdated": "5/3/2025, 3:02:04 AM"
+}
