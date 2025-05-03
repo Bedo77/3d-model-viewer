@@ -1,0 +1,52 @@
+{
+  "objectives": {
+    "learningObjectives": [
+      "1. Identify ramps in everyday life.\\n2. Test how slope affects speed.\\n3. Build a ramp to solve a problem."
+    ],
+    "standardsAlignment": [
+      "NGSS K-2-ETS1-2",
+      "UK KS1 DT"
+    ]
+  },
+  "structure": {
+    "engage": "**Demo:** Roll a toy car down a bookshelf plank.\\n**Question:** \"How could we make the car go faster?\"\\n**Hook:** Race two cars on different slopes.",
+    "explore": "**Experiment:**\\n- Adjust ramp angles (textbooks under a plank).\\n- Measure how far the car travels.\\n**Critical Thinking:** \"Why do steeper ramps work better?",
+    "explain": "**Direct Instruction:**\\n- Define ramp (\"a sloping surface\").\\n- Show 3D ramp mechanics model (interactive).\\n**Real-World Connection:**\\n- \"Where do we see ramps at school?",
+    "elaborate": "**STEM Challenge:**\\n- Design a ramp to help a toy animal \"escape\" a box.\\n**Extension:** Test rolling objects of different shapes (sphere vs. cube).",
+    "evaluate": "**Formative:**\\n- Label ramps in pictures (e.g., slide, wheelchair ramp).\\n**Summative:**\\n- Present their escape ramp design.\\n**Exit Ticket:** Point to a ramp in the classroom."
+  },
+  "resources": {
+    "keyVocabulary": [
+      "ramp",
+      "slope",
+      "speed",
+      "machine"
+    ],
+    "materialsNeeded": [
+      "planks",
+      "toy cars",
+      "rulers",
+      "textbooks"
+    ],
+    "supplementaryLinks": [
+      "https://example.com/ramps-lab",
+      "https://example.com/simple-machines"
+    ],
+    "images": []
+  },
+  "notes": {
+    "teacherNotes": "**Safety:** Secure ramps to avoid slips.\\n**Differentiation:** Provide pre-angled ramps for struggling learners."
+  },
+  "models": [
+    {
+      "name": "Interactive ramp simulator.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/Interactive%20ramp%20simulator.glb",
+      "base64": null
+    }
+  ],
+  "name": "Simple Machines: Ramps",
+  "subject": "Science",
+  "teacher": "Ms. Ada",
+  "lessonIcon": "https://example.com/ramp.png",
+  "lastUpdated": "5/3/2025, 3:02:04 AM"
+}
