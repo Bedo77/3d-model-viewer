@@ -1,0 +1,52 @@
+{
+  "objectives": {
+    "learningObjectives": [
+      "1. Explain how shadows form.\\n2. Predict shadow changes based on light position.\\n3. Use a 3D sun simulator to test hypotheses."
+    ],
+    "standardsAlignment": [
+      "NGSS 1-PS4-3",
+      "UK KS1 Physics"
+    ]
+  },
+  "structure": {
+    "engage": "**Demo:** Shine a flashlight on a toy dinosaur.\\n**Question:** \"Why does the shadow look bigger when I move the light?\"\\n**Hook:** Have students make hand shadows on the wall.",
+    "explore": "**Experiment:**\\n- Trace shadows at 10 AM vs. 2 PM outdoors.\\n- Measure shadow lengths.\\n**Critical Thinking:** \"Why did the shadow move?\"\\n**Art Integration:** Create shadow outlines with chalk.",
+    "explain": "**Direct Instruction:**\\n- Define light blockage = shadow.\\n- Show 3D light-path model (projector).\\n**Real-World Connection:**\\n- \"How do sunglasses block light?",
+    "elaborate": "**STEM Challenge:**\\n- Build a sundial with a stick and paper plate.\\n**Extension:** Use colored cellophane to explore filtered light.",
+    "evaluate": "**Formative:**\\n- Draw a shadow at two different times.\\n**Summative:**\\n- Oral explanation: \"What makes shadows change size?\"\\n**Exit Ticket:** Point to the light source in the room."
+  },
+  "resources": {
+    "keyVocabulary": [
+      "light",
+      "shadow",
+      "block",
+      "position"
+    ],
+    "materialsNeeded": [
+      "flashlight",
+      "toy dinosaur",
+      "chalk",
+      "ruler"
+    ],
+    "supplementaryLinks": [
+      "https://example.com/shadow-lab",
+      "https://example.com/sundial-guide"
+    ],
+    "images": []
+  },
+  "notes": {
+    "teacherNotes": "**Outdoor Option:** Use sunny days for real-world data.\\n**Adaptation:** Provide stencils for students with fine motor difficulties."
+  },
+  "models": [
+    {
+      "name": "sun shadow simulator.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/sun%20shadow%20simulator.glb",
+      "base64": null
+    }
+  ],
+  "name": "Light and Shadows",
+  "subject": "Science",
+  "teacher": "Mr. Tom",
+  "lessonIcon": "https://example.com/light.png",
+  "lastUpdated": "5/3/2025, 3:02:04 AM"
+}
