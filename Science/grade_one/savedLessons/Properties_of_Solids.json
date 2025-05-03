@@ -1,0 +1,46 @@
+{
+  "objectives": {
+    "learningObjectives": [
+      "1. Identify solids by their fixed shape and volume.\\n2. Compare hardness of different solids.\\n3. Use a 3D model to visualize particle arrangement."
+    ],
+    "standardsAlignment": [
+      "NGSS 2-PS1-1",
+      "UK KS1 Science"
+    ]
+  },
+  "structure": {
+    "engage": "**Demo:** Show a rock, toy, and book.\\n**Question:** \"What do these objects have in common?\"\\n**Prediction:** Have students guess which is hardest.\\n**Hook:** Squeeze a stress ball vs. a wooden block to contrast solids vs. non-solids.",
+    "explore": "**Hands-on Activity:**\\n- Sort objects into solids/non-solids (e.g., pencil, water bottle, gel).\\n- Test hardness by scratching with a spoon (safe objects only).\\n**Data Recording:** Draw objects in a table labeled \"Hard\" or \"Soft\".",
+    "explain": "**Direct Instruction:**\\n- Define solids (fixed shape/volume).\\n- Show 3D particle model (projector).\\n**Discussion:** \"Why can’t you pour a solid like a liquid?\"\\n**Real-World Connection:** Name 5 solid objects in the classroom.",
+    "elaborate": "**STEM Challenge:**\\n- Build the tallest tower using only solids (blocks, books).\\n- Predict which shapes stack best (cubes vs. spheres).\\n**Extension:** Freeze water to show liquid → solid change.",
+    "evaluate": "**Formative:**\\n- Draw and label a solid, explaining its properties.\\n**Summative:**\\n- Oral quiz: \"Is __ a solid? Why/why not?\"\\n**Exit Ticket:** Name one solid you used today."
+  },
+  "resources": {
+    "keyVocabulary": [
+      "solid",
+      "shape",
+      "volume",
+      "hardness"
+    ],
+    "materialsNeeded": [
+      "blocks",
+      "spoon",
+      "stress ball",
+      "objects chart"
+    ],
+    "supplementaryLinks": [
+      "https://example.com/solids-video",
+      "https://example.com/particle-game"
+    ],
+    "images": []
+  },
+  "notes": {
+    "teacherNotes": "**Differentiation:**\\n- Tactile objects for kinesthetic learners.\\n- Sentence stems for ELLs (\"This is a solid because __\").\\n**Safety:** Avoid sharp objects.\\n**Common Misconception:** Some children think \"soft\" solids (sponge) are liquids."
+  },
+  "models": [],
+  "name": "Properties of Solids",
+  "subject": "Science",
+  "teacher": "Mr. Lee",
+  "lessonIcon": "https://example.com/solid.png",
+  "lastUpdated": "5/3/2025, 3:02:04 AM"
+}
