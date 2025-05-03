@@ -1,0 +1,51 @@
+{
+  "objectives": {
+    "learningObjectives": [
+      "1. Identify four weather types.\\n2. Record daily weather for a week.\\n3. Link weather to clothing choices."
+    ],
+    "standardsAlignment": [
+      "NGSS K-ESS2-1",
+      "UK KS1 Geography"
+    ]
+  },
+  "structure": {
+    "engage": "**Demo:** Show a weather report video.\\n**Question:** \"What would you wear in a thunderstorm?\"\\n**Hook:** Mimic weather sounds (rain tapping, wind blowing).",
+    "explore": "**Hands-on Activity:**\\n- Use a class weather chart (sun, cloud, rain, snow).\\n- Measure temperature with a large thermometer.\\n**Critical Thinking:** \"Why is it colder in winter?",
+    "explain": "**Direct Instruction:**\\n- Define precipitation (rain, snow, hail).\\n- Show 3D water cycle model (interactive).\\n**Real-World Connection:**\\n- \"Why do we need umbrellas?",
+    "elaborate": "**STEM Challenge:**\\n- Create a weather vane with paper and straws.\\n**Art Integration:** Paint a rainy scene with cotton-ball clouds.",
+    "evaluate": "**Formative:**\\n- Match weather symbols to names.\\n**Summative:**\\n- Present a 3-day \"forecast\" to the class.\\n**Exit Ticket:** Point to today’s weather symbol."
+  },
+  "resources": {
+    "keyVocabulary": [
+      "sunny",
+      "rainy",
+      "windy",
+      "temperature"
+    ],
+    "materialsNeeded": [
+      "weather chart",
+      "thermometer",
+      "paper plates"
+    ],
+    "supplementaryLinks": [
+      "https://example.com/weather-kids",
+      "https://example.com/water-cycle-game"
+    ],
+    "images": []
+  },
+  "notes": {
+    "teacherNotes": "**Local Focus:** Compare weather to your region’s seasons.\\n**Adaptation:** Use tactile symbols for visually impaired students."
+  },
+  "models": [
+    {
+      "name": "3D water cycle model.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/3D%20water%20cycle%20model.glb",
+      "base64": null
+    }
+  ],
+  "name": "Weather Watchers",
+  "subject": "Science",
+  "teacher": "Ms. Kim",
+  "lessonIcon": "https://example.com/weather.png",
+  "lastUpdated": "5/3/2025, 3:02:04 AM"
+}
