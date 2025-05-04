@@ -722,7 +722,7 @@ function updateLessonSelect() {
 
 // GitHub Upload Functions
 async function uploadModelToGitHub(file, repoPath = 'Science/grade_one/models/') {
-    const GITHUB_TOKEN = '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';
+    const GITHUB_TOKEN = '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';
     const OWNER = 'Bedo77';
     const REPO = '3d-model-viewer';
 
@@ -790,7 +790,7 @@ async function uploadModelToGitHub(file, repoPath = 'Science/grade_one/models/')
 }
 
 async function uploadLessonsToGitHub(lessons) {
-    const GITHUB_TOKEN = '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';
+    const GITHUB_TOKEN = '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';
     const OWNER = 'Bedo77';
     const REPO = '3d-model-viewer';
     const BASE_PATH = 'Science/grade_one/savedLessons/';
@@ -834,7 +834,7 @@ async function uploadLessonsToGitHub(lessons) {
 }
 
 async function loadModelsFromGitHub() {
-    const GITHUB_TOKEN = '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';
+    const GITHUB_TOKEN = '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';
     const OWNER = 'Bedo77';
     const REPO = '3d-model-viewer';
     const PATH = 'Science/grade_one/models/';
@@ -1206,7 +1206,7 @@ async function handleBulkModelUpload(event) {
 }
 
 async function deleteModelFromGitHub(modelPath) {
-    const GITHUB_TOKEN = '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';
+    const GITHUB_TOKEN = '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';
     const OWNER = 'Bedo77';
     const REPO = '3d-model-viewer';
     const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${modelPath}`;
@@ -1564,12 +1564,44 @@ function removeTempIcon() {
 }
 
 // Event Listeners
+// Event Listeners
 function setupEventListeners() {
     console.log('[DEBUG] Setting up event listeners');
+    
+    // Setup action buttons
     document.querySelectorAll('.action-button').forEach(button => {
         button.removeEventListener('click', handleButtonClick);
         button.addEventListener('click', handleButtonClick);
     });
+
+    // Setup lesson select change event
+    lessonSelect.removeEventListener('change', syncLessonPlan);
+    lessonSelect.addEventListener('change', syncLessonPlan);
+
+    // Setup dropdown interaction
+    if (lessonSelect) {
+        lessonSelect.addEventListener('click', function(e) {
+            console.log('[DEBUG] Lesson select clicked');
+            // Ensure the dropdown is showing
+            this.size = this.options.length > 10 ? 10 : this.options.length;
+        });
+
+        // Close dropdown when selecting an option
+        lessonSelect.addEventListener('change', function() {
+            console.log('[DEBUG] Lesson selected:', this.value);
+            this.size = 1;
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!lessonSelect.contains(e.target)) {
+                lessonSelect.size = 1;
+            }
+        });
+    } else {
+        console.error('[ERROR] Lesson select element not found');
+    }
+}
 
     lessonSelect.removeEventListener('change', syncLessonPlan);
     lessonSelect.addEventListener('change', syncLessonPlan);
@@ -1795,28 +1827,3 @@ async function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
-document.addEventListener('DOMContentLoaded', function() {
-    const lessonSelect = document.getElementById('lessonSelect');
-    if (lessonSelect) {
-        lessonSelect.addEventListener('click', function(e) {
-            console.log('[DEBUG] Lesson select clicked');
-            // Ensure the dropdown is showing
-            this.size = this.options.length > 10 ? 10 : this.options.length;
-        });
-
-        // Close dropdown when selecting an option
-        lessonSelect.addEventListener('change', function() {
-            console.log('[DEBUG] Lesson selected:', this.value);
-            this.size = 1;
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!lessonSelect.contains(e.target)) {
-                lessonSelect.size = 1;
-            }
-        });
-    } else {
-        console.error('[ERROR] Lesson select element not found');
-    }
-});
