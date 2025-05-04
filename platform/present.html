@@ -1,0 +1,100 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row =>
+                    row.some(cell => cell !== '' && cell !== null && cell !== undefined)
+                );
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Present - Grade One Physics</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.4.0/dist/reveal.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.4.0/dist/theme/black.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="present.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <section id="welcome-slide">
+                <h2>Welcome to Grade One Physics</h2>
+                <p>Please select a lesson in the Lesson Plan tab to begin the presentation.</p>
+            </section>
+        </div>
+    </div>
+
+    <button id="edit-toggle">Enable Edit Mode</button>
+
+    <div id="edit-sidebar" class="collapsed">
+        <div class="sidebar-header">
+            <h3>Editing Tools</h3>
+            <button id="close-sidebar"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="tools">
+            <div class="tool-section">
+                <h4>General</h4>
+                <button id="undo-button" disabled><i class="fas fa-undo"></i> Undo</button>
+            </div>
+            <div class="tool-section">
+                <h4>Content Tools</h4>
+                <button id="text-tool"><i class="fas fa-font"></i> Text</button>
+                <button id="background-tool"><i class="fas fa-image"></i> Background</button>
+                <button id="image-tool"><i class="fas fa-photo-film"></i> Image</button>
+                <button id="audio-tool"><i class="fas fa-music"></i> Audio</button>
+            </div>
+            <div class="tool-section">
+                <h4>Interactive Tools</h4>
+                <button id="whiteboard-tool"><i class="fas fa-pen-ruler"></i> Whiteboard</button>
+                <button id="poll-tool"><i class="fas fa-poll"></i> Quick Poll</button>
+                <button id="spotlight-tool"><i class="fas fa-lightbulb"></i> Spotlight</button>
+                <button id="timer-tool"><i class="fas fa-clock"></i> Timer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tool layers -->
+    <div id="text-editor-toolbar" class="tool-layer" style="position: fixed; top: 50px; right: 320px; display: none;"></div>
+    <div id="background-editor" class="tool-layer" style="position: fixed; top: 50px; right: 320px; display: none;"></div>
+    <div id="image-insert-tool" class="tool-layer" style="position: fixed; top: 50px; right: 320px; display: none;"></div>
+    <div id="audio-insert-tool" class="tool-layer" style="position: fixed; top: 50px; right: 320px; display: none;"></div>
+    <div id="whiteboard-layer" class="tool-layer" style="display: none;"></div>
+    <div id="poll-container" class="tool-layer" style="display: none;"></div>
+    <div id="spotlight-overlay" class="tool-layer" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none;"></div>
+    <div id="timer-display" class="tool-layer" style="display: none;"></div>
+
+    <div class="controls">
+        <button id="prevButton"><i class="fas fa-arrow-left"></i> Previous</button>
+        <button id="nextButton">Next <i class="fas fa-arrow-right"></i></button>
+        <button id="resetButton"><i class="fas fa-home"></i> Home</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.4.0/dist/reveal.min.js"></script>
+    <script src="present_tools.js"></script>
+    <script src="present.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'931d0f9cba9cbfac',t:'MTc0NDkwNDg0Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

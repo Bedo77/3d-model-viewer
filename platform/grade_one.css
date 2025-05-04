@@ -1,0 +1,580 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    min-height: 100vh;
+    background: #f4f4f4;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 15%;
+    background: #2c3e50;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 15px 10px;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    border-right: 1px solid #00ffff;
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.sidebar-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-grow: 1;
+}
+
+.bottom-buttons {
+    margin-top: 20px;
+    padding-bottom: 15px;
+}
+
+/* Unified button styles for grade and bottom buttons */
+.sidebar-buttons .button {
+    padding: 8px;
+    font-size: 11px;
+    margin: 0 5px;
+    width: calc(100% - 10px);
+    background: #34495e;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    transition: background 0.3s, box-shadow 0.3s;
+    border: 1px solid #00ffff;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+.sidebar-buttons .button:hover,
+.sidebar-buttons .button.active {
+    background: #1abc9c;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.7);
+}
+
+/* Main content */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.main-content.full-width {
+    margin-left: 0;
+}
+
+.main-content.ar-expanded {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    padding: 0;
+}
+
+body.ar-active .sidebar,
+body.ar-active .right-panel {
+    display: none !important;
+}
+
+/* Tabbed interface */
+.tab-container {
+    width: 85%;
+    margin-left: 15%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), rgba(0, 191, 255, 0.2));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+.tab-container.ar-expanded {
+    width: 100%;
+    margin-left: 0;
+}
+
+.tabs {
+    display: flex;
+    background: rgba(0, 0, 0, 0.8);
+    border-bottom: 2px solid #00ffff;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+.tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    background: linear-gradient(45deg, #1a1a3d, #2c2c54); /* Match simulation-panel background */
+    color: #e0e0ff;
+    border: 1px solid #00ffff; /* Consistent border width */
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+    transition: background 0.3s ease, box-shadow 0.3s ease; /* Limit transition to avoid shake */
+    font-family: 'Orbitron', sans-serif; /* Match simulation-panel font */
+    text-shadow: 0 0 3px rgba(0, 255, 255, 0.5);
+}
+
+.tab:hover {
+    background: linear-gradient(45deg, #2c2c54, #3a3a6b); /* Slightly lighter gradient on hover */
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.7);
+}
+
+.tab.active {
+    background: linear-gradient(to right, #00ffff, #ff00ff); /* Gradient matching simulation-panel sliders */
+    color: #1a1a3d; /* Dark text for contrast on gradient */
+    border: 1px solid #00ffff; /* Keep border consistent */
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.9);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+}
+
+.tab-content {
+    flex: 1;
+    display: none;
+    overflow: hidden;
+    width: 100%; /* Ensure it doesn't exceed parent */
+    box-sizing: border-box;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-content iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow-x: hidden; /* Prevent iframe content from causing overflow */
+}
+
+/* Ensure iframe content expands in AR mode */
+.tab-content.ar-expanded,
+.tab-content.ar-expanded #modelViewport,
+.tab-content.ar-expanded #modelViewport canvas,
+.tab-content.ar-expanded #arVideo {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Info viewport */
+.info-viewport {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+/* Model viewport */
+.model-viewport {
+    flex-grow: 1;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Remove right panel (Controls) since simulation panel replaces it */
+.right-panel,
+.controls {
+    display: none !important;
+}
+
+/* Simulation panel with cyberpunk theme */
+.simulation-panel {
+    width: 250px !important;
+    height: calc(100vh - 20px) !important;
+    background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat,
+                linear-gradient(45deg, #1a1a3d, #2c2c54) !important;
+    background-size: auto, cover !important;
+    border: 2px solid #00ffff !important;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(0, 255, 255, 0.3) !important;
+    color: #e0e0ff !important;
+    position: fixed !important;
+    right: 10px !important;
+    top: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 15px !important;
+    z-index: 100 !important;
+    border-radius: 10px !important;
+    box-sizing: border-box !important;
+    overflow-y: auto !important;
+}
+
+.simulation-panel h3 {
+    font-family: 'Orbitron', sans-serif !important;
+    font-size: 18px !important;
+    margin: 0 0 15px 0 !important;
+    color: #00ffff !important;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7) !important;
+    text-align: center !important;
+}
+
+.simulation-panel .controls-container {
+    width: 100% !important;
+    flex-grow: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    overflow-y: auto !important;
+}
+
+.simulation-panel label {
+    margin: 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    font-size: 12px !important;
+    font-family: 'Orbitron', sans-serif !important;
+    color: #e0e0ff !important;
+    text-shadow: 0 0 3px rgba(0, 255, 255, 0.5) !important;
+    position: relative !important;
+}
+
+.simulation-panel label:hover::after {
+    content: attr(title) !important;
+    position: absolute !important;
+    top: -25px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: #e0e0ff !important;
+    padding: 5px 10px !important;
+    border-radius: 5px !important;
+    font-size: 10px !important;
+    white-space: nowrap !important;
+    z-index: 10 !important;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3) !important;
+}
+
+.simulation-panel input[type="range"] {
+    flex-grow: 1 !important;
+    height: 10px !important;
+    background: linear-gradient(to right, #00ffff, #ff00ff) !important;
+    border-radius: 5px !important;
+    -webkit-appearance: none !important;
+    margin: 0 10px !important;
+    transition: none !important;
+}
+
+.simulation-panel input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    width: 16px !important;
+    height: 16px !important;
+    background: #ffffff !important;
+    border-radius: 50% !important;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8) !important;
+    cursor: pointer !important;
+    transition: none !important;
+}
+
+.simulation-panel span {
+    min-width: 40px !important;
+    text-align: right !important;
+    font-size: 12px !important;
+    color: #e0e0ff !important;
+    text-shadow: 0 0 3px rgba(0, 255, 255, 0.5) !important;
+}
+
+.simulation-panel .reset-button {
+    width: 100% !important;
+    padding: 10px !important;
+    margin-top: 15px !important;
+    background: #ffffff22 !important;
+    color: #e0e0ff !important;
+    border: 1px solid #00ffff !important;
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.5), inset 0 0 4px rgba(0, 255, 255, 0.3) !important;
+    border-radius: 5px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-size: 12px !important;
+    font-family: 'Orbitron', sans-serif !important;
+    text-shadow: 0 0 3px rgba(0, 255, 255, 0.5) !important;
+}
+
+.simulation-panel .reset-button:hover {
+    background: #ffffff44 !important;
+    box-shadow: 0 0 12px rgba(0, 255, 255, 0.7), inset 0 0 6px rgba(0, 255, 255, 0.5) !important;
+}
+
+/* Control panel */
+.control-panel {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    max-width: 300px;
+}
+
+.toggle-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.ar-label, .animation-label {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+.model-selector {
+    margin-top: 10px;
+}
+
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-selected {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dropdown-selected::after {
+    content: '▼';
+    font-size: 12px;
+    color: #666;
+}
+
+.dropdown-items {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 200;
+}
+
+.dropdown-item {
+    padding: 8px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background: #f0f0f0;
+}
+
+/* Popups and modals */
+#infoPopup, #lessonsHubModal, #modelPreviewPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    z-index: 1000;
+    padding: 20px;
+}
+
+.popup-header, .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.popup-close, .modal-close {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.popup-close:hover, .modal-close:hover {
+    background: #c0392b;
+}
+
+.popup-content, .modal-content {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Loading message */
+#loadingMessage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+/* Error message */
+.error-message {
+    color: red;
+    font-size: 12px;
+}
+
+/* AR-specific styles */
+#arVideo {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 150px;
+    }
+
+    .tab-container {
+        width: calc(100% - 150px);
+        margin-left: 150px;
+    }
+
+    .simulation-panel {
+        width: 200px !important;
+    }
+
+    .main-content {
+        padding: 10px;
+    }
+
+    .tabs {
+        flex-direction: column;
+    }
+
+    .tab {
+        width: 100%;
+        text-align: left;
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 10px;
+        position: static;
+    }
+
+    .tab-container {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .button {
+        flex: 1 1 45%;
+        margin: 5px;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .simulation-panel {
+        width: 100% !important;
+        right: 0 !important;
+        top: auto !important;
+        bottom: 10px !important;
+        height: auto !important;
+        max-height: 50vh !important;
+    }
+
+    .model-viewport, .lesson-plan {
+        height: auto;
+    }
+}

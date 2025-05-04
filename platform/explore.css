@@ -1,0 +1,526 @@
+/* Existing styles from explore.css */
+body {
+    margin: 0;
+    font-family: 'Georgia', serif;
+    overflow: hidden;
+    background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat, 
+                linear-gradient(180deg, #0a0a23 0%, #1c2526 100%);
+    background-size: auto, cover;
+    color: #ffffff;
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+}
+
+body.ar-active {
+    background-color: transparent;
+}
+
+#modelViewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(0, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+#modelViewport.ar-expanded {
+    background-color: transparent;
+}
+
+#modelViewport video#arVideo {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    border: none;
+}
+
+#modelViewport canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+#noModelMessage,
+#loadingMessage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.control-panel {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff66;
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    z-index: 30;
+    width: fit-content;
+    pointer-events: auto;
+    display: block !important;
+    visibility: visible !important;
+}
+
+body.ar-active .control-panel {
+    display: block !important;
+    visibility: visible !important;
+}
+
+.toggle-row {
+    display: flex !important;
+    align-items: center;
+    margin: 4px 0;
+    width: 100%;
+}
+
+.animation-toggle-row {
+    display: flex !important;
+}
+
+.ar-label,
+.animation-label {
+    flex: 1;
+    margin-right: 8px;
+    white-space: nowrap;
+    font-size: 12px;
+    text-align: left;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 18px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 18px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #f47e42;
+}
+
+input:checked + .slider:before {
+    transform: translateX(18px);
+}
+
+.error-message {
+    color: #ff4d4d;
+    font-size: 12px;
+    margin-left: 8px;
+    white-space: nowrap;
+}
+
+.model-selector {
+    margin-top: 12px;
+    position: relative;
+}
+
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown-selected {
+    padding: 4px;
+    width: 100%;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #2c7481;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.dropdown-selected::after {
+    content: '▼';
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #2c7481;
+}
+
+.dropdown-selected.open::after {
+    content: '▲';
+}
+
+.dropdown-items {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: none;
+}
+
+.dropdown-item {
+    padding: 4px;
+    color: #2c7481;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Simulation Panel Styles */
+.simulation-panel {
+    width: calc(20% - 40px);
+    height: calc(100vh - 20px);
+    background: url('https://www.transparenttextures.com/patterns/stardust.png') repeat,
+                linear-gradient(145deg, #1c2526, #2e3b3e);
+    background-size: auto, cover;
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(0, 255, 255, 0.3);
+    color: #e0e0ff;
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    z-index: 30;
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    font-family: 'Georgia', serif;
+    visibility: visible !important;
+}
+
+.simulation-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.simulation-panel::-webkit-scrollbar-track {
+    background: #2e3b3e;
+    border-radius: 4px;
+}
+
+.simulation-panel::-webkit-scrollbar-thumb {
+    background: #00ffff;
+    border-radius: 4px;
+}
+
+.simulation-panel::-webkit-scrollbar-thumb:hover {
+    background: #00cccc;
+}
+
+.simulation-panel {
+    scrollbar-width: thin;
+    scrollbar-color: #00ffff #2e3b3e;
+}
+
+body.ar-active .simulation-panel {
+    display: flex !important;
+    visibility: visible !important;
+}
+
+.panel-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+}
+
+.collapsible-section {
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.collapsible-header {
+    background: linear-gradient(145deg, #2e3b3e, #3e4b4e);
+    color: #00ffff;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    box-shadow: 0 0 3px rgba(0, 255, 255, 0.5);
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+.collapsible-header:hover {
+    background: linear-gradient(145deg, #3e4b4e, #4e5b5e);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+}
+
+.collapsible-header.active {
+    background: linear-gradient(145deg, #00ffff, #2e3b3e);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.9);
+}
+
+.collapsible-content {
+    display: none;
+    padding: 10px;
+    background: #252f31;
+    border-radius: 0 0 6px 6px;
+}
+
+.collapsible-content.active {
+    display: block;
+}
+
+.control-item {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.control-item label {
+    color: #00ffff;
+    font-size: 14px;
+}
+
+.control-item input[type="range"] {
+    width: 100%;
+    height: 18px;
+    background: linear-gradient(to right, #00ffff, #ff00ff);
+    border-radius: 8px;
+    -webkit-appearance: none;
+    transition: none;
+    cursor: pointer;
+}
+
+.control-item input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+}
+
+.control-item input[type="range"]::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+    border: none;
+}
+
+.control-item select {
+    width: 100%;
+    padding: 5px;
+    background: #1c2526;
+    color: #00ffff;
+    border: 1px solid #00ffff;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.control-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #00ffff;
+}
+
+.control-item span {
+    color: #e0e0ff;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+#resetSimulation {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(145deg, #2e3b3e, #3e4b4e);
+    color: #00ffff;
+    border: 1px solid #00ffff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+}
+
+#resetSimulation:hover {
+    background: linear-gradient(145deg, #3e4b4e, #4e5b5e);
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+}
+
+#resetSimulation:active {
+    background: linear-gradient(145deg, #1c2526, #2e3b3e);
+    box-shadow: 0 0 3px rgba(0, 255, 255, 0.3);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .control-panel {
+        padding: 6px;
+    }
+    
+    .simulation-panel {
+        width: calc(25% - 30px);
+        padding: 6px;
+    }
+    
+    .ar-label, .animation-label {
+        font-size: 11px;
+    }
+    
+    .switch {
+        width: 32px;
+        height: 16px;
+    }
+    
+    .slider:before {
+        height: 12px;
+        width: 12px;
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(16px);
+    }
+    
+    .panel-title {
+        font-size: 16px;
+    }
+    
+    .collapsible-header {
+        font-size: 13px;
+    }
+    
+    .control-item label {
+        font-size: 13px;
+    }
+    
+    .control-item span {
+        font-size: 11px;
+    }
+    
+    #resetSimulation {
+        font-size: 13px;
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .control-panel {
+        padding: 5px;
+    }
+    
+    .simulation-panel {
+        width: calc(30% - 20px);
+        padding: 5px;
+    }
+    
+    .ar-label, .animation-label {
+        font-size: 10px;
+    }
+    
+    .switch {
+        width: 30px;
+        height: 15px;
+    }
+    
+    .slider:before {
+        height: 11px;
+        width: 11px;
+    }
+    
+    input:checked + .slider:before {
+        transform: translateX(15px);
+    }
+    
+    .dropdown-selected, .dropdown-item {
+        font-size: 11px;
+        padding: 3px;
+    }
+    
+    .panel-title {
+        font-size: 14px;
+    }
+    
+    .collapsible-header {
+        font-size: 12px;
+    }
+    
+    .control-item label {
+        font-size: 12px;
+    }
+    
+    .control-item span {
+        font-size: 10px;
+    }
+    
+    #resetSimulation {
+        font-size: 12px;
+        padding: 7px;
+    }
+    
+    #loadingMessage {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+}

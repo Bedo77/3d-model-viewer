@@ -1,0 +1,241 @@
+/* Base Styles */
+body {
+    margin: 0;
+    font-family: 'Georgia', serif;
+    background: linear-gradient(180deg, #0a0a23 0%, #1c2526 100%);
+    color: #ffffff;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Reveal.js Slide Styles */
+.reveal .slides {
+    text-align: left;
+    font-size: 32px;
+}
+
+.reveal .slides section {
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.reveal .slides h2 {
+    color: #00ffff;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.7);
+    margin-bottom: 20px;
+}
+
+.reveal .slides p,
+.reveal .slides ul,
+.reveal .slides li {
+    font-size: 24px;
+    color: #e0e0ff;
+    line-height: 1.5;
+}
+
+/* Navigation Controls */
+.controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+}
+
+.controls button {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #e0e0ff;
+    border: 1px solid #00ffff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.controls button:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Edit Mode Components */
+#edit-toggle {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 8px 16px;
+    background: rgba(0, 255, 255, 0.2);
+    color: #e0e0ff;
+    border: 1px solid #00ffff;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#edit-sidebar {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    max-height: 100vh; /* Ensure it doesn't exceed viewport height */
+    background: rgba(0, 0, 0, 0.95);
+    transition: right 0.3s ease;
+    z-index: 2000;
+    border-left: 1px solid #00ffff;
+    display: flex;
+    flex-direction: column; /* Stack header and tools vertically */
+}
+
+#edit-sidebar.collapsed {
+    right: -300px;
+}
+
+#edit-sidebar.open {
+    right: 0;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #00ffff;
+    background: rgba(0, 0, 0, 0.95); /* Ensure header stays fixed */
+    z-index: 1; /* Keep header above scrolling content */
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #00ffff;
+}
+
+#close-sidebar {
+    background: none;
+    border: none;
+    color: #00ffff;
+    cursor: pointer;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+#close-sidebar:hover {
+    color: #e0e0ff;
+}
+
+#tools {
+    flex: 1; /* Take up remaining space */
+    overflow-y: auto; /* Make content scrollable */
+    padding: 15px;
+}
+
+#tools .tool-section h4 {
+    color: #00ffff;
+    margin: 10px 0 5px;
+    font-size: 16px;
+}
+
+#tools button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid #00ffff;
+    color: #e0e0ff;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    font-size: 14px; /* Slightly smaller for better fit */
+}
+
+#tools button:hover {
+    background: rgba(0, 255, 255, 0.3);
+}
+
+/* Error Toast Styles */
+.error-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 0, 0, 0.8);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    z-index: 10000;
+    animation: slide-in 0.3s ease-out;
+}
+
+.error-toast.fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+}
+
+@keyframes slide-in {
+    from { bottom: -50px; opacity: 0; }
+    to { bottom: 20px; opacity: 1; }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .reveal .slides {
+        font-size: 24px;
+    }
+    
+    .reveal .slides p,
+    .reveal .slides ul,
+    .reveal .slides li {
+        font-size: 18px;
+    }
+    
+    #edit-sidebar {
+        width: 250px; /* Smaller width for mobile */
+    }
+    
+    #tools button {
+        padding: 8px; /* Smaller padding for mobile */
+        font-size: 12px; /* Smaller font for mobile */
+    }
+    
+    .sidebar-header h3 {
+        font-size: 16px;
+    }
+    
+    #close-sidebar {
+        font-size: 16px;
+    }
+    
+    .controls button {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    #edit-sidebar {
+        width: 200px; /* Even smaller for very small screens */
+    }
+    
+    #tools button {
+        padding: 6px;
+        font-size: 10px;
+    }
+    
+    .sidebar-header h3 {
+        font-size: 14px;
+    }
+    
+    #close-sidebar {
+        font-size: 14px;
+    }
+}

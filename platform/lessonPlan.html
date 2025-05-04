@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson Plan - Physics Section</title>
+    <link rel="stylesheet" href="lessonPlan.css">
+    <link rel="icon" href="favicon.ico">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="lesson-tab-content" id="lessonTabContent">
+        <div class="lesson-plan view-mode" data-grade="grade1">
+            <div class="lesson-plan-header">
+                <div class="standards-alignment-container" id="standardsAlignmentContainer">
+                    <div id="standardsAlignmentDisplay" class="tags" aria-label="Standards Alignment"></div>
+                </div>
+                <h2>Lesson Plan: <span id="lessonTitleDisplay">[Lesson Name]</span></h2>
+                <div class="lesson-plan-meta">
+                    <span>Grade: Grade 1</span>
+                    <span id="subjectDisplay" class="view-mode"></span>
+                    <span id="teacherNameDisplay" class="view-mode"></span>
+                    <div class="action-buttons">
+                        <button type="button" class="action-button" id="editLessonButton" onclick="openEditModal()" disabled aria-label="Edit selected lesson">Edit Lesson</button>
+                        <button type="button" class="action-button" id="printButton" onclick="printLesson()" disabled aria-label="Print selected lesson">Print Lesson</button>
+                        <button type="button" class="action-button" id="exportButton" onclick="exportLesson()" disabled aria-label="Export selected lesson as PDF">Export as PDF</button>
+                    </div>
+                </div>
+            </div>
+            <section class="lesson-section">
+                <div class="section-header">
+                    <h3>Select or Create Lesson</h3>
+                    <div class="action-buttons-group">
+                        <button type="button" class="action-button create-lesson-button" id="createLessonButton" aria-label="Create a new lesson">Create New Lesson</button>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="lesson-select-row">
+                        <div class="lesson-select-container">
+                            <select id="lessonSelect" aria-label="Select a lesson">
+                                <option value="">Select a lesson</option>
+                            </select>
+                            <button type="button" class="action-button remove-lesson-button" id="removeLessonButton" aria-label="Remove selected lesson">Remove Lesson</button>
+                            <div class="lesson-checkboxes" id="lessonCheckboxes" role="group" aria-label="Select lessons to delete">
+                                <label class="select-all-label">
+                                    <input type="checkbox" id="selectAllCheckbox" aria-label="Select all lessons for deletion"> Select All
+                                </label>
+                                <div id="lessonCheckboxList" aria-label="List of lessons for deletion"></div>
+                                <button type="button" class="action-button confirm-delete-button" id="confirmDeleteButton" aria-label="Confirm deletion of selected lessons">Confirm Deletion</button>
+                                <button type="button" class="action-button cancel-delete-button" id="cancelDeleteButton" aria-label="Cancel deletion">Cancel</button>
+                            </div>
+                        </div>
+                        <div class="bulk-upload-section">
+                            <h4>Bulk Upload Lessons</h4>
+                            <p class="bulk-instructions">Follow these steps to upload multiple lessons at once:</p>
+                            <div class="bulk-upload-steps">
+                                <div class="bulk-step upload-section">
+                                    <span class="step-number">1</span>
+                                    <label for="bulkModelUploadInput" class="action-button bulk-button" aria-label="Upload 3D models">Upload Models</label>
+                                    <input type="file" id="bulkModelUploadInput" multiple accept=".glb,.gltf">
+                                    <!-- Bulk Model Upload Loading Bar -->
+                                    <div id="bulk-model-loading-bar-container" class="loading-bar-container">
+                                        <span class="loading-text"></span>
+                                        <div class="loading-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <div class="bulk-step">
+                                    <span class="step-number">2</span>
+                                    <button type="button" class="action-button bulk-button download-template-button" id="downloadTemplateButton" aria-label="Download CSV template for lessons">Download CSV Template</button>
+                                </div>
+                                <div class="bulk-step upload-section">
+                                    <span class="step-number">3</span>
+                                    <label for="bulkLessonsUploadInput" class="action-button bulk-button" aria-label="Upload lessons CSV file">Upload Lessons</label>
+                                    <input type="file" id="bulkLessonsUploadInput" accept=".csv">
+                                    <!-- Bulk Lesson Upload Loading Bar -->
+                                    <div id="bulk-lesson-loading-bar-container" class="loading-bar-container">
+                                        <span class="loading-text"></span>
+                                        <div class="loading-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="bulkUploadStatus" class="bulk-status" role="alert" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div id="lessonDisplayArea" style="display: none;">
+                <div class="lesson-section objectives-section">
+                    <h3>Objectives</h3>
+                    <div class="content">
+                        <div class="learning-objectives">
+                            <strong>Learning Objectives:</strong>
+                            <ul id="learningObjectivesList"></ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="lesson-section lesson-structure-section">
+                    <h3>Lesson Structure</h3>
+                    <div class="content">
+                        <div class="stage engage-stage">
+                            <h4><span class="icon" aria-hidden="true">💡</span> Engage</h4>
+                            <p id="engageContent"></p>
+                        </div>
+                        <div class="stage explore-stage">
+                            <h4><span class="icon" aria-hidden="true">🔍</span> Explore</h4>
+                            <p id="exploreContent"></p>
+                        </div>
+                        <div class="stage explain-stage">
+                            <h4><span class="icon" aria-hidden="true">📝</span> Explain</h4>
+                            <p id="explainContent"></p>
+                        </div>
+                        <div class="stage elaborate-stage">
+                            <h4><span class="icon" aria-hidden="true">🛠️</span> Elaborate</h4>
+                            <p id="elaborateContent"></p>
+                        </div>
+                        <div class="stage evaluate-stage">
+                            <h4><span class="icon" aria-hidden="true">✅</span> Evaluate</h4>
+                            <p id="evaluateContent"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="lesson-section resources-section">
+                    <h3>Resources</h3>
+                    <div class="content">
+                        <div class="materials-needed">
+                            <strong>Materials Needed:</strong>
+                            <ul id="materialsNeededList"></ul>
+                        </div>
+                        <div class="key-vocabulary">
+                            <strong>Key Vocabulary:</strong>
+                            <div id="keyVocabularyTags" class="tags"></div>
+                        </div>
+                        <div class="supplementary-links">
+                            <strong>Supplementary Links:</strong>
+                            <div id="supplementaryLinksList"></div>
+                        </div>
+                        <div class="uploaded-images">
+                            <strong>Uploaded Images:</strong>
+                            <div id="resourcePreview" class="resource-gallery"></div>
+                        </div>
+                        <div class="uploaded-models">
+                            <strong>Uploaded Models:</strong>
+                            <div id="modelPreview" class="resource-model-list"></div>
+                        </div>
+                        <div class="lesson-icon">
+                            <strong>Lesson Icon (for Lessons Hub):</strong>
+                            <div id="lessonIconPreview"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lesson-section notes-section">
+                    <h3>Notes</h3>
+                    <div class="content">
+                        <div class="teacher-notes">
+                            <strong>Teacher Notes:</strong>
+                            <p id="teacherNotesContent"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="lesson-plan-footer">
+                <button type="button" class="action-button back-to-top" onclick="scrollToTop()" aria-label="Scroll back to top">Back to Top</button>
+                <span id="lastUpdated">Last Updated: [Timestamp]</span>
+            </div>
+        </div>
+    </div>
+    <div id="lessonModal" class="modal" aria-labelledby="modalTitle" aria-modal="true" role="dialog">
+        <div class="modal-content">
+            <button type="button" class="close-button" onclick="closeModal()" aria-label="Close modal">×</button>
+            <h3 id="modalTitle">Create New Lesson</h3>
+            <div id="modalFormContent">
+                <section class="lesson-details" aria-labelledby="details-heading">
+                    <h4 id="details-heading" class="sr-only">Lesson Details</h4>
+                    <label for="lessonNameInput">Lesson Name:</label>
+                    <input type="text" id="lessonNameInput" placeholder="Enter lesson name" required aria-required="true">
+                    <label for="subjectInput">Subject:</label>
+                    <input type="text" id="subjectInput" placeholder="Enter subject (e.g., Physics)" aria-describedby="subjectDesc">
+                    <span id="subjectDesc" class="sr-only">Enter the subject of the lesson, for example, Physics.</span>
+                    <label for="teacherNameInput">Teacher Name:</label>
+                    <input type="text" id="teacherNameInput" placeholder="Enter teacher name" aria-describedby="teacherDesc">
+                    <span id="teacherDesc" class="sr-only">Enter the name of the teacher for this lesson.</span>
+                </section>
+                <section class="lesson-section objectives-section" aria-labelledby="objectives-heading">
+                    <h4 id="objectives-heading">Objectives</h4>
+                    <div class="content">
+                        <div class="learning-objectives">
+                            <label for="learningObjectivesInput"><strong>Learning Objectives:</strong></label>
+                            <textarea id="learningObjectivesInput" placeholder="e.g., Students will identify simple machines. (Enter each objective on a new line)" rows="4" aria-describedby="objectivesDesc"></textarea>
+                            <span id="objectivesDesc" class="sr-only">Enter learning objectives, one per line, for example: Students will identify simple machines.</span>
+                        </div>
+                        <div class="standards-alignment">
+                            <label for="standardsAlignmentInput"><strong>Standards Alignment:</strong></label>
+                            <div id="selectedStandardsDisplayModal" class="tags" aria-live="polite"></div>
+                            <select id="standardsAlignmentInput" aria-label="Select standard to add">
+                                <option value="">Select a standard to add...</option>
+                                <option value="CCSS.ELA-Literacy.RI.1.3">CCSS.ELA-Literacy.RI.1.3</option>
+                                <option value="CCSS.Math.Content.1.MD.A.1">CCSS.Math.Content.1.MD.A.1</option>
+                                <option value="NGSS K-PS2-1">NGSS K-PS2-1</option>
+                            </select>
+                            <div class="custom-standard-input-group">
+                                <label for="customStandardInput" class="sr-only">Add custom standard</label>
+                                <input type="text" id="customStandardInput" placeholder="Or type a custom standard code/description" aria-label="Add custom standard">
+                                <button type="button" class="action-button add-button" id="addCustomStandardButton" onclick="addCustomStandard()" aria-label="Add custom standard">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="lesson-section lesson-structure-section" aria-labelledby="structure-heading">
+                    <h4 id="structure-heading">Lesson Structure (5E Model)</h4>
+                    <div class="content">
+                        <div class="stage engage-stage">
+                            <label for="engageInput"><h5><span class="icon" aria-hidden="true">💡</span> Engage (Time Estimate)</h5></label>
+                            <textarea id="engageInput" placeholder="How will you capture student interest?" rows="3" aria-describedby="engageDesc"></textarea>
+                            <span id="engageDesc" class="sr-only">Describe how you will capture student interest in the Engage phase.</span>
+                        </div>
+                        <div class="stage explore-stage">
+                            <label for="exploreInput"><h5><span class="icon" aria-hidden="true">🔍</span> Explore (Time Estimate)</h5></label>
+                            <textarea id="exploreInput" placeholder="What hands-on activities will students do?" rows="5" aria-describedby="exploreDesc"></textarea>
+                            <span id="exploreDesc" class="sr-only">Describe the hands-on activities students will do in the Explore phase.</span>
+                        </div>
+                        <div class="stage explain-stage">
+                            <label for="explainInput"><h5><span class="icon" aria-hidden="true">📝</span> Explain (Time Estimate)</h5></label>
+                            <textarea id="explainInput" placeholder="How will students share findings?" rows="4" aria-describedby="explainDesc"></textarea>
+                            <span id="explainDesc" class="sr-only">Describe how students will share their findings in the Explain phase.</span>
+                        </div>
+                        <div class="stage elaborate-stage">
+                            <label for="elaborateInput"><h5><span class="icon" aria-hidden="true">🛠️</span> Elaborate (Time Estimate)</h5></label>
+                            <textarea id="elaborateInput" placeholder="How will students apply learning?" rows="4" aria-describedby="elaborateDesc"></textarea>
+                            <span id="elaborateDesc" class="sr-only">Describe how students will apply their learning in the Elaborate phase.</span>
+                        </div>
+                        <div class="stage evaluate-stage">
+                            <label for="evaluateInput"><h5><span class="icon" aria-hidden="true">✅</span> Evaluate (Time Estimate)</h5></label>
+                            <textarea id="evaluateInput" placeholder="How will you assess understanding?" rows="3" aria-describedby="evaluateDesc"></textarea>
+                            <span id="evaluateDesc" class="sr-only">Describe how you will assess student understanding in the Evaluate phase.</span>
+                        </div>
+                    </div>
+                </section>
+                <section class="lesson-section resources-section" aria-labelledby="resources-heading">
+                    <h4 id="resources-heading">Resources</h4>
+                    <div class="content">
+                        <div class="materials-needed">
+                            <label for="materialsNeededInput"><strong>Materials Needed:</strong></label>
+                            <input id="materialsNeededInput" type="text" placeholder="e.g., Projector, worksheets (comma-separated)" aria-describedby="materialsDesc">
+                            <span id="materialsDesc" class="sr-only">Enter materials needed, separated by commas, for example: Projector, worksheets.</span>
+                        </div>
+                        <div class="key-vocabulary">
+                            <label for="keyVocabularyInput"><strong>Key Vocabulary:</strong></label>
+                            <textarea id="keyVocabularyInput" placeholder="e.g., Lever, pulley (one per line)" rows="3" aria-describedby="vocabularyDesc"></textarea>
+                            <span id="vocabularyDesc" class="sr-only">Enter key vocabulary terms, one per line, for example: Lever, pulley.</span>
+                        </div>
+                        <div class="supplementary-links">
+                            <label for="supplementaryLinksInput"><strong>Supplementary Links:</strong></label>
+                            <textarea id="supplementaryLinksInput" placeholder="e.g., https://example.com (one per line)" rows="3" aria-describedby="linksDesc"></textarea>
+                            <span id="linksDesc" class="sr-only">Enter supplementary links, one per line, for example: https://example.com.</span>
+                        </div>
+                        <div class="uploaded-images">
+                            <strong>Uploaded Images:</strong>
+                            <div id="modalResourcePreview" class="resource-gallery" aria-live="polite"></div>
+                            <label for="imageUploadInput" class="action-button upload-button" aria-label="Upload image">Upload Image</label>
+                            <input id="imageUploadInput" type="file" accept="image/*">
+                        </div>
+                        <div class="uploaded-models upload-section">
+                            <strong>Uploaded Models:</strong>
+                            <div id="modalModelPreview" class="resource-model-list" aria-live="polite"></div>
+                            <label for="modelUploadInput" class="action-button upload-button" aria-label="Upload 3D model">Upload 3D Model (.glb/.gltf)</label>
+                            <input id="modelUploadInput" type="file" accept=".glb,.gltf">
+                            <!-- Model Upload Loading Bar -->
+                            <div id="model-loading-bar-container" class="loading-bar-container">
+                                <span class="loading-text"></span>
+                                <div class="loading-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        </div>
+                        <div class="lesson-icon">
+                            <strong>Lesson Icon (for Lessons Hub):</strong>
+                            <div id="modalLessonIconPreview" aria-live="polite"></div>
+                            <label for="lessonIconUploadInput" class="action-button upload-button" aria-label="Upload lesson icon">Upload Icon</label>
+                            <input id="lessonIconUploadInput" type="file" accept="image/*">
+                        </div>
+                    </div>
+                </section>
+                <section class="lesson-section notes-section" aria-labelledby="notes-heading">
+                    <h4 id="notes-heading">Notes</h4>
+                    <div class="content">
+                        <div class="teacher-notes">
+                            <label for="teacherNotesInput"><strong>Teacher Notes:</strong></label>
+                            <textarea id="teacherNotesInput" placeholder="e.g., Differentiation strategies..." rows="4" aria-describedby="notesDesc"></textarea>
+                            <span id="notesDesc" class="sr-only">Enter any teacher notes, such as differentiation strategies.</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="action-button cancel-button" onclick="closeModal()" aria-label="Cancel and close modal">Cancel</button>
+                <button type="button" class="action-button save-button" onclick="saveLesson()" aria-label="Save lesson">Save Lesson</button>
+            </div>
+        </div>
+    </div>
+    <script src="lessonPlan.js"></script>
+    <!-- Cloudflare scripts remain unchanged -->
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTMLFOUNDATION = "window.__CF$cv$params={r:'92de0a7bfba66735',t:'MTc0NDI0NDAzMy4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92dec1a92907bfec',t:'MTc0NDI1MTUzNi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92df2f953c41bd2b',t:'MTc0NDI1NjAzOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>
