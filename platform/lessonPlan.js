@@ -1580,19 +1580,20 @@ function setupEventListeners() {
 
     // Setup dropdown interaction
     if (lessonSelect) {
+        // Click event to show dropdown
         lessonSelect.addEventListener('click', function(e) {
             console.log('[DEBUG] Lesson select clicked');
             // Ensure the dropdown is showing
             this.size = this.options.length > 10 ? 10 : this.options.length;
         });
 
-        // Close dropdown when selecting an option
+        // Change event to close dropdown after selection
         lessonSelect.addEventListener('change', function() {
             console.log('[DEBUG] Lesson selected:', this.value);
             this.size = 1;
         });
 
-        // Close dropdown when clicking outside
+        // Click outside to close dropdown
         document.addEventListener('click', function(e) {
             if (!lessonSelect.contains(e.target)) {
                 lessonSelect.size = 1;
@@ -1601,10 +1602,34 @@ function setupEventListeners() {
     } else {
         console.error('[ERROR] Lesson select element not found');
     }
+
+    // Setup other input listeners
+    imageUploadInput.removeEventListener('change', handleImageUpload);
+    imageUploadInput.addEventListener('change', handleImageUpload);
+
+    modelUploadInput.removeEventListener('change', handleModelUpload);
+    modelUploadInput.addEventListener('change', handleModelUpload);
+
+    lessonIconUploadInput.removeEventListener('change', handleLessonIconUpload);
+    lessonIconUploadInput.addEventListener('change', handleLessonIconUpload);
+
+    bulkModelUploadInput.removeEventListener('change', handleBulkModelUpload);
+    bulkModelUploadInput.addEventListener('change', handleBulkModelUpload);
+
+    bulkLessonsUploadInput.removeEventListener('change', handleBulkLessonsUpload);
+    bulkLessonsUploadInput.addEventListener('change', handleBulkLessonsUpload);
+
+    standardsAlignmentInput.removeEventListener('change', handleStandardsChange);
+    standardsAlignmentInput.addEventListener('change', handleStandardsChange);
+
+    downloadTemplateButton.removeEventListener('click', downloadCsvTemplate);
+    downloadTemplateButton.addEventListener('click', downloadCsvTemplate);
+
+    removeLessonButton.removeEventListener('click', removeLessonButton);
+    removeLessonButton.addEventListener('click', removeLessonButton);
 }
 
-    lessonSelect.removeEventListener('change', syncLessonPlan);
-    lessonSelect.addEventListener('change', syncLessonPlan);
+    
 
     imageUploadInput.removeEventListener('change', handleImageUpload);
     imageUploadInput.addEventListener('change', handleImageUpload);
