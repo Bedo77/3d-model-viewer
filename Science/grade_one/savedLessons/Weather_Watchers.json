@@ -1,4 +1,7 @@
 {
+  "name": "Weather Watchers",
+  "teacher": "Ms. Kim",
+  "lessonIcon": "https://example.com/weather.png",
   "objectives": {
     "learningObjectives": [
       "1. Identify four weather types.\\n2. Record daily weather for a week.\\n3. Link weather to clothing choices."
@@ -16,16 +19,16 @@
     "evaluate": "**Formative:**\\n- Match weather symbols to names.\\n**Summative:**\\n- Present a 3-day \"forecast\" to the class.\\n**Exit Ticket:** Point to today’s weather symbol."
   },
   "resources": {
+    "materialsNeeded": [
+      "weather chart",
+      "thermometer",
+      "paper plates"
+    ],
     "keyVocabulary": [
       "sunny",
       "rainy",
       "windy",
       "temperature"
-    ],
-    "materialsNeeded": [
-      "weather chart",
-      "thermometer",
-      "paper plates"
     ],
     "supplementaryLinks": [
       "https://example.com/weather-kids",
@@ -43,9 +46,5 @@
       "base64": null
     }
   ],
-  "name": "Weather Watchers",
-  "subject": "Science",
-  "teacher": "Ms. Kim",
-  "lessonIcon": "https://example.com/weather.png",
   "lastUpdated": "5/3/2025, 3:02:04 AM"
 }
