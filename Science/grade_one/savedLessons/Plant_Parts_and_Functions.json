@@ -1,4 +1,7 @@
 {
+  "name": "Plant Parts and Functions",
+  "teacher": "Ms. Lia",
+  "lessonIcon": "https://example.com/plant.png",
   "objectives": {
     "learningObjectives": [
       "1. Label roots",
@@ -19,18 +22,18 @@
     "evaluate": "**Formative:**\\n- Match parts to functions (e.g., roots drink water).\\n**Summative:**\\n- Present their planted seed and describe its parts.\\n**Exit Ticket:** Name one job of leaves."
   },
   "resources": {
+    "materialsNeeded": [
+      "potted plant",
+      "magnifiers",
+      "seeds",
+      "clear cups"
+    ],
     "keyVocabulary": [
       "root",
       "stem",
       "leaf",
       "flower",
       "photosynthesis"
-    ],
-    "materialsNeeded": [
-      "potted plant",
-      "magnifiers",
-      "seeds",
-      "clear cups"
     ],
     "supplementaryLinks": [
       "https://example.com/plant-parts",
@@ -48,9 +51,5 @@
       "base64": null
     }
   ],
-  "name": "Plant Parts and Functions",
-  "subject": "Science",
-  "teacher": "Ms. Lia",
-  "lessonIcon": "https://example.com/plant.png",
   "lastUpdated": "5/3/2025, 3:02:04 AM"
 }
