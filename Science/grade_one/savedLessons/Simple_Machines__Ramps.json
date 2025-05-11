@@ -1,4 +1,7 @@
 {
+  "name": "Simple Machines: Ramps",
+  "teacher": "Ms. Ada",
+  "lessonIcon": "https://example.com/ramp.png",
   "objectives": {
     "learningObjectives": [
       "1. Identify ramps in everyday life.\\n2. Test how slope affects speed.\\n3. Build a ramp to solve a problem."
@@ -16,17 +19,17 @@
     "evaluate": "**Formative:**\\n- Label ramps in pictures (e.g., slide, wheelchair ramp).\\n**Summative:**\\n- Present their escape ramp design.\\n**Exit Ticket:** Point to a ramp in the classroom."
   },
   "resources": {
-    "keyVocabulary": [
-      "ramp",
-      "slope",
-      "speed",
-      "machine"
-    ],
     "materialsNeeded": [
       "planks",
       "toy cars",
       "rulers",
       "textbooks"
+    ],
+    "keyVocabulary": [
+      "ramp",
+      "slope",
+      "speed",
+      "machine"
     ],
     "supplementaryLinks": [
       "https://example.com/ramps-lab",
@@ -44,9 +47,5 @@
       "base64": null
     }
   ],
-  "name": "Simple Machines: Ramps",
-  "subject": "Science",
-  "teacher": "Ms. Ada",
-  "lessonIcon": "https://example.com/ramp.png",
   "lastUpdated": "5/3/2025, 3:02:04 AM"
 }
