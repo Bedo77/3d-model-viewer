@@ -1,4 +1,7 @@
 {
+  "name": "Sound Vibrations",
+  "teacher": "Mr. Ray",
+  "lessonIcon": "https://example.com/sound.png",
   "objectives": {
     "learningObjectives": [
       "1. Demonstrate how sound is made by vibrations.\\n2. Compare high/low pitch.\\n3. Test how sound travels through solids."
@@ -16,17 +19,17 @@
     "evaluate": "**Formative:**\\n- Hum high/low notes.\\n**Summative:**\\n- Explain how their string telephone works.\\n**Exit Ticket:** Name one thing that vibrates to make sound."
   },
   "resources": {
-    "keyVocabulary": [
-      "vibration",
-      "sound",
-      "pitch",
-      "travel"
-    ],
     "materialsNeeded": [
       "rubber bands",
       "tuning forks",
       "string",
       "cups"
+    ],
+    "keyVocabulary": [
+      "vibration",
+      "sound",
+      "pitch",
+      "travel"
     ],
     "supplementaryLinks": [
       "https://example.com/sound-waves",
@@ -44,9 +47,5 @@
       "base64": null
     }
   ],
-  "name": "Sound Vibrations",
-  "subject": "Science",
-  "teacher": "Mr. Ray",
-  "lessonIcon": "https://example.com/sound.png",
   "lastUpdated": "5/3/2025, 3:02:04 AM"
 }
