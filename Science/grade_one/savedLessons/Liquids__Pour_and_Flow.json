@@ -1,4 +1,7 @@
 {
+  "name": "Liquids: Pour and Flow",
+  "teacher": "Ms. Ana",
+  "lessonIcon": "https://example.com/liquid.png",
   "objectives": {
     "learningObjectives": [
       "1. Observe how liquids take the shape of their container.\\n2. Compare flow rates of different liquids.\\n3. Understand viscosity through hands-on tests."
@@ -16,12 +19,6 @@
     "evaluate": "**Formative:**\\n- Circle the slowest liquid in a worksheet.\\n**Summative:**\\n- Explain in pairs: \"Why is honey harder to pour than water?\"\\n**Exit Ticket:** Name a liquid you drank today."
   },
   "resources": {
-    "keyVocabulary": [
-      "liquid",
-      "flow",
-      "viscosity",
-      "pour"
-    ],
     "materialsNeeded": [
       "water",
       "oil",
@@ -29,6 +26,12 @@
       "trays",
       "timers",
       "gloves"
+    ],
+    "keyVocabulary": [
+      "liquid",
+      "flow",
+      "viscosity",
+      "pour"
     ],
     "supplementaryLinks": [
       "https://example.com/liquids-lab",
@@ -46,9 +49,5 @@
       "base64": null
     }
   ],
-  "name": "Liquids: Pour and Flow",
-  "subject": "Science",
-  "teacher": "Ms. Ana",
-  "lessonIcon": "https://example.com/liquid.png",
   "lastUpdated": "5/3/2025, 3:02:04 AM"
 }
