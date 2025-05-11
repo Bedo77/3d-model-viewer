@@ -1,4 +1,7 @@
 {
+  "name": "Properties of Solids",
+  "teacher": "Mr. Lee",
+  "lessonIcon": "https://example.com/solid.png",
   "objectives": {
     "learningObjectives": [
       "1. Identify solids by their fixed shape and volume.\\n2. Compare hardness of different solids.\\n3. Use a 3D model to visualize particle arrangement."
@@ -16,17 +19,17 @@
     "evaluate": "**Formative:**\\n- Draw and label a solid, explaining its properties.\\n**Summative:**\\n- Oral quiz: \"Is __ a solid? Why/why not?\"\\n**Exit Ticket:** Name one solid you used today."
   },
   "resources": {
-    "keyVocabulary": [
-      "solid",
-      "shape",
-      "volume",
-      "hardness"
-    ],
     "materialsNeeded": [
       "blocks",
       "spoon",
       "stress ball",
       "objects chart"
+    ],
+    "keyVocabulary": [
+      "solid",
+      "shape",
+      "volume",
+      "hardness"
     ],
     "supplementaryLinks": [
       "https://example.com/solids-video",
@@ -38,9 +41,5 @@
     "teacherNotes": "**Differentiation:**\\n- Tactile objects for kinesthetic learners.\\n- Sentence stems for ELLs (\"This is a solid because __\").\\n**Safety:** Avoid sharp objects.\\n**Common Misconception:** Some children think \"soft\" solids (sponge) are liquids."
   },
   "models": [],
-  "name": "Properties of Solids",
-  "subject": "Science",
-  "teacher": "Mr. Lee",
-  "lessonIcon": "https://example.com/solid.png",
   "lastUpdated": "5/3/2025, 3:02:04 AM"
 }
