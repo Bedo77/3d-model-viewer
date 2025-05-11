@@ -1,4 +1,8 @@
 {
+  "name": "Animal Needs",
+  "subject": "",
+  "teacher": "Dr. Eli",
+  "lessonIcon": "https://example.com/animal.png",
   "objectives": {
     "learningObjectives": [
       "1. List four things animals need to survive.\\n2. Match animals to their habitats.\\n3. Design a habitat for a chosen animal."
@@ -16,17 +20,17 @@
     "evaluate": "**Formative:**\\n- Circle what a squirrel needs (acorns, water, etc.).\\n**Summative:**\\n- Present their zoo design to the class.\\n**Exit Ticket:** Name one thing you gave your animal."
   },
   "resources": {
-    "keyVocabulary": [
-      "habitat",
-      "air",
-      "shelter",
-      "water"
-    ],
     "materialsNeeded": [
       "animal cards",
       "twigs",
       "string",
       "craft supplies"
+    ],
+    "keyVocabulary": [
+      "habitat",
+      "air",
+      "shelter",
+      "water"
     ],
     "supplementaryLinks": [
       "https://example.com/animal-habitats",
@@ -42,11 +46,12 @@
       "name": "3D habitat explorer.glb",
       "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/3D%20habitat%20explorer.glb",
       "base64": null
+    },
+    {
+      "name": "lever_power_switch.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/lever_power_switch.glb",
+      "base64": null
     }
   ],
-  "name": "Animal Needs",
-  "subject": "Science",
-  "teacher": "Dr. Eli",
-  "lessonIcon": "https://example.com/animal.png",
-  "lastUpdated": "5/3/2025, 3:02:04 AM"
+  "lastUpdated": "5/11/2025, 7:03:04 PM"
 }
