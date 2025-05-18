@@ -5,7 +5,8 @@
   "lessonIcon": "https://example.com/animal.png",
   "objectives": {
     "learningObjectives": [
-      "1. List four things animals need to survive.\\n2. Match animals to their habitats.\\n3. Design a habitat for a chosen animal."
+      "1. List four things animals need to survive.\\n",
+      "2. Match animals to their habitats.\\n3. Design a habitat for a chosen animal."
     ],
     "standardsAlignment": [
       "NGSS K-LS1-1",
@@ -53,5 +54,5 @@
       "base64": null
     }
   ],
-  "lastUpdated": "5/11/2025, 7:03:04 PM"
+  "lastUpdated": "5/18/2025, 6:38:12 PM"
 }
