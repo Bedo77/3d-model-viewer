@@ -1,10 +1,11 @@
 {
   "name": "Weather Watchers",
+  "subject": "",
   "teacher": "Ms. Kim",
   "lessonIcon": "https://example.com/weather.png",
   "objectives": {
     "learningObjectives": [
-      "1. Identify four weather types.\\n2. Record daily weather for a week.\\n3. Link weather to clothing choices."
+      "1 Identify four weather types.\\n2. Record daily weather for a week.\\n3. Link weather to clothing choices."
     ],
     "standardsAlignment": [
       "NGSS K-ESS2-1",
@@ -46,5 +47,5 @@
       "base64": null
     }
   ],
-  "lastUpdated": "5/3/2025, 3:02:04 AM"
+  "lastUpdated": "5/20/2025, 1:40:21 AM"
 }
