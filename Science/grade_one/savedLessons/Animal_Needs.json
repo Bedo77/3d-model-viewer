@@ -1,11 +1,12 @@
 {
   "name": "Animal Needs",
+  "subject": "",
   "teacher": "Dr. Eli",
   "lessonIcon": "https://example.com/animal.png",
   "objectives": {
     "learningObjectives": [
-      "1. List four things animals need to survive.\\n",
-      "2. Match animals to their habitats.\\n3. Design a habitat for a chosen animal."
+      "- List four things animals need to survive.\\n",
+      "- Match animals to their habitats.\\n3. Design a habitat for a chosen animal."
     ],
     "standardsAlignment": [
       "NGSS K-LS1-1",
@@ -53,5 +54,5 @@
       "base64": null
     }
   ],
-  "lastUpdated": "5/18/2025, 6:55:59 PM"
+  "lastUpdated": "5/20/2025, 3:14:50 AM"
 }
