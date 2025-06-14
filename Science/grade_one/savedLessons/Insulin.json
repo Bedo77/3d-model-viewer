@@ -5,7 +5,9 @@
   "lessonIcon": null,
   "objectives": {
     "learningObjectives": [],
-    "standardsAlignment": []
+    "standardsAlignment": [
+      "NGSS K-PS2-1"
+    ]
   },
   "structure": {
     "engage": "",
@@ -25,10 +27,10 @@
   },
   "models": [
     {
-      "name": "insulin resistence.glb",
-      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/insulin%20resistence.glb",
+      "name": "insulin resistance2.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/insulin%20resistance2.glb",
       "base64": null
     }
   ],
-  "lastUpdated": "6/14/2025, 6:23:46 PM"
+  "lastUpdated": "6/14/2025, 7:06:15 PM"
 }
