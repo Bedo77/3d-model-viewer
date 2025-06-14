@@ -1,0 +1,34 @@
+{
+  "name": "Insulin",
+  "subject": "Insulin resistance",
+  "teacher": "Mo Abdullah",
+  "lessonIcon": null,
+  "objectives": {
+    "learningObjectives": [],
+    "standardsAlignment": []
+  },
+  "structure": {
+    "engage": "",
+    "explore": "",
+    "explain": "",
+    "elaborate": "",
+    "evaluate": ""
+  },
+  "resources": {
+    "materialsNeeded": [],
+    "keyVocabulary": [],
+    "supplementaryLinks": [],
+    "images": []
+  },
+  "notes": {
+    "teacherNotes": ""
+  },
+  "models": [
+    {
+      "name": "insulin resistence.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/insulin%20resistence.glb",
+      "base64": null
+    }
+  ],
+  "lastUpdated": "6/14/2025, 6:03:44 PM"
+}
