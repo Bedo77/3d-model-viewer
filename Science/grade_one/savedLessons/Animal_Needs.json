@@ -42,12 +42,6 @@
   "notes": {
     "teacherNotes": "**Inclusion:** Use stuffed animals for tactile learners.\\n**Sensitivity:** Avoid graphic predator/prey visuals."
   },
-  "models": [
-    {
-      "name": "3D habitat explorer.glb",
-      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/3D%20habitat%20explorer.glb",
-      "base64": null
-    }
-  ],
-  "lastUpdated": "6/28/2025, 2:34:15 PM"
+  "models": [],
+  "lastUpdated": "6/28/2025, 2:35:28 PM"
 }
