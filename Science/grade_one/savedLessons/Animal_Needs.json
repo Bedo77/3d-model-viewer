@@ -1,5 +1,6 @@
 {
   "name": "Animal Needs",
+  "subject": "",
   "teacher": "Dr. Eli",
   "lessonIcon": "https://example.com/animal.png",
   "objectives": {
@@ -46,12 +47,7 @@
       "name": "3D habitat explorer.glb",
       "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/3D%20habitat%20explorer.glb",
       "base64": null
-    },
-    {
-      "name": "lever_power_switch.glb",
-      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/lever_power_switch.glb",
-      "base64": null
     }
   ],
-  "lastUpdated": "5/20/2025, 3:15:49 AM"
+  "lastUpdated": "6/28/2025, 2:34:15 PM"
 }
