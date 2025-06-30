@@ -44,10 +44,10 @@
   },
   "models": [
     {
-      "name": "3D habitat explorer.glb",
-      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/3D%20habitat%20explorer.glb",
+      "name": "Bird.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/Bird.glb",
       "base64": null
     }
   ],
-  "lastUpdated": "6/28/2025, 2:37:47 PM"
+  "lastUpdated": "6/30/2025, 11:43:03 PM"
 }
