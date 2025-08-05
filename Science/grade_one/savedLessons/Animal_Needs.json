@@ -42,6 +42,12 @@
   "notes": {
     "teacherNotes": "**Inclusion:** Use stuffed animals for tactile learners.\\n**Sensitivity:** Avoid graphic predator/prey visuals."
   },
-  "models": [],
-  "lastUpdated": "8/5/2025, 3:33:09 AM"
+  "models": [
+    {
+      "name": "bird-model.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/bird-model.glb",
+      "base64": null
+    }
+  ],
+  "lastUpdated": "8/5/2025, 5:56:48 AM"
 }
