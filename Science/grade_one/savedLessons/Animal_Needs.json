@@ -44,10 +44,10 @@
   },
   "models": [
     {
-      "name": "bird-model.glb",
-      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/bird-model.glb",
+      "name": "flying-birdl.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/flying-birdl.glb",
       "base64": null
     }
   ],
-  "lastUpdated": "8/5/2025, 5:56:48 AM"
+  "lastUpdated": "8/5/2025, 6:06:06 AM"
 }
