@@ -1,5 +1,6 @@
 {
   "name": "Light and Shadows",
+  "subject": "",
   "teacher": "Mr. Tom",
   "lessonIcon": "https://example.com/light.png",
   "objectives": {
@@ -42,10 +43,10 @@
   },
   "models": [
     {
-      "name": "sun shadow simulator.glb",
-      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/sun%20shadow%20simulator.glb",
+      "name": "sun-shadow.glb",
+      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/sun-shadow.glb",
       "base64": null
     }
   ],
-  "lastUpdated": "5/28/2025, 6:43:26 AM"
+  "lastUpdated": "8/6/2025, 6:24:54 PM"
 }
