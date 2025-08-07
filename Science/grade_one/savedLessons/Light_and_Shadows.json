@@ -41,12 +41,6 @@
   "notes": {
     "teacherNotes": "**Outdoor Option:** Use sunny days for real-world data.\\n**Adaptation:** Provide stencils for students with fine motor difficulties."
   },
-  "models": [
-    {
-      "name": "sun.glb",
-      "src": "https://raw.githubusercontent.com/Bedo77/3d-model-viewer/main/Science/grade_one/models/sun.glb",
-      "base64": null
-    }
-  ],
-  "lastUpdated": "8/7/2025, 6:59:25 AM"
+  "models": [],
+  "lastUpdated": "8/7/2025, 7:05:04 AM"
 }
